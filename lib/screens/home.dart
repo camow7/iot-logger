@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iot_logger/shared/refresh_button.dart';
+import 'package:iot_logger/widgets/refresh_button.dart';
 
 import '../models/sensor.dart';
 
-import '../shared/layout.dart';
+import '../widgets/layout.dart';
 import '../widgets/sensor_item.dart';
 
 class Home extends StatelessWidget {
@@ -13,6 +13,7 @@ class Home extends StatelessWidget {
       name: 'Water Tank',
       status: Status.Connected,
       iconPath: 'plug',
+      logs: [DateTime.now(), DateTime.now()]
     ),
     Sensor(
       id: '2',

@@ -45,7 +45,10 @@ class Layout extends StatelessWidget {
                   ),
                 ],
               ),
-              content,
+              Container(
+                height: 700,
+                child: content,
+              ),
             ],
           ),
         )

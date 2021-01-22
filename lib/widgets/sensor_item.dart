@@ -24,11 +24,11 @@ class SensorItem extends StatelessWidget {
     }
   }
 
-  viewLogs(BuildContext context) {
+  void viewLogs(BuildContext context) {
     Navigator.of(context).pushNamed('/logs', arguments: sensor);
   }
 
-  returnHome(BuildContext context) {
+  void returnHome(BuildContext context) {
     Navigator.of(context).pop();
   }
 
