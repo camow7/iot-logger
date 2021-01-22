@@ -49,9 +49,10 @@ flutter:
   assets:
     - assets/svgs/plug.svg
     - assets/svgs/download-light.svg
-    - assets/svgs/trans-logo-landscape-white-text.svg
+    - assets/svgs/saphi-logo-white-text.svg
 
-    - assets/images/trans-logo-landscape-white-text.png
+    - assets/images/land.jpg
+
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
