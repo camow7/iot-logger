@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'screens/home.dart';
+import 'screens/logs.dart';
 
 void main() => runApp(IotLoggerApp());
 
@@ -9,7 +10,10 @@ class IotLoggerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'IoT Logger',
-      home: Home(),
+      routes: {
+        '/': (ctx) => Home(),
+        '/logs': (ctx) => Logs(),
+      }
     );
   }
 }

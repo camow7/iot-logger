@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iot_logger/screens/logs.dart';
 
 import '../models/sensor.dart';
 
@@ -26,15 +25,18 @@ class SensorItem extends StatelessWidget {
   }
 
   viewLogs(BuildContext context) {
-    Navigator.of(context).push(MaterialPageRoute(builder: (_) {
-      return Logs(sensor);
-    }),);
+    Navigator.of(context).pushNamed('/logs', arguments: sensor);
+  }
+
+  returnHome(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
+    String path = ModalRoute.of(context).settings.name; // current screen path
     return InkWell(
-      onTap: () => viewLogs(context),
+      onTap: () => path == '/logs' ? returnHome(context) : viewLogs(context),
       splashColor: Colors.blue,
       borderRadius: BorderRadius.circular(10),
       child: Card(
