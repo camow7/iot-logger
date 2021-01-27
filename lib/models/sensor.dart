@@ -6,12 +6,19 @@ enum Status {
   Idle,
 }
 
+enum DeviceState {
+  Loaded,
+  Refreshing,
+  Downloading
+}
+
 class Sensor {
   final String id;
   final Status status;
   final String name;
   final String iconPath;
   final List<DateTime> logs;
+  final DeviceState state;
 
   Sensor({
     @required this.id,
@@ -19,5 +26,6 @@ class Sensor {
     @required this.name,
     @required this.iconPath,
     this.logs = const[],
+    this.state = DeviceState.Loaded,
   });
 }

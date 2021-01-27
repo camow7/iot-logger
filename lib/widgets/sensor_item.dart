@@ -32,33 +32,59 @@ class SensorItem extends StatelessWidget {
     Navigator.of(context).pop();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    String path = ModalRoute.of(context).settings.name; // current screen path
-    return InkWell(
-      onTap: () => path == '/logs' ? returnHome(context) : viewLogs(context),
-      splashColor: Colors.blue,
-      borderRadius: BorderRadius.circular(10),
+  Widget get deviceText {
+    return Text(
+      sensor.state == DeviceState.Downloading ? '0%' : sensor.name,
+      style: const TextStyle(fontSize: 30),
+      textAlign: TextAlign.center,
+    );
+  }
+
+  Widget get deviceCard {
+    return Container(
+      width: double.infinity,
+      height: 140,
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20),
-          child: ListTile(
-            leading: Icon(
-              Icons.circle,
-              size: 20,
-              color: color,
-            ),
-            title: Text(
-              sensor.name,
-              style: const TextStyle(fontSize: 30),
-              textAlign: TextAlign.center,
-            ),
-            trailing: SvgPicture.asset('assets/svgs/${sensor.iconPath}.svg'),
-          ),
+        color: Colors.white,
+        child: Center(
+          child: sensor.state == DeviceState.Downloading
+              ? deviceText
+              : Center(
+                  child: ListTile(
+                    leading: Icon(
+                      Icons.circle,
+                      size: 20,
+                      color: color,
+                    ),
+                    title: deviceText,
+                    trailing:
+                        SvgPicture.asset('assets/svgs/${sensor.iconPath}.svg'),
+                  ),
+                ),
         ),
       ),
     );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String path = ModalRoute.of(context).settings.name; // current screen path
+    return sensor.state == DeviceState.Refreshing
+        ? Stack(
+            alignment: Alignment.center,
+            children: [
+              Opacity(opacity: 0.6, child: deviceCard),
+              SvgPicture.asset('assets/svgs/loading-arrows.svg')
+            ],
+          )
+        : InkWell(
+            onTap: () =>
+                path == '/logs' ? returnHome(context) : viewLogs(context),
+            splashColor: Colors.green,
+            borderRadius: BorderRadius.circular(10),
+            child: deviceCard,
+          );
   }
 }

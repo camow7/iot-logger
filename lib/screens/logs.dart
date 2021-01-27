@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import '../models/sensor.dart';
@@ -17,6 +18,20 @@ class Logs extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             SensorItem(sensor),
+            Card(
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                child: sensor.logs.length > 0 ? Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Past Logs'),
+                    SizedBox(width: 5),
+                    SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
+                  ],
+                ): Text('No Logs'),
+              ),
+            ),
             Container(
               height: 300,
               child: Column(
@@ -34,10 +49,13 @@ class Logs extends StatelessWidget {
                             size: 40,
                           ),
                           title: Row(children: [
-                            Text( // fix up these texts
+                            Text(
+                              // fix up these texts
                               DateFormat.E().format(log),
                               style: TextStyle(
-                                  fontSize: 22, fontStyle: FontStyle.italic, color: Color.fromRGBO(36, 136, 104, 1)),
+                                  fontSize: 25,
+                                  fontStyle: FontStyle.italic,
+                                  color: Color.fromRGBO(36, 136, 104, 1)),
                             ),
                             SizedBox(
                               width: 10,
@@ -45,7 +63,7 @@ class Logs extends StatelessWidget {
                             Text(
                               DateFormat.yMd().format(log),
                               style: TextStyle(
-                                  fontSize: 22, fontStyle: FontStyle.italic),
+                                  fontSize: 25, fontStyle: FontStyle.italic),
                             )
                           ]),
                         ),

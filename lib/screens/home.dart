@@ -26,12 +26,14 @@ class Home extends StatelessWidget {
       name: 'Pump',
       status: Status.Disconnected,
       iconPath: 'plug',
+      state: DeviceState.Refreshing
     ),
     Sensor(
       id: '4',
       name: 'Air Con',
       status: Status.Connected,
       iconPath: 'download-light',
+      state: DeviceState.Downloading
     ),
   ];
 
