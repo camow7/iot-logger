@@ -15,10 +15,10 @@ enum DeviceState {
 class Sensor {
   final String id;
   final Status status;
-  final String name;
+  String name;
   final String iconPath;
   final List<DateTime> logs;
-  final DeviceState state;
+  DeviceState state;
 
   Sensor({
     @required this.id,

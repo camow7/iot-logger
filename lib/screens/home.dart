@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iot_logger/widgets/refresh_button.dart';
 
 import '../models/sensor.dart';
 
@@ -9,12 +8,11 @@ import '../widgets/sensor_item.dart';
 class Home extends StatelessWidget {
   final List<Sensor> sensors = [
     Sensor(
-      id: '1',
-      name: 'Water Tank',
-      status: Status.Connected,
-      iconPath: 'plug',
-      logs: [DateTime.now(), DateTime.now()]
-    ),
+        id: '1',
+        name: 'Water Tank',
+        status: Status.Connected,
+        iconPath: 'plug',
+        logs: [DateTime.now(), DateTime.now()]),
     Sensor(
       id: '2',
       name: 'Sewerage',
@@ -22,19 +20,17 @@ class Home extends StatelessWidget {
       iconPath: 'plug',
     ),
     Sensor(
-      id: '3',
-      name: 'Pump',
-      status: Status.Disconnected,
-      iconPath: 'plug',
-      state: DeviceState.Refreshing
-    ),
+        id: '3',
+        name: 'Pump',
+        status: Status.Disconnected,
+        iconPath: 'plug',
+        state: DeviceState.Refreshing),
     Sensor(
-      id: '4',
-      name: 'Air Con',
-      status: Status.Connected,
-      iconPath: 'download-light',
-      state: DeviceState.Downloading
-    ),
+        id: '4',
+        name: 'Air Con',
+        status: Status.Connected,
+        iconPath: 'download-light',
+        state: DeviceState.Downloading),
   ];
 
   @override
@@ -46,7 +42,21 @@ class Home extends StatelessWidget {
             Column(
               children: sensors.map((sensor) => SensorItem(sensor)).toList(),
             ),
-            RefreshButton(),
+            // RefreshButton(),
+            SizedBox(
+              height: 20,
+            ),
+            RaisedButton(
+              onPressed: () {},
+              child: Text(
+                'Refresh',
+                style: TextStyle(color: Colors.white),
+              ),
+              shape: const CircleBorder(),
+              padding: const EdgeInsets.all(40),
+              elevation: 3,
+              color: const Color.fromRGBO(108, 194, 130, 1),
+            )
           ],
         ),
       ),
