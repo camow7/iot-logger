@@ -20,17 +20,19 @@ class Home extends StatelessWidget {
       iconPath: 'plug',
     ),
     Sensor(
-        id: '3',
-        name: 'Pump',
-        status: Status.Disconnected,
-        iconPath: 'plug',
-        state: DeviceState.Refreshing),
+      id: '3',
+      name: 'Pump',
+      status: Status.Disconnected,
+      iconPath: 'plug',
+      state: DeviceState.Connecting,
+    ),
     Sensor(
-        id: '4',
-        name: 'Air Con',
-        status: Status.Connected,
-        iconPath: 'download-light',
-        state: DeviceState.Downloading),
+      id: '4',
+      name: 'Air Con',
+      status: Status.Connected,
+      iconPath: 'download-light',
+      // state: DeviceState.Downloading,
+    ),
   ];
 
   @override

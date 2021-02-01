@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/widgets/rive_animation.dart';
 
 import '../models/sensor.dart';
 
-class SensorItem extends StatelessWidget {
+class SensorItem extends StatefulWidget {
   final Sensor sensor;
 
   const SensorItem(this.sensor);
 
+  @override
+  _SensorItemState createState() => _SensorItemState();
+}
+
+class _SensorItemState extends State<SensorItem> {
   Color get color {
-    switch (sensor.status) {
+    switch (widget.sensor.status) {
       case Status.Connected:
         return Colors.green;
         break;
@@ -25,7 +31,7 @@ class SensorItem extends StatelessWidget {
   }
 
   void viewLogs(BuildContext context) {
-    Navigator.of(context).pushNamed('/logs', arguments: sensor);
+    Navigator.of(context).pushNamed('/logs', arguments: widget.sensor);
   }
 
   void returnHome(BuildContext context) {
@@ -34,13 +40,24 @@ class SensorItem extends StatelessWidget {
 
   Widget get deviceText {
     return Text(
-      sensor.state == DeviceState.Downloading ? '0%' : sensor.name,
+      widget.sensor.state == DeviceState.Downloading
+          ? '0%'
+          : widget.sensor.name,
       style: const TextStyle(fontSize: 30),
       textAlign: TextAlign.center,
     );
   }
 
+  download() {
+    setState(() {
+      widget.sensor.state = DeviceState.Downloading;
+    });
+  }
+
   Widget get deviceCard {
+    String path = ModalRoute.of(context).settings.name; // current screen path
+    SvgPicture svgImage =
+        SvgPicture.asset('assets/svgs/${widget.sensor.iconPath}.svg');
     return Container(
       width: double.infinity,
       height: 140,
@@ -48,21 +65,27 @@ class SensorItem extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         elevation: 5,
         color: Colors.white,
-        child: Center(
-          child: sensor.state == DeviceState.Downloading
-              ? deviceText
-              : Center(
-                  child: ListTile(
-                    leading: Icon(
-                      Icons.circle,
-                      size: 20,
-                      color: color,
+        child: InkWell(
+          onTap: () =>
+              path == '/logs' ? returnHome(context) : viewLogs(context),
+          borderRadius: BorderRadius.circular(4),
+          child: Center(
+            child: widget.sensor.state == DeviceState.Downloading
+                ? deviceText
+                : Center(
+                    child: ListTile(
+                      leading: Icon(
+                        Icons.circle,
+                        size: 20,
+                        color: color,
+                      ),
+                      title: deviceText,
+                      trailing: widget.sensor.iconPath == 'download-light'
+                          ? IconButton(icon: svgImage, onPressed: download)
+                          : svgImage,
                     ),
-                    title: deviceText,
-                    trailing:
-                        SvgPicture.asset('assets/svgs/${sensor.iconPath}.svg'),
                   ),
-                ),
+          ),
         ),
       ),
     );
@@ -71,20 +94,19 @@ class SensorItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String path = ModalRoute.of(context).settings.name; // current screen path
-    return sensor.state == DeviceState.Refreshing
+    return widget.sensor.state == DeviceState.Connecting
         ? Stack(
             alignment: Alignment.center,
             children: [
               Opacity(opacity: 0.6, child: deviceCard),
-              SvgPicture.asset('assets/svgs/loading-arrows.svg')
+              // SvgPicture.asset('assets/svgs/loading-arrows.svg')
+              Container(
+                width: 100,
+                height: 100,
+                child: RiveAnimation(),
+              )
             ],
           )
-        : InkWell(
-            onTap: () =>
-                path == '/logs' ? returnHome(context) : viewLogs(context),
-            splashColor: Colors.green,
-            borderRadius: BorderRadius.circular(10),
-            child: deviceCard,
-          );
+        : deviceCard;
   }
 }

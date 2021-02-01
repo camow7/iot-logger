@@ -8,7 +8,7 @@ enum Status {
 
 enum DeviceState {
   Loaded,
-  Refreshing,
+  Connecting,
   Downloading
 }
 

@@ -13,10 +13,10 @@ class Layout extends StatelessWidget {
         Container(
           height: double.infinity,
           width: double.infinity,
-          child: Image.asset(
-            'assets/images/land.jpg',
-            fit: BoxFit.fill,
-          ),
+          // child: Image.asset(
+          //   'assets/images/land.jpg',
+          //   fit: BoxFit.fill,
+          // ),
         ),
         Container(
           decoration: const BoxDecoration(
