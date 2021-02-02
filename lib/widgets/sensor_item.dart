@@ -96,7 +96,6 @@ class _SensorItemState extends State<SensorItem> {
                     minHeight: 140,
                     value: progress,
                     backgroundColor: Colors.white,
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
                   ) // deviceText
                 : Center(
                     child: ListTile(

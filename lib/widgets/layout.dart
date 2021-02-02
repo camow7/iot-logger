@@ -6,6 +6,21 @@ class Layout extends StatelessWidget {
 
   const Layout(this.content);
 
+  Widget get saphiLogo {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          height: 150,
+          child: SvgPicture.asset(
+            'assets/svgs/saphi-logo-white-text.svg',
+            width: 150,
+          ),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Stack(
@@ -33,18 +48,7 @@ class Layout extends StatelessWidget {
         Container(
           child: Column(
             children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Container(
-                    height: 200,
-                    child: SvgPicture.asset(
-                      'assets/svgs/saphi-logo-white-text.svg',
-                      width: 150,
-                    ),
-                  ),
-                ],
-              ),
+              saphiLogo,
               Container(
                 height: 700,
                 child: content,

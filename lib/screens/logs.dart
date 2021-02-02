@@ -47,17 +47,18 @@ class _LogsState extends State<Logs> {
             Card(
               child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 40, vertical: 10),
-                child: sensor.logs.length > 0 && sensor.state == DeviceState.Loaded
-                    ? Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('Past Logs'),
-                          SizedBox(width: 5),
-                          SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
-                        ],
-                      )
-                    : Text('No Logs'),
+                child:
+                    sensor.logs.length > 0 && sensor.state == DeviceState.Loaded
+                        ? Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text('Past Logs'),
+                              SizedBox(width: 5),
+                              SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
+                            ],
+                          )
+                        : Text('No Logs'),
               ),
             ),
 
@@ -78,25 +79,27 @@ class _LogsState extends State<Logs> {
                                   color: Color.fromRGBO(57, 68, 76, 1),
                                   size: 40,
                                 ),
-                                title: Row(children: [
-                                  Text(
-                                    // fix up these texts
-                                    DateFormat.E().format(log),
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        fontStyle: FontStyle.italic,
-                                        color: Color.fromRGBO(36, 136, 104, 1)),
-                                  ),
-                                  SizedBox(
-                                    width: 10,
-                                  ),
-                                  Text(
-                                    DateFormat.yMd().format(log),
-                                    style: TextStyle(
-                                        fontSize: 25,
-                                        fontStyle: FontStyle.italic),
-                                  )
-                                ]),
+                                title: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      // fix up these texts
+                                      DateFormat.E().format(log),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    SizedBox(
+                                      width: 10,
+                                    ),
+                                    Text(
+                                      DateFormat.yMd().format(log),
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                  ],
+                                ),
+                                trailing: SvgPicture.asset(
+                                    'assets/svgs/download.svg'),
                               ),
                             ),
                           );
@@ -110,12 +113,12 @@ class _LogsState extends State<Logs> {
               onPressed: refresh,
               child: Text(
                 'Refresh',
-                style: TextStyle(color: Colors.white),
+                style: Theme.of(context).textTheme.button,
               ),
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(40),
               elevation: 3,
-              color: const Color.fromRGBO(108, 194, 130, 1),
+              color: Theme.of(context).accentColor,
             )
           ],
         ),

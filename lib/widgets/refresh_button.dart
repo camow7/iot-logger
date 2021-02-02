@@ -21,7 +21,7 @@ class RefreshButton extends StatelessWidget {
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(40),
           elevation: 3,
-          color: const Color.fromRGBO(108, 194, 130, 1),
+          color: Theme.of(context).accentColor,
         ),
       ],
     );

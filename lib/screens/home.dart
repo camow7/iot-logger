@@ -13,26 +13,26 @@ class Home extends StatelessWidget {
         status: Status.Connected,
         iconPath: 'plug',
         logs: [DateTime.now(), DateTime.now()]),
-    Sensor(
-      id: '2',
-      name: 'Sewerage',
-      status: Status.Idle,
-      iconPath: 'plug',
-    ),
-    Sensor(
-      id: '3',
-      name: 'Pump',
-      status: Status.Disconnected,
-      iconPath: 'plug',
-      state: DeviceState.Connecting,
-    ),
-    Sensor(
-      id: '4',
-      name: 'Air Con',
-      status: Status.Connected,
-      iconPath: 'download-light',
-      // state: DeviceState.Downloading,
-    ),
+    // Sensor(
+    //   id: '2',
+    //   name: 'Sewerage',
+    //   status: Status.Idle,
+    //   iconPath: 'plug',
+    // ),
+    // Sensor(
+    //   id: '3',
+    //   name: 'Pump',
+    //   status: Status.Disconnected,
+    //   iconPath: 'plug',
+    //   state: DeviceState.Connecting,
+    // ),
+    // Sensor(
+    //   id: '4',
+    //   name: 'Air Con',
+    //   status: Status.Connected,
+    //   iconPath: 'download-light',
+    //   // state: DeviceState.Downloading,
+    // ),
   ];
 
   @override
@@ -40,24 +40,25 @@ class Home extends StatelessWidget {
     return Scaffold(
       body: Layout(
         Column(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
+            Text(
+              'Your Sensor',
+              style: Theme.of(context).textTheme.headline1,
+            ),
             Column(
               children: sensors.map((sensor) => SensorItem(sensor)).toList(),
-            ),
-            // RefreshButton(),
-            SizedBox(
-              height: 20,
             ),
             RaisedButton(
               onPressed: () {},
               child: Text(
                 'Refresh',
-                style: TextStyle(color: Colors.white),
+                style: Theme.of(context).textTheme.button,
               ),
               shape: const CircleBorder(),
               padding: const EdgeInsets.all(40),
               elevation: 3,
-              color: const Color.fromRGBO(108, 194, 130, 1),
+              color: Theme.of(context).accentColor,
             ),
           ],
         ),
