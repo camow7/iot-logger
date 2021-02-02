@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/widgets/rive_animation.dart';
@@ -48,9 +50,28 @@ class _SensorItemState extends State<SensorItem> {
     );
   }
 
+  var progress = 0.0;
+
   download() {
     setState(() {
-      widget.sensor.state = DeviceState.Downloading;
+      widget.sensor.state =
+          widget.sensor.state == DeviceState.Loaded && progress <= 1
+              ? DeviceState.Downloading
+              : DeviceState.Loaded;
+    });
+
+    if (widget.sensor.state == DeviceState.Downloading) {
+      move();
+    }
+  }
+
+  // temporary - simulating download button
+  move() {
+    new Timer(new Duration(seconds: 2), () {
+      setState(() {
+        progress += 0.2;
+        progress > 1 ? download() : move();
+      });
     });
   }
 
@@ -71,7 +92,12 @@ class _SensorItemState extends State<SensorItem> {
           borderRadius: BorderRadius.circular(4),
           child: Center(
             child: widget.sensor.state == DeviceState.Downloading
-                ? deviceText
+                ? LinearProgressIndicator(
+                    minHeight: 140,
+                    value: progress,
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.green),
+                  ) // deviceText
                 : Center(
                     child: ListTile(
                       leading: Icon(
@@ -93,7 +119,7 @@ class _SensorItemState extends State<SensorItem> {
 
   @override
   Widget build(BuildContext context) {
-    String path = ModalRoute.of(context).settings.name; // current screen path
+    // current screen path
     return widget.sensor.state == DeviceState.Connecting
         ? Stack(
             alignment: Alignment.center,

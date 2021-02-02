@@ -58,7 +58,7 @@ class Home extends StatelessWidget {
               padding: const EdgeInsets.all(40),
               elevation: 3,
               color: const Color.fromRGBO(108, 194, 130, 1),
-            )
+            ),
           ],
         ),
       ),
