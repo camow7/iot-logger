@@ -1,80 +1,74 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../models/sensor.dart';
-import '../shared/rive_animation.dart';
-import '../shared/device_card.dart';
 
-class SensorItem extends StatefulWidget {
+class SensorItem extends StatelessWidget {
   final Sensor sensor;
 
-  const SensorItem(this.sensor);
+  SensorItem(this.sensor);
 
-  @override
-  _SensorItemState createState() => _SensorItemState();
-}
-
-class _SensorItemState extends State<SensorItem> {
-  var progress = 0.0;
-
-  void download() {
-    setState(() {
-      widget.sensor.state =
-          widget.sensor.state == DeviceState.Loaded && progress <= 1
-              ? DeviceState.Downloading
-              : DeviceState.Loaded;
-    });
-
-    if (widget.sensor.state == DeviceState.Downloading) {
-      move();
+  Color get color {
+    switch (sensor.status) {
+      case Status.Connected:
+        return Colors.green;
+        break;
+      case Status.Idle:
+        return Colors.amber;
+        break;
+      case Status.Disconnected:
+        return Colors.red;
+        break;
+      default:
+        return Colors.grey;
     }
   }
 
-  // temporary - simulating download button
-  void move() {
-    new Timer(new Duration(seconds: 2), () {
-      setState(() {
-        progress += 0.2;
-
-        if (progress > 1) {
-          progress = 0;
-          download();
-        } else {
-          move();
-        }
-      });
-    });
+  void viewLogs(BuildContext context) {
+    Navigator.of(context).pushNamed('/logs', arguments: sensor);
   }
 
-  Stack deviceCardWithAnimation(Widget deviceCard) {
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Opacity(
-          opacity: 0.6,
-          child: deviceCard,
-        ),
-        Container(
-          width: 100,
-          height: 100,
-          child: RiveAnimation(),
-        )
-      ],
-    );
+  void returnHome(BuildContext context) {
+    Navigator.of(context).pop();
   }
 
   @override
   Widget build(BuildContext context) {
     String path = ModalRoute.of(context).settings.name; // current screen path
-    Widget deviceCard = DeviceCard(
-      screenPath: path,
-      downloadHandler: download,
-      sensor: widget.sensor,
-      progressPercent: progress,
+    SvgPicture svgImage = SvgPicture.asset(
+      'assets/svgs/${sensor.iconPath}.svg',
+      color: Theme.of(context).accentColor,
     );
-    return widget.sensor.state != DeviceState.Connecting
-        ? deviceCard
-        : deviceCardWithAnimation(deviceCard);
+    return Container(
+      width: double.infinity,
+      height: 140,
+      child: Card(
+        margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+        elevation: 5,
+        child: InkWell(
+          onTap: () =>
+              path == '/logs' ? returnHome(context) : viewLogs(context),
+          borderRadius: BorderRadius.circular(4),
+          child: Center(
+            child: ListTile(
+              leading: Icon(
+                Icons.circle,
+                size: 20,
+                color: color,
+              ),
+              title: Text(
+                sensor.name,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: Theme.of(context).accentColor,
+                  fontSize: 30,
+                ),
+              ),
+              trailing: svgImage,
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

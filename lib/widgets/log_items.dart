@@ -1,67 +1,84 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:intl/intl.dart';
+import 'package:iot_logger/shared/log_card.dart';
 
 import '../models/sensor.dart';
 
-class LogItems extends StatelessWidget {
+class LogItems extends StatefulWidget {
   final Sensor sensor;
 
   const LogItems(this.sensor);
 
-  TextStyle dateStyle(BuildContext context, bool isDay) {
-    return TextStyle(
-        fontSize: 25,
-        fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
-        color: isDay
-            ? Color.fromRGBO(36, 136, 104, 1)
-            : Theme.of(context).accentColor);
+  @override
+  _LogItemsState createState() => _LogItemsState();
+}
+
+class _LogItemsState extends State<LogItems> {
+  var progress = 0.0;
+
+  void download() {
+    setState(() {
+      widget.sensor.state =
+          widget.sensor.state == DeviceState.Loaded && progress <= 1
+              ? DeviceState.Downloading
+              : DeviceState.Loaded;
+    });
+
+    if (widget.sensor.state == DeviceState.Downloading) {
+      move();
+    }
   }
 
+  void move() {
+    new Timer(new Duration(seconds: 2), () {
+      setState(() {
+        progress += 0.2;
+
+        if (progress > 1) {
+          progress = 0;
+          download();
+        } else {
+          move();
+        }
+      });
+    });
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Container(
       height: 300,
-      child: sensor.state == DeviceState.Loaded
-          ? Column(
-              children: sensor.logs.map(
-                (log) {
-                  return Container(
-                    child: Card(
-                      margin: const EdgeInsets.symmetric(
-                          horizontal: 40, vertical: 10),
-                      elevation: 5,
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.folder,
-                          color: Theme.of(context).accentColor,
-                          size: 40,
-                        ),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            // [] fix up these texts
-                            Text(
-                              DateFormat.E().format(log),
-                              style: dateStyle(context, true),
-                            ),
-                            SizedBox(width: 10),
-                            Text(DateFormat.yMd().format(log),
-                                style: dateStyle(context, false))
-                          ],
-                        ),
-                        trailing: SvgPicture.asset(
-                          'assets/svgs/download.svg',
-                          color: Theme.of(context).accentColor,
-                        ),
-                      ),
+      child: Column(
+        children: widget.sensor.logs.map(
+          (log) {
+            return Container(
+              height: 80,
+              child: Card(
+                margin:
+                    const EdgeInsets.symmetric(horizontal: 40, vertical: 10),
+                elevation: 5,
+                child: Stack(
+                  children: [
+                    LinearProgressIndicator(
+                      minHeight: double.infinity,
+                      value: progress,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                          Theme.of(context).primaryColor),
                     ),
-                  );
-                },
-              ).toList(),
-            )
-          : Container(),
+                    LogCard(
+                      sensor: widget.sensor,
+                      progressPercent: progress,
+                      logDate: log,
+                      downloadHandler: download,
+                    )
+                  ],
+                ),
+              ),
+            );
+          },
+        ).toList(),
+      ),
     );
   }
 }
