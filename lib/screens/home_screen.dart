@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 import '../models/sensor.dart';
-
-import '../widgets/layout.dart';
+import '../shared/layout.dart';
 import '../widgets/sensor_item.dart';
+import '../shared/refresh_button.dart';
 
-class Home extends StatelessWidget {
+class HomeScreen extends StatelessWidget {
   final List<Sensor> sensors = [
     Sensor(
         id: '1',
@@ -19,21 +19,25 @@ class Home extends StatelessWidget {
     //   status: Status.Idle,
     //   iconPath: 'plug',
     // ),
-    // Sensor(
-    //   id: '3',
-    //   name: 'Pump',
-    //   status: Status.Disconnected,
-    //   iconPath: 'plug',
-    //   state: DeviceState.Connecting,
-    // ),
-    // Sensor(
-    //   id: '4',
-    //   name: 'Air Con',
-    //   status: Status.Connected,
-    //   iconPath: 'download-light',
-    //   // state: DeviceState.Downloading,
-    // ),
+    Sensor(
+      id: '3',
+      name: 'Pump',
+      status: Status.Disconnected,
+      iconPath: 'plug',
+      state: DeviceState.Connecting,
+    ),
+    Sensor(
+      id: '4',
+      name: 'Air Con',
+      status: Status.Connected,
+      iconPath: 'download-light',
+      // state: DeviceState.Downloading,
+    ),
   ];
+
+  void refresh() {
+    print('homepage refresh');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -49,17 +53,7 @@ class Home extends StatelessWidget {
             Column(
               children: sensors.map((sensor) => SensorItem(sensor)).toList(),
             ),
-            RaisedButton(
-              onPressed: () {},
-              child: Text(
-                'Refresh',
-                style: Theme.of(context).textTheme.button,
-              ),
-              shape: const CircleBorder(),
-              padding: const EdgeInsets.all(40),
-              elevation: 3,
-              color: Theme.of(context).accentColor,
-            ),
+            RefreshButton(refresh),
           ],
         ),
       ),

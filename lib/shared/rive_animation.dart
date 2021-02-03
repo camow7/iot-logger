@@ -37,7 +37,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
     return _artboard != null
         ? Rive(
             artboard: _artboard,
-            fit: BoxFit.cover,
+            fit: BoxFit.cover
           )
         : Container();
   }

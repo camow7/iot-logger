@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'screens/home.dart';
-import 'screens/logs.dart';
+import 'screens/home_screen.dart';
+import 'screens/logs_screen.dart';
 
 void main() => runApp(IotLoggerApp());
 
@@ -11,27 +11,22 @@ class IotLoggerApp extends StatelessWidget {
     return MaterialApp(
         title: 'IoT Logger',
         theme: ThemeData(
-          accentColor: const Color.fromRGBO(108, 194, 130, 1),
+          primaryColor: const Color.fromRGBO(108, 194, 130, 1),
+          accentColor: const Color.fromRGBO(57, 68, 76, 1),
+          backgroundColor: Colors.white,
+          buttonColor: const Color.fromRGBO(108, 194, 130, 1),
           textTheme: ThemeData.light().textTheme.copyWith(
                 headline1: const TextStyle(
                   color: Colors.white,
                   fontSize: 50,
                   fontWeight: FontWeight.bold,
                 ),
-                headline6: const TextStyle(
-                  // color: Color.fromRGBO(36, 136, 104, 1),
-                  fontSize: 25,
-                  fontStyle: FontStyle.italic,
-                  fontWeight: FontWeight.w400
-                ),
-                button: const TextStyle(
-                  color: Colors.white,
-                ),
+                bodyText2: const TextStyle(color: const Color.fromRGBO(57, 68, 76, 1))
               ),
         ),
         routes: {
-          '/': (ctx) => Home(),
-          '/logs': (ctx) => Logs(),
+          '/': (ctx) => HomeScreen(),
+          '/logs': (ctx) => LogsScreen(),
         });
   }
 }

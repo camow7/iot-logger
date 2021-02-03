@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
 
 class RefreshButton extends StatelessWidget {
-  void refresh() {
-    print('refresh sensors');
-  }
+  final Function refreshHandler;
+
+  const RefreshButton(this.refreshHandler);
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         RaisedButton(
-          onPressed: () => refresh(),
-          child: const Text(
+          onPressed: refreshHandler,
+          child: Text(
             'Refresh',
-            style: TextStyle(color: Colors.white),
           ),
           shape: const CircleBorder(),
           padding: const EdgeInsets.all(40),
           elevation: 3,
-          color: Theme.of(context).accentColor,
+          textColor: Theme.of(context).backgroundColor,
         ),
       ],
     );

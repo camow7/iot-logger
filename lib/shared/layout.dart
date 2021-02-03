@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 class Layout extends StatelessWidget {
   final Widget content;
-
+  
   const Layout(this.content);
 
   Widget get saphiLogo {
@@ -28,10 +28,10 @@ class Layout extends StatelessWidget {
         Container(
           height: double.infinity,
           width: double.infinity,
-          // child: Image.asset(
-          //   'assets/images/land.jpg',
-          //   fit: BoxFit.fill,
-          // ),
+          child: Image.asset(
+            'assets/images/land.jpg',
+            fit: BoxFit.fill,
+          ),
         ),
         Container(
           decoration: const BoxDecoration(
