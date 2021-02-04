@@ -14,6 +14,7 @@ class LogsScreen extends StatefulWidget {
   _LogsScreenState createState() => _LogsScreenState();
 }
 
+// This needs to be changed to Bloc!!!
 class _LogsScreenState extends State<LogsScreen> {
   Sensor sensor;
 
