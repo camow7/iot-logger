@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/services/bloc/blocs/network_bloc/network_bloc.dart';
+import 'package:iot_logger/services/bloc/blocs/network_bloc/network_state.dart';
 
 class Layout extends StatelessWidget {
   final Widget content;
-  
+
   const Layout(this.content);
 
   Widget get saphiLogo {
@@ -28,29 +31,49 @@ class Layout extends StatelessWidget {
         Container(
           height: double.infinity,
           width: double.infinity,
-          // child: Image.asset(
-          //   'assets/images/land.jpg',
-          //   fit: BoxFit.fill,
-          // ),
+          child: Image.asset(
+            'assets/images/land.jpg',
+            fit: BoxFit.fill,
+          ),
         ),
-        Container(
-          decoration: const BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color.fromRGBO(0, 0, 0, 0.3),
-                Colors.transparent,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.center,
+        Padding(
+          padding: const EdgeInsets.all(30.0),
+          child: Align(
+            alignment: Alignment.topRight,
+            child: BlocBuilder<NetworkBloc, NetworkState>(
+              builder: (context, state) {
+                if (state is WifiConnected)
+                  return Icon(
+                    Icons.wifi,
+                    size: 40,
+                  );
+                else
+                  return Icon(
+                    Icons.wifi_off,
+                    size: 40,
+                  );
+              },
             ),
           ),
         ),
+        // Container(
+        //   decoration: BoxDecoration(
+        //     gradient: LinearGradient(
+        //       [
+        //         Color.fromRGBO(0, 0, 0, 0.3),
+        //         Colors.transparent,
+        //       ],
+        //       begin: Alignment.topCenter,
+        //       end: Alignment.center,
+        //     ),
+        //   ),
+        // ),
         Container(
           child: Column(
             children: [
               saphiLogo,
               Container(
-                height: 700,
+                //height: 700,
                 child: content,
               ),
             ],
