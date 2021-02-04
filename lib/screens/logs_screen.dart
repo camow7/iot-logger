@@ -21,11 +21,11 @@ class _LogsScreenState extends State<LogsScreen> {
   void refresh() {
     setState(() {
       sensor.state = sensor.state == DeviceState.Loaded
-          ? DeviceState.Connecting
+          ? DeviceState.Refreshing
           : DeviceState.Loaded;
 
       // temporary - simulating refresh button
-      if (sensor.state == DeviceState.Connecting) {
+      if (sensor.state == DeviceState.Refreshing) {
         new Timer(new Duration(seconds: 5), () {
           debugPrint("Print after 5 seconds");
           refresh();

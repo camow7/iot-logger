@@ -24,7 +24,7 @@ class HomeScreen extends StatelessWidget {
       name: 'Pump',
       status: Status.Disconnected,
       iconPath: 'plug',
-      state: DeviceState.Connecting,
+      // state: DeviceState.Connecting,
     ),
     Sensor(
       id: '4',
