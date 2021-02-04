@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iot_logger/services/bloc/blocs/network_bloc/network_event.dart';
-import 'package:iot_logger/services/bloc/blocs/network_bloc/network_state.dart';
+import 'package:iot_logger/services/blocs/network_bloc/network_event.dart';
+import 'package:iot_logger/services/blocs/network_bloc/network_state.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 

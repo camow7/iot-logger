@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'screens/home_screen.dart';
 import 'screens/logs_screen.dart';
-import 'services/bloc/blocs/network_bloc/network_event.dart';
-import 'package:iot_logger/services/bloc/blocs/network_bloc/network_bloc.dart';
+import 'services/blocs/network_bloc/network_event.dart';
+import 'package:iot_logger/services/blocs/network_bloc/network_bloc.dart';
 
 void main() => runApp(
       MultiBlocProvider(

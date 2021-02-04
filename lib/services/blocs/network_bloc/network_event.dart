@@ -1,4 +1,4 @@
-import 'package:iot_logger/services/bloc/blocs/network_bloc/network_state.dart';
+import 'package:iot_logger/services/blocs/network_bloc/network_state.dart';
 
 abstract class NetworkEvent {}
 
