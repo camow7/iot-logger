@@ -11,7 +11,8 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
 
   StreamSubscription _subscription;
   final Connectivity _connectivity = Connectivity();
-  String _wifiName, _wifiIP;
+  String wifiName, wifiIP;
+  bool isConnectedToWifi = false;
 
   @override
   Stream<NetworkState> mapEventToState(NetworkEvent event) async* {
@@ -19,24 +20,26 @@ class NetworkBloc extends Bloc<NetworkEvent, NetworkState> {
       _subscription = _connectivity.onConnectivityChanged.listen(
         (status) async {
           var connectivityResult = await (Connectivity().checkConnectivity());
-
           print('Connection Change Detected: $connectivityResult');
-
           try {
-            _wifiName = await WifiInfo().getWifiName();
-            _wifiIP = await WifiInfo().getWifiIP();
-            if (_wifiIP == null) {
+            wifiName = await WifiInfo().getWifiName();
+            wifiIP = await WifiInfo().getWifiIP();
+            if (wifiIP == null) {
+              isConnectedToWifi = false;
               print('Could not find IP (most likely cellular network)');
               add(ConnectionChanged(WifiDisconnected()));
             } else {
-              print('Wifi Connected: $_wifiName $_wifiIP');
+              isConnectedToWifi = true;
+              print('Wifi Connected: $wifiName $wifiIP');
               add(ConnectionChanged(WifiConnected()));
             }
           } on PlatformException catch (e) {
+            isConnectedToWifi = false;
             print(e.toString());
             add(ConnectionChanged(WifiDisconnected()));
             print('Error Connecting to Wifi Network');
           } catch (e) {
+            isConnectedToWifi = false;
             print(e.toString());
             print('Error Connecting to Wifi Network');
             add(ConnectionChanged(WifiDisconnected()));

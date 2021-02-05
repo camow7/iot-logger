@@ -1,16 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/models/arduino_repository.dart';
+import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
+import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/logs_screen.dart';
-import 'services/blocs/network_bloc/network_event.dart';
-import 'package:iot_logger/services/blocs/network_bloc/network_bloc.dart';
 
 void main() => runApp(
-      MultiBlocProvider(
+      MultiProvider(
         providers: [
-          //Create Network Provider
+          //Create
           BlocProvider(
-            create: (context) => NetworkBloc()..add(ListenConnection()),
+            create: (context) =>
+                ArduinoBloc(ArduinoRepository())..add(InitialiseConnection()),
           ),
         ],
         child: IotLoggerApp(),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
 import 'package:iot_logger/services/blocs/network_bloc/network_bloc.dart';
 import 'package:iot_logger/services/blocs/network_bloc/network_state.dart';
 
@@ -40,9 +41,11 @@ class Layout extends StatelessWidget {
           padding: const EdgeInsets.all(30.0),
           child: Align(
             alignment: Alignment.topRight,
-            child: BlocBuilder<NetworkBloc, NetworkState>(
+            child: BlocBuilder<ArduinoBloc, ArduinoState>(
               builder: (context, state) {
-                if (state is WifiConnected)
+                if (state is ArduinoInitial)
+                  return Text("Initiating Connection");
+                else if (state is ArduinoConnected)
                   return Icon(
                     Icons.wifi,
                     size: 40,
@@ -52,6 +55,11 @@ class Layout extends StatelessWidget {
                     Icons.wifi_off,
                     size: 40,
                   );
+                // To call bloc event (i.e GetFile)
+                // void submitCityName(BuildContext context, String fileName) {
+                // final arduinoBloc = context.bloc<ArduinoBloc>();
+                // arduinoBloc.add(GetFile(cityName));
+                // }
               },
             ),
           ),

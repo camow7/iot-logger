@@ -50,21 +50,23 @@ class SensorItem extends StatelessWidget {
               path == '/logs' ? returnHome(context) : viewLogs(context),
           borderRadius: BorderRadius.circular(4),
           child: Center(
-            child: ListTile(
-              leading: Icon(
-                Icons.circle,
-                size: 20,
-                color: color,
-              ),
-              title: Text(
-                sensor.name,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Theme.of(context).accentColor,
-                  fontSize: 30,
+            child: Container(
+              child: ListTile(
+                leading: Icon(
+                  Icons.circle,
+                  size: 20,
+                  color: color,
                 ),
+                title: Text(
+                  sensor.name,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Theme.of(context).accentColor,
+                    fontSize: 30,
+                  ),
+                ),
+                trailing: svgImage,
               ),
-              trailing: svgImage,
             ),
           ),
         ),
