@@ -20,55 +20,55 @@ class LogItems extends StatelessWidget {
   }
 }
 
-Text displayText(String text, Color color) {
-  return Text(
-    text,
-    style: TextStyle(
-      color: color,
-      fontSize: 25,
-      fontStyle: FontStyle.italic,
-      fontWeight: FontWeight.w400,
-    ),
-  );
-}
-
-Widget checkLogState(BuildContext context, LogDownloadState device) {
-  switch (device.logState) {
-    case LogState.Loaded:
-      return SvgPicture.asset(
-        'assets/svgs/download.svg',
-        color: Theme.of(context).accentColor,
-      );
-      break;
-    case LogState.Downloading:
-      if (device.progress == 1) {
-        context.read<LogBloc>().add(LogEvent.completeDownload);
-      }
-      return RiveAnimation();
-      break;
-    case LogState.Downloaded:
-      return Container();
-      break;
-    default:
-      return Container();
-      break;
-  }
-}
-
-Widget progressBar(BuildContext context, LogDownloadState logData) {
-  return logData.logState == LogState.Downloading
-      ? LinearProgressIndicator(
-          minHeight: double.infinity,
-          value: logData.progress,
-          valueColor:
-              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-        )
-      : Container();
-}
-
 class Logs extends StatelessWidget {
   final Sensor sensor;
   const Logs(this.sensor);
+
+  Text displayText(String text, Color color) {
+    return Text(
+      text,
+      style: TextStyle(
+        color: color,
+        fontSize: 25,
+        fontStyle: FontStyle.italic,
+        fontWeight: FontWeight.w400,
+      ),
+    );
+  }
+
+  Widget logStateIcon(BuildContext context, LogDownloadState device) {
+    switch (device.logState) {
+      case LogState.Loaded:
+        return SvgPicture.asset(
+          'assets/svgs/download.svg',
+          color: Theme.of(context).accentColor,
+        );
+        break;
+      case LogState.Downloading:
+        if (device.progress == 1) {
+          context.read<LogBloc>().add(LogEvent.completeDownload);
+        }
+        return RiveAnimation();
+        break;
+      case LogState.Downloaded:
+        return Container();
+        break;
+      default:
+        return Container();
+        break;
+    }
+  }
+
+  Widget progressBar(BuildContext context, LogDownloadState logData) {
+    return logData.logState == LogState.Downloading
+        ? LinearProgressIndicator(
+            minHeight: double.infinity,
+            value: logData.progress,
+            valueColor:
+                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+          )
+        : Container();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,8 @@ class Logs extends StatelessWidget {
                           ),
                           title: Row(
                             mainAxisAlignment: MainAxisAlignment.start,
-                            children: [ // text changes color depending on loading progress bar length
+                            children: [
+                              // text changes color depending on loading progress bar length
                               // [] fix up these texts
                               displayText(
                                 DateFormat.E().format(log),
@@ -118,7 +119,7 @@ class Logs extends StatelessWidget {
                             ],
                           ),
                           trailing: IconButton(
-                              icon: checkLogState(context, logData),
+                              icon: logStateIcon(context, logData),
                               onPressed: logData.logState == LogState.Loaded
                                   ? () => context
                                       .read<LogBloc>()

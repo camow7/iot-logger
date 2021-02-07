@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import './models/sensor.dart';
 
 enum LogEvent { downloading, completeDownload }
+enum SensorEvent { refresh }
 
 /// Increments loading bar progress by 20%
 double increment(val) {
@@ -12,7 +13,7 @@ double increment(val) {
   return val;
 }
 
-/// Changes the state of a log item's download state 
+/// Changes the state of a log item's download state
 class LogBloc extends Bloc<LogEvent, LogDownloadState> {
   LogBloc()
       : super(new LogDownloadState(
@@ -47,5 +48,18 @@ class LogBloc extends Bloc<LogEvent, LogDownloadState> {
       default:
         addError(Exception('unsupported event'));
     }
+  }
+}
+
+class SensorCubit extends Cubit<DeviceState> {
+  SensorCubit() : super(DeviceState.Loaded);
+
+  /// Add 1 to the current state.
+  void reload() {
+    emit(DeviceState.Refreshing);
+    new Timer(new Duration(seconds: 5), () {
+      print('5 secs');
+      emit(DeviceState.Loaded);
+    });
   }
 }
