@@ -9,9 +9,9 @@ class RefreshButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // const SizedBox(
-        //   height: 20,
-        // ),
+        const SizedBox(
+          height: 20,
+        ),
         RaisedButton(
           onPressed: refreshHandler,
           child: Text(

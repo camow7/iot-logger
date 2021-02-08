@@ -14,7 +14,7 @@ class LogItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LogBloc(),
+      create: (_) => LogCubit(),
       child: Logs(sensor),
     );
   }
@@ -46,7 +46,7 @@ class Logs extends StatelessWidget {
         break;
       case LogState.Downloading:
         if (device.progress == 1) {
-          context.read<LogBloc>().add(LogEvent.completeDownload);
+          context.read<LogCubit>().complete();
         }
         return RiveAnimation();
         break;
@@ -72,6 +72,10 @@ class Logs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void download(double logData) {
+      context.read<LogCubit>().download();
+    }
+
     return Container(
       height: 300,
       child: Column(
@@ -85,8 +89,10 @@ class Logs extends StatelessWidget {
                   vertical: 10,
                 ),
                 elevation: 5,
-                child: BlocBuilder<LogBloc, LogDownloadState>(
+                child: BlocBuilder<LogCubit, LogDownloadState>(
                   builder: (_, logData) {
+                    print(
+                        'the state: ${logData.progress} - ${logData.logState}');
                     return Stack(
                       children: [
                         progressBar(context, logData),
@@ -121,9 +127,7 @@ class Logs extends StatelessWidget {
                           trailing: IconButton(
                               icon: logStateIcon(context, logData),
                               onPressed: logData.logState == LogState.Loaded
-                                  ? () => context
-                                      .read<LogBloc>()
-                                      .add(LogEvent.downloading)
+                                  ? () => download(logData.progress)
                                   : null),
                         )
                       ],
