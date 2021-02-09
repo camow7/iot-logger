@@ -63,7 +63,12 @@ class _LogItem extends StatelessWidget {
 
   Widget _statusIcon(LogState state) {
     switch (state) {
-        case LogState.Downloading:
+      case LogState.Loaded:
+        return SvgPicture.asset(
+          'assets/svgs/download.svg',
+        );
+        break;
+      case LogState.Downloading:
         return RiveAnimation();
         break;
       case LogState.Downloaded:
@@ -71,31 +76,29 @@ class _LogItem extends StatelessWidget {
         break;
       default:
         return SvgPicture.asset(
-              'assets/svgs/download.svg',
-            );
-            break;
-
+          'assets/svgs/download.svg',
+        );
+        break;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    void _download(String id, Log log) {
+    void _download() {
       final logCubit = context.read<LogCubit>();
 
       logCubit.download();
       new Timer(new Duration(seconds: 2), () {
         if (logCubit.state.progress == 1.0) {
           logCubit.complete();
+          logCubit.close();
         } else {
-          _download(id, log);
+          _download();
         }
       });
     }
 
     return BlocBuilder<LogCubit, Log>(builder: (_, log) {
-      print(
-          '---- LOG ITEM UPDATE: ${log.logId} - ${log.progress} - ${log.logState}');
       return Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 40,
@@ -135,7 +138,7 @@ class _LogItem extends StatelessWidget {
               ),
               trailing: IconButton(
                 icon: _statusIcon(log.logState),
-                onPressed: () => _download(log.logId, log),
+                onPressed: () => _download(),
               ),
             )
           ],
