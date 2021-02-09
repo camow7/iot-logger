@@ -13,17 +13,28 @@ class LogItems extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => LogsCubit(),
-      child: Logs(sensor),
+    return Container(
+      height: 300,
+      child: Column(
+        children: sensor.logs.map((log) {
+          print(
+              'LOADED LOGS: ${log.logId} - ${log.icon} - ${log.progress} - ${log.logState}');
+          return Container(
+            height: 80,
+            child: BlocProvider(
+              create: (_) => LogCubit(log),
+              child: LogItem(log),
+            ),
+          );
+        }).toList(),
+      ),
     );
   }
 }
 
-class Logs extends StatelessWidget {
-  final Sensor sensor;
-  const Logs(this.sensor);
-
+class LogItem extends StatelessWidget {
+  final Log log;
+  LogItem(this.log);
   Widget _progressBar(BuildContext context, Log log) {
     return log.logState == LogState.Downloading
         ? LinearProgressIndicator(
@@ -49,77 +60,67 @@ class Logs extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    void download(String id, List<Log> logs) {
-      final index = logs.indexWhere((log) => log.logId == id);
-      final logsCubit = context.read<LogsCubit>();
+    void download(String id, Log log) {
+      final logCubit = context.read<LogCubit>();
 
-      logsCubit.download(index);
+      logCubit.download();
       new Timer(new Duration(seconds: 2), () {
-        if (logsCubit.state[index].progress == 1.0) {
-          logsCubit.complete(index);
+        if (logCubit.state.progress == 1.0) {
+          logCubit.complete();
         } else {
-          download(id, logs);
+          download(id, log);
         }
       });
     }
 
-    return Container(
-      height: 300,
-      child: BlocBuilder<LogsCubit, List<Log>>(builder: (_, allLogs) {
-        return Column(
-          children: allLogs.map((log) {
-            print('LOG: ${log.logId} - ${log.icon} - ${log.progress}');
-            return Container(
-              height: 80,
-              child: Card(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 40,
-                  vertical: 10,
-                ),
-                elevation: 5,
-                child: Stack(
-                  children: [
-                    _progressBar(context, log),
-                    ListTile(
-                      leading: Icon(
-                        Icons.folder,
-                        color: log.progress > 0
-                            ? Colors.white
-                            : Theme.of(context).accentColor,
-                        size: 40,
-                      ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          // text changes color depending on loading progress bar length
-                          // [] fix up these texts
-                          _displayText(
-                            DateFormat.E().format(log.date),
-                            log.progress > 0.2
-                                ? Colors.white
-                                : Color.fromRGBO(36, 136, 104, 1),
-                          ),
-                          const SizedBox(width: 10),
-                          _displayText(
-                            DateFormat.yMd().format(log.date),
-                            log.progress > 0.4
-                                ? Colors.white
-                                : Theme.of(context).accentColor,
-                          )
-                        ],
-                      ),
-                      trailing: IconButton(
-                        icon: log.icon,
-                        onPressed: () => download(log.logId, allLogs),
-                      ),
-                    )
-                  ],
-                ),
+    return BlocBuilder<LogCubit, Log>(builder: (_, log) {
+      print(
+          '---- LOG ITEM UPDATE: ${log.logId} - ${log.icon} - ${log.progress} - ${log.logState}');
+      return Card(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 10,
+        ),
+        elevation: 5,
+        child: Stack(
+          children: [
+            _progressBar(context, log),
+            ListTile(
+              leading: Icon(
+                Icons.folder,
+                color: log.progress > 0
+                    ? Colors.white
+                    : Theme.of(context).accentColor,
+                size: 40,
               ),
-            );
-          }).toList(),
-        );
-      }),
-    );
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // text changes color depending on loading progress bar length
+                  // [] fix up these texts
+                  _displayText(
+                    DateFormat.E().format(log.date),
+                    log.progress > 0.2
+                        ? Colors.white
+                        : Color.fromRGBO(36, 136, 104, 1),
+                  ),
+                  const SizedBox(width: 10),
+                  _displayText(
+                    DateFormat.yMd().format(log.date),
+                    log.progress > 0.4
+                        ? Colors.white
+                        : Theme.of(context).accentColor,
+                  )
+                ],
+              ),
+              trailing: IconButton(
+                icon: log.icon,
+                onPressed: () => download(log.logId, log),
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 }

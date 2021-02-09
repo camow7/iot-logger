@@ -44,10 +44,10 @@ class Log {
   Widget icon;
 
   Log({
-    this.logId,
-    this.date,
-    this.progress,
-    this.logState,
-    this.icon
+    @required this.logId,
+    @required this.date,
+    this.progress = 0,
+    this.logState = LogState.Loaded,
+    this.icon,
   });
 }

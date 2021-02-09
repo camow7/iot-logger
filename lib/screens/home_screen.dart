@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 import '../models/sensor.dart';
 import '../shared/layout.dart';
@@ -13,8 +14,24 @@ class HomeScreen extends StatelessWidget {
         status: Status.Connected,
         iconPath: 'plug',
         logs: [
-          Log(logId:'1', date: DateTime.now()),
-          Log(logId:'2', date: DateTime.now()),
+          Log(
+            date: DateTime.now(),
+            logId: '1',
+            progress: 0.0,
+            logState: LogState.Loaded,
+            icon: SvgPicture.asset(
+              'assets/svgs/download.svg',
+            ),
+          ),
+          Log(
+            date: DateTime.now(),
+            logId: '2',
+            progress: 0.0,
+            logState: LogState.Loaded,
+            icon: SvgPicture.asset(
+              'assets/svgs/download.svg',
+            ),
+          ),
         ]),
     // Sensor(
     //   id: '2',
