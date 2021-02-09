@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 enum Status {
   Connected,
@@ -20,7 +21,7 @@ class Sensor {
   final Status status;
   String name;
   final String iconPath;
-  final List<DateTime> logs;
+  final List<Log> logs;
   DeviceState state;
 
   Sensor({
@@ -35,11 +36,18 @@ class Sensor {
 
 /// `logState` is set to [LogState.Downloading] if progress bar has values >0 and <1.
 /// Once `progress` reaches `1`, [LogState.Downloaded]. Otherwise [LogState.Loaded] once the logs of a sensor has been loaded.
-class LogDownloadState {
-  final double progress;
-  final LogState logState;
-  LogDownloadState({
+class Log {
+  final String logId;
+  final DateTime date;
+  double progress;
+  LogState logState;
+  Widget icon;
+
+  Log({
+    this.logId,
+    this.date,
     this.progress,
     this.logState,
+    this.icon
   });
 }

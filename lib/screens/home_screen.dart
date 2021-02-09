@@ -12,7 +12,10 @@ class HomeScreen extends StatelessWidget {
         name: 'Water Tank',
         status: Status.Connected,
         iconPath: 'plug',
-        logs: [DateTime.now(), DateTime.now()]),
+        logs: [
+          Log(logId:'1', date: DateTime.now()),
+          Log(logId:'2', date: DateTime.now()),
+        ]),
     // Sensor(
     //   id: '2',
     //   name: 'Sewerage',
