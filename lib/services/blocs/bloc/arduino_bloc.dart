@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:bloc/bloc.dart';
@@ -12,6 +11,7 @@ import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 import 'package:udp/udp.dart';
 import 'dart:io' show Platform;
 import 'package:wifi_iot/wifi_iot.dart';
+import 'package:async/async.dart';
 
 part 'arduino_event.dart';
 part 'arduino_state.dart';
@@ -26,9 +26,10 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
   String wifiName, wifiIP;
   bool isConnectedToWifi = false;
   int destinationPort = 2506;
-  InternetAddress destinationIP =
-      InternetAddress("10.0.0.1"); //InternetAddress("127.0.0.1");
+  InternetAddress destinationIP = InternetAddress("10.0.0.1");
   Timer timer;
+  RestartableTimer countdownTimer;
+  bool arduinoisConnected = false;
 
   ArduinoBloc(this._arduinoRepository) : super(ArduinoInitial());
 
@@ -45,16 +46,16 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
           var connectivityResult = await (Connectivity().checkConnectivity());
           print('Connection Change Detected');
 
-          //Try Get Wifi IP and Name
           try {
             wifiName = await WifiInfo().getWifiName();
             wifiIP = await WifiInfo().getWifiIP();
 
+            // If Wifi is connected
             if (wifiIP != null) {
-              //Wifi Connected
               isConnectedToWifi = true;
               print('Wifi Connected: $wifiName $wifiIP');
 
+              // Create UDP Socket with Arduino
               RawDatagramSocket.bind(InternetAddress(wifiIP), 4444)
                   .then((RawDatagramSocket socket) {
                 print('UDP Server: ${socket.address.address}:${socket.port}');
@@ -66,12 +67,20 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
                   socket.send(data, InternetAddress("10.0.0.1"), 2506);
                 });
 
+                countdownTimer = new RestartableTimer(Duration(seconds: 2), () {
+                  print('Arduino is timedout');
+                  arduinoisConnected = false;
+                });
+
                 //Listen for response
                 socket.listen((event) {
                   Datagram d = socket.receive();
+
                   if (d == null) return;
                   print('RECEIVED: ${d.address.address}:${d.port}: ${d.data}');
                   _arduinoRepository.readMessage(d.data);
+                  print('Timer Reset');
+                  countdownTimer.reset();
                 });
               });
 
