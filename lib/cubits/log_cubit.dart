@@ -1,22 +1,7 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:iot_logger/shared/rive_animation.dart';
 
-import './models/sensor.dart';
-
-class SensorCubit extends Cubit<DeviceState> {
-  SensorCubit() : super(DeviceState.Loaded);
-
-  void reload() {
-    emit(DeviceState.Refreshing);
-    new Timer(new Duration(seconds: 5), () {
-      print('5 secs');
-      emit(DeviceState.Loaded);
-    });
-  }
-}
+import '../models/sensor.dart';
 
 class LogCubit extends Cubit<Log> {
   final Log log;
@@ -35,14 +20,12 @@ class LogCubit extends Cubit<Log> {
   void download() {
     state.progress = _increment(state.progress);
     state.logState = LogState.Downloading;
-    state.icon = RiveAnimation();
     _updateState();
   }
 
   void complete() {
     state.progress = 0.0;
     state.logState = LogState.Downloaded;
-    state.icon = Icon(Icons.done);
     _updateState();
   }
 
@@ -53,7 +36,6 @@ class LogCubit extends Cubit<Log> {
         logId: state.logId,
         progress: state.progress,
         logState: state.logState,
-        icon: state.icon,
       ),
     );
   }

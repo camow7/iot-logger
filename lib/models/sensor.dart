@@ -41,13 +41,11 @@ class Log {
   final DateTime date;
   double progress;
   LogState logState;
-  Widget icon;
 
   Log({
     @required this.logId,
     @required this.date,
-    this.progress = 0,
+    this.progress = 0.0,
     this.logState = LogState.Loaded,
-    this.icon,
   });
 }

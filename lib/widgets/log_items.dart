@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
-import '../sensor_bloc.dart';
 import '../models/sensor.dart';
+import '../cubits/log_cubit.dart';
+import '../shared/rive_animation.dart';
 
 class LogItems extends StatelessWidget {
   final Sensor sensor;
@@ -18,12 +20,12 @@ class LogItems extends StatelessWidget {
       child: Column(
         children: sensor.logs.map((log) {
           print(
-              'LOADED LOGS: ${log.logId} - ${log.icon} - ${log.progress} - ${log.logState}');
+              'LOADED LOGS: ${log.logId} - ${log.progress} - ${log.logState}');
           return Container(
             height: 80,
             child: BlocProvider(
               create: (_) => LogCubit(log),
-              child: LogItem(log),
+              child: _LogItem(log),
             ),
           );
         }).toList(),
@@ -32,9 +34,10 @@ class LogItems extends StatelessWidget {
   }
 }
 
-class LogItem extends StatelessWidget {
+class _LogItem extends StatelessWidget {
   final Log log;
-  LogItem(this.log);
+  _LogItem(this.log);
+
   Widget _progressBar(BuildContext context, Log log) {
     return log.logState == LogState.Downloading
         ? LinearProgressIndicator(
@@ -58,9 +61,26 @@ class LogItem extends StatelessWidget {
     );
   }
 
+  Widget _statusIcon(LogState state) {
+    switch (state) {
+        case LogState.Downloading:
+        return RiveAnimation();
+        break;
+      case LogState.Downloaded:
+        return Icon(Icons.done_outline);
+        break;
+      default:
+        return SvgPicture.asset(
+              'assets/svgs/download.svg',
+            );
+            break;
+
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    void download(String id, Log log) {
+    void _download(String id, Log log) {
       final logCubit = context.read<LogCubit>();
 
       logCubit.download();
@@ -68,14 +88,14 @@ class LogItem extends StatelessWidget {
         if (logCubit.state.progress == 1.0) {
           logCubit.complete();
         } else {
-          download(id, log);
+          _download(id, log);
         }
       });
     }
 
     return BlocBuilder<LogCubit, Log>(builder: (_, log) {
       print(
-          '---- LOG ITEM UPDATE: ${log.logId} - ${log.icon} - ${log.progress} - ${log.logState}');
+          '---- LOG ITEM UPDATE: ${log.logId} - ${log.progress} - ${log.logState}');
       return Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 40,
@@ -114,8 +134,8 @@ class LogItem extends StatelessWidget {
                 ],
               ),
               trailing: IconButton(
-                icon: log.icon,
-                onPressed: () => download(log.logId, log),
+                icon: _statusIcon(log.logState),
+                onPressed: () => _download(log.logId, log),
               ),
             )
           ],

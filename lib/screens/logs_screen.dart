@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iot_logger/sensor_bloc.dart';
 
 import '../models/sensor.dart';
+import '../cubits/sensor_cubit.dart';
+
 import '../shared/layout.dart';
 import '../shared/refresh_button.dart';
 import '../widgets/sensor_item.dart';
