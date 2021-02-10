@@ -28,8 +28,6 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
   int destinationPort = 2506;
   InternetAddress destinationIP = InternetAddress("10.0.0.1");
   Timer timer;
-  RestartableTimer countdownTimer;
-  bool arduinoisConnected = false;
 
   ArduinoBloc(this._arduinoRepository) : super(ArduinoInitial());
 
@@ -39,11 +37,10 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
       if (Platform.isAndroid) {
         WiFiForIoTPlugin.forceWifiUsage(true);
       }
-      print("Initialising Wifi Connection...");
+      print("Initialising Wifi Connex`ction...");
 
       _subscription = _connectivity.onConnectivityChanged.listen(
         (status) async {
-          var connectivityResult = await (Connectivity().checkConnectivity());
           print('Connection Change Detected');
 
           try {
@@ -55,34 +52,7 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
               isConnectedToWifi = true;
               print('Wifi Connected: $wifiName $wifiIP');
 
-              // Create UDP Socket with Arduino
-              RawDatagramSocket.bind(InternetAddress(wifiIP), 4444)
-                  .then((RawDatagramSocket socket) {
-                print('UDP Server: ${socket.address.address}:${socket.port}');
-
-                // Send Heart Beat
-                Timer.periodic(Duration(seconds: 1), (Timer t) {
-                  List<int> data = [0xFE, 1, t.tick, 0, 0, 1];
-                  print('SENT: [0xFE, 1, ${t.tick}, 0, 0, 1]');
-                  socket.send(data, InternetAddress("10.0.0.1"), 2506);
-                });
-
-                countdownTimer = new RestartableTimer(Duration(seconds: 2), () {
-                  print('Arduino is timedout');
-                  arduinoisConnected = false;
-                });
-
-                //Listen for response
-                socket.listen((event) {
-                  Datagram d = socket.receive();
-
-                  if (d == null) return;
-                  print('RECEIVED: ${d.address.address}:${d.port}: ${d.data}');
-                  _arduinoRepository.readMessage(d.data);
-                  print('Timer Reset');
-                  countdownTimer.reset();
-                });
-              });
+              _arduinoRepository.initialiseConnection(wifiIP);
 
               add(ConnectionChanged(ArduinoConnected()));
             } else {
@@ -97,11 +67,10 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
           }
         },
       );
-    } else if (event is GetFile) {
+    }
+    if (event is GetLoggingPeriod) {
       try {
-        yield MessageLoading();
-        final message = await _arduinoRepository.fetchMessage(event.fileName);
-        yield MessageLoaded(message);
+        _arduinoRepository.getLoggingPeriod();
       } on Exception {
         //MessageError(Message("Error"));
       }

@@ -10,7 +10,7 @@ class ConnectionChanged extends ArduinoEvent {
   ConnectionChanged(this.connection);
 }
 
-class GetFile extends ArduinoEvent {
-  final String fileName;
-  GetFile(this.fileName);
+class GetLoggingPeriod extends ArduinoEvent {
+  //final String loggingPeriod;
+  //GetFile(this.loggingPeriod);
 }

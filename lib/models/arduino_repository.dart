@@ -1,4 +1,7 @@
+import 'dart:async';
+import 'dart:io';
 import 'dart:typed_data';
+import 'package:async/async.dart';
 import 'package:iot_logger/models/message.dart';
 
 //Defines the states of the state machine to parse a full message
@@ -14,14 +17,46 @@ enum MessageState {
 
 class ArduinoRepository {
   List<int> messageData = List(256);
+  List<int> messageBuffer = [];
   MessageState currentState = MessageState.START;
   MessageType messageId = MessageType.CONNECT;
   int payloadSize = 0;
   int sequenceNumber = 0;
   int receivedSensorType = 0;
   int currentPayloadByte = 0;
+  RestartableTimer countdownTimer;
+  bool arduinoisConnected = false;
+  RawDatagramSocket _socket;
+  Timer hearBeatTimer;
 
-  fetchMessage(String fileName) {}
+  initialiseConnection(String _wifiIP) {
+    // Create UDP Socket to Arduino
+    RawDatagramSocket.bind(InternetAddress(_wifiIP), 4444)
+        .then((RawDatagramSocket socket) {
+      this._socket = socket;
+      print('UDP Server: ${socket.address.address}:${socket.port}');
+
+      // Send Heart Beat
+      hearBeatTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+        messageBuffer = [0xFE, 1, t.tick, 0, 0, 1]; // Heart Beat Message
+        sendMessageBuffer(messageBuffer);
+        print("Sent Heart Beat");
+      });
+
+      // Start connection timer
+      countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
+        print('Arduino has timedout');
+        arduinoisConnected = false;
+      });
+
+      //Listen for messages
+      _socket.listen((event) {
+        Datagram d = socket.receive();
+        if (d == null) return;
+        readMessage(d.data);
+      });
+    });
+  }
 
   readMessage(Uint8List data) {
     for (int i = 0; i < data.length; i++) {
@@ -80,15 +115,14 @@ class ArduinoRepository {
 
   void parsePayload() {
     //Do something with the data payload
-    messageData[currentPayloadByte] =
-        0; //does this indicate the end of the message
+    messageData[currentPayloadByte] = 0;
     switch (messageId) {
       case MessageType.HEART_BEAT:
         print('HEART_BEAT Received');
-        //resetConnectionTimeout();
+        countdownTimer.reset();
         break;
       case MessageType.CONNECT:
-        print('CONNECT String ' + String.fromCharCodes(messageData));
+        print('CONNECT ' + String.fromCharCodes(messageData));
         break;
       case MessageType.SEND_LOG_FILE_SIZE:
         // TODO: Handle this case.
@@ -101,6 +135,8 @@ class ArduinoRepository {
         // TODO: Handle this case.
         break;
       case MessageType.SEND_LOGGING_PERIOD:
+        print('Logging Period Received: ' +
+            messageData.sublist(0, payloadSize).toString());
         // TODO: Handle this case.
         break;
       case MessageType.SEND_RTC_TIME:
@@ -121,6 +157,24 @@ class ArduinoRepository {
       default:
         print(
             'Default Message Type Receiced (might mean its not mapped properly');
+    }
+  }
+
+  getLoggingPeriod() {
+    messageBuffer = [0xFE, 1, 0, 0, 6, 1];
+    sendMessageBuffer(messageBuffer);
+    print('SENT LOGGING PERIOD REQUEST');
+  }
+
+  getBatteryInfo() {
+    messageBuffer = []
+  }
+
+  sendMessageBuffer(List<int> messageBuffer) {
+    try {
+      _socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
+    } catch (e) {
+      print(e);
     }
   }
 }

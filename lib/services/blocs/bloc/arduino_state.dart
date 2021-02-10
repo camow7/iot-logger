@@ -21,36 +21,6 @@ class MessageLoading extends ArduinoState {
   const MessageLoading();
 }
 
-class MessageLoaded extends ArduinoState {
-  final Message message;
-  const MessageLoaded(
-    this.message,
-  );
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is MessageLoaded && o.message == message;
-  }
-
-  @override
-  int get hashCode => message.hashCode;
-}
-
-class MessageError extends ArduinoState {
-  final Message message;
-  const MessageError(
-    this.message,
-  );
-
-  @override
-  bool operator ==(Object o) {
-    if (identical(this, o)) return true;
-
-    return o is MessageError && o.message == message;
-  }
-
-  @override
-  int get hashCode => message.hashCode;
+class MessageSent extends ArduinoState {
+  const MessageSent();
 }

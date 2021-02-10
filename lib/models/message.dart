@@ -9,7 +9,6 @@ class Message {
   MessageType messageType;
   Uint8List payload;
   Message(Uint8List data) {
-    // print(this.startPacket.bitLength); // Uint8List ensure's all int variables are saved as 8 bits of data
     this.startPacket = data[0];
     this.payloadLength = data[1];
     this.packetSequence = data[2];

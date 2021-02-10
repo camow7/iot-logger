@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
+import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
+import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
 
 import '../models/sensor.dart';
 import '../shared/layout.dart';
@@ -53,7 +57,24 @@ class HomeScreen extends StatelessWidget {
             Column(
               children: sensors.map((sensor) => SensorItem(sensor)).toList(),
             ),
-            RefreshButton(refresh),
+            //RefreshButton(refresh),
+            BlocBuilder<ArduinoBloc, ArduinoState>(
+              builder: (_, state) {
+                return FlatButton(
+                  color: Colors.blue,
+                  textColor: Colors.white,
+                  padding: EdgeInsets.all(8.0),
+                  splashColor: Colors.blueAccent,
+                  onPressed: () {
+                    context.read<ArduinoBloc>().add(GetLoggingPeriod());
+                  },
+                  child: Text(
+                    "Get Logging Period",
+                    style: TextStyle(fontSize: 20.0),
+                  ),
+                );
+              },
+            ),
           ],
         ),
       ),
