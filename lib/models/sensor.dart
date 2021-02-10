@@ -14,6 +14,7 @@ enum LogStatus {
 enum DeviceState {
   Loaded,
   Refreshing,
+  Refreshed,
 }
 
 class Sensor {

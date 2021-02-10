@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import '../models/sensor.dart';
-import '../shared/rive_animation.dart';
-
 class SensorItem extends StatelessWidget {
   final Sensor sensor;
+  final double progress;
 
-  SensorItem(this.sensor);
+  SensorItem({this.sensor, this.progress});
 
   Color get color {
     switch (sensor.status) {
@@ -35,11 +34,28 @@ class SensorItem extends StatelessWidget {
 
   Widget sensorContent(BuildContext context, SvgPicture svgImage) {
     return ListTile(
-      leading: Icon(
-        Icons.circle,
-        size: 20,
-        color: color,
-      ),
+      leading: sensor.state == DeviceState.Loaded
+          ? Icon(
+              Icons.circle,
+              size: 20,
+              color: color,
+            )
+          : Stack(
+              alignment: AlignmentDirectional.center,
+              children: [
+                Text(
+                  '${(progress * 100).toStringAsFixed(0)}%',
+                  style: TextStyle(fontSize: 10),
+                ),
+                CircularProgressIndicator(
+                  backgroundColor: Theme.of(context).accentColor,
+                  value: progress,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor,
+                  ),
+                )
+              ],
+            ),
       title: Text(
         sensor.name,
         textAlign: TextAlign.center,
@@ -65,27 +81,7 @@ class SensorItem extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         elevation: 5,
-        child: sensor.state == DeviceState.Refreshing
-            ? Stack(
-                alignment: Alignment.center,
-                children: [
-                  Opacity(
-                    opacity: 0.4,
-                    child: sensorContent(context, svgImage),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        width: 80,
-                        height: 80,
-                        child: RiveAnimation(),
-                      )
-                    ],
-                  ),
-                ],
-              )
-            : InkWell(
+        child: InkWell(
                 onTap: () =>
                     path == '/logs' ? returnHome(context) : viewLogs(context),
                 borderRadius: BorderRadius.circular(4),

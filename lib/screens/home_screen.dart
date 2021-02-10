@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/sensor.dart';
 import '../shared/layout.dart';
-import '../widgets/sensor_item.dart';
 import '../shared/refresh_button.dart';
+import '../widgets/sensor_item.dart';
 
 class HomeScreen extends StatelessWidget {
   final List<Sensor> sensors = [
@@ -37,14 +37,12 @@ class HomeScreen extends StatelessWidget {
       name: 'Pump',
       status: Status.Disconnected,
       iconPath: 'plug',
-      state: DeviceState.Refreshing,
     ),
     Sensor(
       id: '4',
       name: 'Air Con',
       status: Status.Connected,
       iconPath: 'download-light',
-      // state: DeviceState.Downloading,
     ),
   ];
 
@@ -64,7 +62,7 @@ class HomeScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline1,
             ),
             Column(
-              children: sensors.map((sensor) => SensorItem(sensor)).toList(),
+              children: sensors.map((sensor) => SensorItem(sensor: sensor, progress: 0,)).toList(),
             ),
             RefreshButton(refresh),
           ],

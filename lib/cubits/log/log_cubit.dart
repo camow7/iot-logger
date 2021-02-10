@@ -19,11 +19,6 @@ class LogCubit extends Cubit<LogState> {
             ),
           ),
         );
-        
-  double _increment(val) {
-    val += 0.2;
-    return val;
-  }
 
   void download() => emit(
         LogDownloading(
@@ -40,4 +35,9 @@ class LogCubit extends Cubit<LogState> {
           icon: Icon(Icons.done_outline),
         ),
       );
+
+  double _increment(val) {
+    val += 0.2;
+    return val;
+  }
 }

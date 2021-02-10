@@ -7,9 +7,6 @@ abstract class LogState {
   final Widget icon;
 
   const LogState({this.progress, this.status, this.icon});
-
-  @override
-  List<Object> get props => [progress, status, icon];
 }
 
 class LogInitial extends LogState {

@@ -17,8 +17,8 @@ class LogItems extends StatelessWidget {
       height: 300,
       child: Column(
         children: sensor.logs.map((log) {
-          print(
-              'LOADED LOGS: ${log.logId} - ${log.progress} - ${log.logState}');
+          // print(
+          //     'LOADED LOGS: ${log.logId} - ${log.progress} - ${log.logState}');
           return Container(
             height: 80,
             child: BlocProvider(
@@ -51,7 +51,7 @@ class _LogItem extends StatelessWidget {
     }
 
     return BlocBuilder<LogCubit, LogState>(builder: (_, state) {
-      print('${state.progress}, ${state.status}, ${state.icon}');
+      // print('${state.progress}, ${state.status}, ${state.icon}');
       return Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 40,
@@ -67,12 +67,23 @@ class _LogItem extends StatelessWidget {
                   AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
             ListTile(
-              leading: Icon(
-                Icons.folder,
-                color: state.progress > 0
-                    ? Colors.white
-                    : Theme.of(context).accentColor,
-                size: 40,
+              leading: Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Icon(
+                    Icons.folder,
+                    color: state.progress > 0
+                        ? Colors.white
+                        : Theme.of(context).accentColor,
+                    size: 40,
+                  ),
+                  Text(
+                    '${(state.progress * 100).toStringAsFixed(0)}%',
+                    style: TextStyle(
+                      fontSize: 10,
+                    ),
+                  )
+                ],
               ),
               title: Row(
                 mainAxisAlignment: MainAxisAlignment.start,
