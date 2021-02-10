@@ -16,8 +16,8 @@ enum MessageState {
 }
 
 class ArduinoRepository {
-  List<int> messageData = List(256);
-  List<int> messageBuffer = [];
+  Uint8List messageData = Uint8List(256);
+  Uint8List messageBuffer = Uint8List(0);
   MessageState currentState = MessageState.START;
   MessageType messageId = MessageType.CONNECT;
   int payloadSize = 0;
@@ -38,7 +38,8 @@ class ArduinoRepository {
 
       // Send Heart Beat
       hearBeatTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-        messageBuffer = [0xFE, 1, t.tick, 0, 0, 1]; // Heart Beat Message
+        messageBuffer = Uint8List.fromList(
+            [0xFE, 1, t.tick, 0, 0, 1]); // Heart Beat Message
         sendMessageBuffer(messageBuffer);
         print("Sent Heart Beat");
       });
@@ -113,6 +114,7 @@ class ArduinoRepository {
     }
   }
 
+  // Incoming Messages
   void parsePayload() {
     //Do something with the data payload
     messageData[currentPayloadByte] = 0;
@@ -160,17 +162,34 @@ class ArduinoRepository {
     }
   }
 
+  // Outgoing Messages
   getLoggingPeriod() {
-    messageBuffer = [0xFE, 1, 0, 0, 6, 1];
+    messageBuffer = Uint8List.fromList([0xFE, 1, 0, 0, 6, 1]);
     sendMessageBuffer(messageBuffer);
     print('SENT LOGGING PERIOD REQUEST');
   }
 
   getBatteryInfo() {
-    messageBuffer = []
+    messageBuffer = Uint8List.fromList([0xFE, 1, 0, 0, 18, 1]);
+    sendMessageBuffer(messageBuffer);
+    print('SENT BATTERY INFO REQUEST');
   }
 
-  sendMessageBuffer(List<int> messageBuffer) {
+  getCurrentMeasurements() {}
+
+  getSDCardInfo() {}
+
+  getLogsList() {}
+
+  getLogFile() {}
+
+  getRTCTime() {}
+
+  setRTCTime() {}
+
+  getLogFileInfo() {}
+
+  sendMessageBuffer(Uint8List messageBuffer) {
     try {
       _socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
     } catch (e) {
