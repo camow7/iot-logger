@@ -13,8 +13,9 @@ enum MessageState {
 }
 
 class ArduinoRepository {
+  List<int> messageData = List(256);
   MessageState currentState = MessageState.START;
-  int messageId = 0;
+  MessageType messageId = MessageType.CONNECT;
   int payloadSize = 0;
   int sequenceNumber = 0;
   int receivedSensorType = 0;
@@ -23,10 +24,8 @@ class ArduinoRepository {
   fetchMessage(String fileName) {}
 
   readMessage(Uint8List data) {
-    Message message = new Message(data);
-
-    for (int i = 0; i < message.payloadLength; i++) {
-      msgParseByte(message.payload[i]);
+    for (int i = 0; i < data.length; i++) {
+      msgParseByte(data[i]);
     }
   }
 
@@ -55,7 +54,7 @@ class ArduinoRepository {
         currentState = MessageState.MESSAGE_ID;
         break;
       case MessageState.MESSAGE_ID:
-        messageId = messageByte;
+        messageId = messageMap[messageByte];
         currentState = MessageState.DATA;
         break;
       case MessageState.DATA:
@@ -68,14 +67,60 @@ class ArduinoRepository {
   }
 
   void parsePayloadByte(int payloadByte) {
-    //   messageData[currentPayloadByte] = payloadByte;
-    //   currentPayloadByte++;
-    //   if (currentPayloadByte >= payloadSize) {
-    //     // All data bytes read so parse it
-    //     parsePayload();
-    //     currentPayloadByte = 0;
-    //     currentState = START;
-    //   }
-    // }
+    // print(String.fromCharCode(payloadByte));
+    messageData[currentPayloadByte] = payloadByte;
+    currentPayloadByte++;
+    if (currentPayloadByte >= payloadSize) {
+      // All data bytes read so parse it
+      parsePayload();
+      currentPayloadByte = 0;
+      currentState = MessageState.START;
+    }
+  }
+
+  void parsePayload() {
+    //Do something with the data payload
+    messageData[currentPayloadByte] =
+        0; //does this indicate the end of the message
+    switch (messageId) {
+      case MessageType.HEART_BEAT:
+        print('HEART_BEAT Received');
+        //resetConnectionTimeout();
+        break;
+      case MessageType.CONNECT:
+        print('CONNECT String ' + String.fromCharCodes(messageData));
+        break;
+      case MessageType.SEND_LOG_FILE_SIZE:
+        // TODO: Handle this case.
+        // save log file size
+        break;
+      case MessageType.SEND_LOG_FILE_CHUNK:
+        // TODO: Handle this case.
+        break;
+      case MessageType.SEND_SD_CARD_INFO:
+        // TODO: Handle this case.
+        break;
+      case MessageType.SEND_LOGGING_PERIOD:
+        // TODO: Handle this case.
+        break;
+      case MessageType.SEND_RTC_TIME:
+        // TODO: Handle this case.
+        break;
+      case MessageType.SEND_CURRENT_MEASUREMENTS:
+        // TODO: Handle this case.
+        //save current measurements
+        break;
+      case MessageType.SEND_BATTERY_INFO:
+        // TODO: Handle this case.
+        break;
+      case MessageType.ERROR_MSG:
+        print('Error Message Received: ' +
+            String.fromCharCodes(
+                messageData.sublist(0, payloadSize))); //messageData
+        break;
+      default:
+        print(
+            'Default Message Type Receiced (might mean its not mapped properly');
+    }
   }
 }
