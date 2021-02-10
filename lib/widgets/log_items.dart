@@ -2,12 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
+import '../cubits/log/log_cubit.dart';
 import '../models/sensor.dart';
-import '../cubits/log_cubit.dart';
-import '../shared/rive_animation.dart';
 
 class LogItems extends StatelessWidget {
   final Sensor sensor;
@@ -24,7 +22,7 @@ class LogItems extends StatelessWidget {
           return Container(
             height: 80,
             child: BlocProvider(
-              create: (_) => LogCubit(log),
+              create: (_) => LogCubit(),
               child: _LogItem(log),
             ),
           );
@@ -38,18 +36,75 @@ class _LogItem extends StatelessWidget {
   final Log log;
   _LogItem(this.log);
 
-  Widget _progressBar(BuildContext context, Log log) {
-    return log.logState == LogState.Downloading
-        ? LinearProgressIndicator(
-            minHeight: double.infinity,
-            value: log.progress,
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-          )
-        : Container();
+  @override
+  Widget build(BuildContext context) {
+    void _download() {
+      context.read<LogCubit>().download();
+      new Timer(new Duration(seconds: 2), () {
+        if (context.read<LogCubit>().state.progress == 1.0) {
+          context.read<LogCubit>().complete();
+          context.read<LogCubit>().close();
+        } else {
+          _download();
+        }
+      });
+    }
+
+    return BlocBuilder<LogCubit, LogState>(builder: (_, state) {
+      print('${state.progress}, ${state.status}, ${state.icon}');
+      return Card(
+        margin: const EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 10,
+        ),
+        elevation: 5,
+        child: Stack(
+          children: [
+            LinearProgressIndicator(
+              minHeight: double.infinity,
+              value: state.progress,
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+            ),
+            ListTile(
+              leading: Icon(
+                Icons.folder,
+                color: state.progress > 0
+                    ? Colors.white
+                    : Theme.of(context).accentColor,
+                size: 40,
+              ),
+              title: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  // text changes color depending on loading progress bar length
+                  formatText(
+                    DateFormat.E().format(log.date),
+                    state.progress > 0.2
+                        ? Colors.white
+                        : Color.fromRGBO(36, 136, 104, 1),
+                  ),
+                  const SizedBox(width: 10),
+                  formatText(
+                    DateFormat.yMd().format(log.date),
+                    state.progress > 0.4
+                        ? Colors.white
+                        : Theme.of(context).accentColor,
+                  )
+                ],
+              ),
+              trailing: IconButton(
+                icon: state.icon,
+                onPressed: () => _download(),
+              ),
+            )
+          ],
+        ),
+      );
+    });
   }
 
-  Text _displayText(String text, Color color) {
+  Text formatText(String text, Color color) {
     return Text(
       text,
       style: TextStyle(
@@ -59,91 +114,5 @@ class _LogItem extends StatelessWidget {
         fontWeight: FontWeight.w400,
       ),
     );
-  }
-
-  Widget _statusIcon(LogState state) {
-    switch (state) {
-      case LogState.Loaded:
-        return SvgPicture.asset(
-          'assets/svgs/download.svg',
-        );
-        break;
-      case LogState.Downloading:
-        return RiveAnimation();
-        break;
-      case LogState.Downloaded:
-        return Icon(Icons.done_outline);
-        break;
-      default:
-        return SvgPicture.asset(
-          'assets/svgs/download.svg',
-        );
-        break;
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    void _download() {
-      final logCubit = context.read<LogCubit>();
-
-      logCubit.download();
-      new Timer(new Duration(seconds: 2), () {
-        if (logCubit.state.progress == 1.0) {
-          logCubit.complete();
-          logCubit.close();
-        } else {
-          _download();
-        }
-      });
-    }
-
-    return BlocBuilder<LogCubit, Log>(builder: (_, log) {
-      return Card(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 40,
-          vertical: 10,
-        ),
-        elevation: 5,
-        child: Stack(
-          children: [
-            _progressBar(context, log),
-            ListTile(
-              leading: Icon(
-                Icons.folder,
-                color: log.progress > 0
-                    ? Colors.white
-                    : Theme.of(context).accentColor,
-                size: 40,
-              ),
-              title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  // text changes color depending on loading progress bar length
-                  // [] fix up these texts
-                  _displayText(
-                    DateFormat.E().format(log.date),
-                    log.progress > 0.2
-                        ? Colors.white
-                        : Color.fromRGBO(36, 136, 104, 1),
-                  ),
-                  const SizedBox(width: 10),
-                  _displayText(
-                    DateFormat.yMd().format(log.date),
-                    log.progress > 0.4
-                        ? Colors.white
-                        : Theme.of(context).accentColor,
-                  )
-                ],
-              ),
-              trailing: IconButton(
-                icon: _statusIcon(log.logState),
-                onPressed: () => _download(),
-              ),
-            )
-          ],
-        ),
-      );
-    });
   }
 }

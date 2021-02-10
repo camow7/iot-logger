@@ -17,13 +17,13 @@ class HomeScreen extends StatelessWidget {
             date: DateTime.now(),
             logId: '1',
             progress: 0.0,
-            logState: LogState.Loaded,
+            logState: LogStatus.Loaded,
           ),
           Log(
             date: DateTime.now(),
             logId: '2',
             progress: 0.0,
-            logState: LogState.Loaded,
+            logState: LogStatus.Loaded,
           ),
         ]),
     // Sensor(

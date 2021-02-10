@@ -6,7 +6,7 @@ enum Status {
   Disconnected,
   Idle,
 }
-enum LogState {
+enum LogStatus {
   Loaded,
   Downloading,
   Downloaded,
@@ -40,12 +40,12 @@ class Log {
   final String logId;
   final DateTime date;
   double progress;
-  LogState logState;
+  LogStatus logState;
 
   Log({
     @required this.logId,
     @required this.date,
     this.progress = 0.0,
-    this.logState = LogState.Loaded,
+    this.logState = LogStatus.Loaded,
   });
 }
