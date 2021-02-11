@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:iot_logger/models/sensor.dart';
 import 'package:meta/meta.dart';
 
-part 'sensor_state.dart';
+part 'sensor_load_state.dart';
 
-class SensorCubit extends Cubit<SensorState> {
-  SensorCubit()
+class SensorLoadCubit extends Cubit<SensorLoadState> {
+  SensorLoadCubit()
       : super(SensorInitial(progress: 0, deviceState: DeviceState.Loaded));
 
   void refresh() => emit(SensorRefresh(

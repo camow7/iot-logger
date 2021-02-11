@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/sensor_load/sensor_load_cubit.dart';
 
 import '../models/sensor.dart';
-import '../cubits/sensor/sensor_cubit.dart';
 import '../shared/refresh_button.dart';
 import 'sensor_item.dart';
 import 'log_items.dart';
@@ -16,7 +16,7 @@ class SensorLogs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => SensorCubit(),
+      create: (_) => SensorLoadCubit(),
       child: _SensorLogs(sensor),
     );
   }
@@ -28,10 +28,10 @@ class _SensorLogs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void _refresh() {
-      context.read<SensorCubit>().refresh();
+      context.read<SensorLoadCubit>().refresh();
       new Timer(new Duration(seconds: 2), () {
-        if (context.read<SensorCubit>().state.progress == 1) {
-          context.read<SensorCubit>().complete();
+        if (context.read<SensorLoadCubit>().state.progress == 1) {
+          context.read<SensorLoadCubit>().complete();
         } else {
           _refresh();
         }
@@ -39,7 +39,7 @@ class _SensorLogs extends StatelessWidget {
     }
 
     // final _sensor = ModalRoute.of(context).settings.arguments as Sensor;
-    return BlocBuilder<SensorCubit, SensorState>(
+    return BlocBuilder<SensorLoadCubit, SensorLoadState>(
           builder: (_, state) {
             // print('-- ${state.deviceState}, ${state.progress}');
             sensor.state = state.deviceState;

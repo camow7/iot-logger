@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 
-import '../cubits/log/log_cubit.dart';
+import '../cubits/log_download/log_download_cubit.dart';
 import '../models/sensor.dart';
 
 class LogItems extends StatelessWidget {
@@ -22,7 +22,7 @@ class LogItems extends StatelessWidget {
           return Container(
             height: 80,
             child: BlocProvider(
-              create: (_) => LogCubit(),
+              create: (_) => LogDownloadCubit(),
               child: _LogItem(log),
             ),
           );
@@ -39,18 +39,18 @@ class _LogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     void _download() {
-      context.read<LogCubit>().download();
+      context.read<LogDownloadCubit>().download();
       new Timer(new Duration(seconds: 2), () {
-        if (context.read<LogCubit>().state.progress == 1.0) {
-          context.read<LogCubit>().complete();
-          context.read<LogCubit>().close();
+        if (context.read<LogDownloadCubit>().state.progress == 1.0) {
+          context.read<LogDownloadCubit>().complete();
+          context.read<LogDownloadCubit>().close();
         } else {
           _download();
         }
       });
     }
 
-    return BlocBuilder<LogCubit, LogState>(builder: (_, state) {
+    return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
       // print('${state.progress}, ${state.status}, ${state.icon}');
       return Card(
         margin: const EdgeInsets.symmetric(

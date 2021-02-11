@@ -6,10 +6,10 @@ import 'package:meta/meta.dart';
 import '../../models/sensor.dart';
 import '../../shared/rive_animation.dart';
 
-part 'log_state.dart';
+part 'log_download_state.dart';
 
-class LogCubit extends Cubit<LogState> {
-  LogCubit()
+class LogDownloadCubit extends Cubit<LogDownloadState> {
+  LogDownloadCubit()
       : super(
           LogInitial(
             progress: 0.0,

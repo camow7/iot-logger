@@ -1,25 +1,25 @@
-part of 'log_cubit.dart';
+part of 'log_download_cubit.dart';
 
 @immutable
-abstract class LogState {
+abstract class LogDownloadState {
   final double progress;
   final LogStatus status;
   final Widget icon;
 
-  const LogState({this.progress, this.status, this.icon});
+  const LogDownloadState({this.progress, this.status, this.icon});
 }
 
-class LogInitial extends LogState {
+class LogInitial extends LogDownloadState {
   const LogInitial({double progress, LogStatus status, Widget icon})
       : super(progress: progress, status: status, icon: icon);
 }
 
-class LogDownloading extends LogState {
+class LogDownloading extends LogDownloadState {
   const LogDownloading({double progress, LogStatus status, Widget icon})
       : super(progress: progress, status: status, icon: icon);
 }
 
-class LogDownloaded extends LogState {
+class LogDownloaded extends LogDownloadState {
   const LogDownloaded({double progress, LogStatus status, Widget icon})
       : super(progress: progress, status: status, icon: icon);
 }
