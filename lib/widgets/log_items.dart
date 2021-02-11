@@ -86,7 +86,7 @@ class _LogItem extends StatelessWidget {
                 ],
               ),
               title: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   // text changes color depending on loading progress bar length
                   formatText(
@@ -95,7 +95,6 @@ class _LogItem extends StatelessWidget {
                         ? Colors.white
                         : Color.fromRGBO(36, 136, 104, 1),
                   ),
-                  const SizedBox(width: 10),
                   formatText(
                     DateFormat.yMd().format(log.date),
                     state.progress > 0.4
