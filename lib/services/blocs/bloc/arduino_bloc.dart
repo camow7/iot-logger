@@ -67,13 +67,30 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
           }
         },
       );
-    }
-    if (event is GetLoggingPeriod) {
-      try {
-        _arduinoRepository.getLoggingPeriod();
-      } on Exception {
-        //MessageError(Message("Error"));
-      }
+    } else if (event is GetLoggingPeriod) {
+      _arduinoRepository.getLoggingPeriod();
+      yield ArduinoConnected();
+    } else if (event is GetBatteryInfo) {
+      _arduinoRepository.getBatteryInfo();
+      yield ArduinoConnected();
+    } else if (event is SetRTCTime) {
+      _arduinoRepository.setRTCTime();
+      yield ArduinoConnected();
+    } else if (event is GetRTCTime) {
+      _arduinoRepository.getRTCTime();
+      yield ArduinoConnected();
+    } else if (event is SetLoggingPeriod) {
+      _arduinoRepository.setLoggingPeriod(event.loggingPeriod);
+      yield ArduinoConnected();
+    } else if (event is GetLogsList) {
+      _arduinoRepository.getLogsList();
+      yield ArduinoConnected();
+    } else if (event is GetSDCardInfo) {
+      _arduinoRepository.getSDCardInfo();
+      yield ArduinoConnected();
+    } else if (event is GetLogFile) {
+      _arduinoRepository.getLogFile(event.logFileName);
+      yield ArduinoConnected();
     } else if (event is ConnectionChanged) {
       // print(event.connection);
       // if (event.connection is ArduinoConnected) {

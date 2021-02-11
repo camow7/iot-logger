@@ -54,11 +54,6 @@ class Layout extends StatelessWidget {
                   Icons.wifi_off,
                   size: 40,
                 );
-              // To call bloc event (i.e GetFile)
-              // void submitCityName(BuildContext context, String fileName) {
-              // final arduinoBloc = context.bloc<ArduinoBloc>();
-              // arduinoBloc.add(GetFile(cityName));
-              // }
             },
           ),
         ),
