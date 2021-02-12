@@ -70,7 +70,8 @@ class SensorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // String path = ModalRoute.of(context).settings.name; // current screen path
+    String path = ModalRoute.of(context).settings.name; // current screen path
+    print('a: $path');
     SvgPicture svgImage = SvgPicture.asset(
       'assets/svgs/${sensor.iconPath}.svg',
       color: Theme.of(context).accentColor,
@@ -81,15 +82,14 @@ class SensorItem extends StatelessWidget {
       child: Card(
         margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
         elevation: 5,
-        child: Center(child: sensorContent(context, svgImage),)
-        // InkWell(
-        //         onTap: () =>
-        //             path == '/logs' ? returnHome(context) : viewLogs(context),
-        //         borderRadius: BorderRadius.circular(4),
-        //         child: Center(
-        //           child: sensorContent(context, svgImage),
-        //         ),
-        //       ),
+        child: InkWell(
+                onTap: () =>
+                    path == '/logs' ? returnHome(context) : viewLogs(context),
+                borderRadius: BorderRadius.circular(4),
+                child: Center(
+                  child: sensorContent(context, svgImage),
+                ),
+              ),
       ),
     );
   }

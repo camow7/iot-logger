@@ -3,9 +3,9 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iot_logger/services/download_service.dart';
 import 'package:meta/meta.dart';
 
+import '../../services/download_service.dart';
 import '../../models/sensor.dart';
 import '../../shared/rive_animation.dart';
 

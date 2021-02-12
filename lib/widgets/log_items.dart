@@ -24,6 +24,8 @@ class _LogItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    String path = ModalRoute.of(context).settings.name; // current screen path
+    print(path);
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
       // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
       // print('${log.progress}, ${log.logState}');
@@ -32,7 +34,13 @@ class _LogItem extends StatelessWidget {
           horizontal: 40,
           vertical: 10,
         ),
-        child: logTile(context, state),
+        child: InkWell(
+                onTap: () => Navigator.of(context).pushNamed('/readings'),
+                borderRadius: BorderRadius.circular(4),
+                child: Center(
+                  child: logTile(context, state),
+                ),
+              )
       );
     });
   }
