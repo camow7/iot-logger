@@ -71,10 +71,7 @@ class _Sensors extends StatelessWidget {
         BlocBuilder<SensorLogsCubit, SensorLogsState>(
           builder: (_, state) {
             return state.showLogs
-                ? FlatButton(
-                    onPressed: () => context.read<SensorLogsCubit>().hideLogs(),
-                    child: SensorLogs(_selectedSensor),
-                  )
+                ? SensorLogs(_selectedSensor) // shows sensor and its logs
                 : Column(
                     mainAxisAlignment: MainAxisAlignment.spaceAround,
                     children: [

@@ -36,6 +36,15 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
         ),
       );
 
+  void view(String date) => emit(
+        LogViewing(
+          date: date,
+          progress: 0.0,
+          status: LogStatus.Viewing,
+          icon: Container(),
+        ),
+      );
+
   double _increment(val) {
     val += 0.2;
     return val;

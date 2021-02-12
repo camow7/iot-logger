@@ -10,6 +10,7 @@ enum LogStatus {
   Loaded,
   Downloading,
   Downloaded,
+  Viewing
 }
 enum DeviceState {
   Loaded,
