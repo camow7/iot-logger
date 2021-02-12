@@ -3,42 +3,11 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:iot_logger/cubits/sensor_logs/sensor_logs_cubit.dart';
-import 'package:iot_logger/shared/log_list.dart';
 
 import '../cubits/log_download/log_download_cubit.dart';
 import '../models/sensor.dart';
 
 class LogItems extends StatelessWidget {
-  // final Sensor sensor;
-  // const LogItems(this.sensor);
-
-  // @override
-  // Widget build(BuildContext context) {
-  //   return Container(
-  //     height: 300,
-  //     child: Column(
-  //       children: sensor.logs.map((log) {
-  //         // print(
-  //         //     'LOADED LOGS: ${log.logId} - ${log.progress} - ${log.logState}');
-  //         return Container(
-  //           height: 80,
-  //           child: MultiBlocProvider(providers: [
-  //             BlocProvider(
-  //               create: (_) => LogDownloadCubit(),
-  //               child: TestWidget(),
-  //             ),
-  //             BlocProvider(
-  //               create: (_) => SensorLogsCubit(),
-  //               child: _LogItem(log),
-  //             ),
-  //           ], child: _LogItem(log)),
-  //         );
-  //       }).toList(),
-  //     ),
-  //   );
-  // }
-
   final Log log;
   const LogItems(this.log);
 
@@ -50,16 +19,6 @@ class LogItems extends StatelessWidget {
     );
   }
 }
-
-// class TestWidget extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocBuilder<SensorLogsCubit, SensorLogsState>(builder: (_, state) {
-//       print(state);
-//       return Text('sora khan');
-//     });
-//   }
-// }
 
 class _LogItem extends StatelessWidget {
   final Log log;
@@ -77,31 +36,7 @@ class _LogItem extends StatelessWidget {
         ),
         child: logTile(context, state),
       );
-
-      //   margin: const EdgeInsets.symmetric(
-      //     horizontal: 40,
-      //     vertical: 10,
-      //   ),
-      //   elevation: 5,
-      //   child:
-      //       // state.status != LogStatus.Downloaded
-      //       //     ? logTile(context, state)
-      //       //     :
-      //       FlatButton(
-      //           // user InkWell later
-      //           onPressed: () => context.read<LogDownloadCubit>().view(),
-      //           child: state.status == LogStatus.Viewing
-      //               ? TestWidget()
-      //               : logTile(context, state)),
-      // );
     });
-  }
-
-  showLogData(BuildContext context) {
-    print('showing log data');
-    context.read<SensorLogsCubit>().showLogs();
-    print(context.read<SensorLogsState>().showLogs);
-    // print("here: ${context.read<SensorLogsState>().showLogs}");
   }
 
   Widget logTile(BuildContext context, LogDownloadState state) {
