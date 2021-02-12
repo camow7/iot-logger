@@ -127,7 +127,7 @@ class AllList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
-      print('${state.status}, ${state.date}');
+      // print('${state.status}, ${state.date}');
       return Column(
         children: [
           state.status != LogStatus.Viewing

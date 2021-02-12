@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/services/download_service.dart';
 import 'package:meta/meta.dart';
 
 import '../../models/sensor.dart';
@@ -9,6 +12,7 @@ import '../../shared/rive_animation.dart';
 part 'log_download_state.dart';
 
 class LogDownloadCubit extends Cubit<LogDownloadState> {
+  DownloadService service = DownloadService();
   LogDownloadCubit()
       : super(
           LogInitial(
@@ -20,13 +24,24 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
           ),
         );
 
-  void download() => emit(
-        LogDownloading(
-          progress: _increment(state.progress),
-          status: LogStatus.Downloading,
-          icon: RiveAnimation(),
-        ),
-      );
+  void download() {
+    service.downloadLog();
+    emit(
+      LogDownloading(
+        progress: service.getProgress(),
+        status: service.getStatus(),
+        icon: RiveAnimation(),
+      ),
+    );
+    if (service.getProgress() < 1) {
+      new Timer(new Duration(seconds: 2), () {
+        download();
+      });
+    } else {
+      complete();
+      close();
+    }
+  }
 
   void complete() => emit(
         LogDownloaded(
@@ -44,9 +59,4 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
           icon: Container(),
         ),
       );
-
-  double _increment(val) {
-    val += 0.2;
-    return val;
-  }
 }

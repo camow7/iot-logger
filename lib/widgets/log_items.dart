@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -27,8 +25,8 @@ class _LogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
-      print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
-      print('${log.progress}, ${log.logState}');
+      // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
+      // print('${log.progress}, ${log.logState}');
       return Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 40,
@@ -53,23 +51,11 @@ class _LogItem extends StatelessWidget {
           title: logDate(context, state),
           trailing: IconButton(
             icon: state.icon,
-            onPressed: () => _download(context),
+            onPressed: () => context.read<LogDownloadCubit>().download(),
           ),
         )
       ],
     );
-  }
-
-  void _download(BuildContext context) {
-    context.read<LogDownloadCubit>().download();
-    new Timer(new Duration(seconds: 2), () {
-      if (context.read<LogDownloadCubit>().state.progress == 1.0) {
-        context.read<LogDownloadCubit>().complete();
-        context.read<LogDownloadCubit>().close();
-      } else {
-        _download(context);
-      }
-    });
   }
 
   Widget folderIcon(BuildContext context, LogDownloadState state) {
