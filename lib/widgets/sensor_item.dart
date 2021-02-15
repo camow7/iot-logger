@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iot_logger/shared/main_card.dart';
 
 import '../models/sensor.dart';
+import '../shared/main_card.dart';
 
 class SensorItem extends StatelessWidget {
   final Sensor sensor;

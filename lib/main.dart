@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:iot_logger/screens/graph_screen.dart';
 
 import './screens/home_screen.dart';
 import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
+import './screens/graph_screen.dart';
 
 void main() => runApp(IotLoggerApp());
 

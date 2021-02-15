@@ -8,6 +8,7 @@ import '../shared/sub_card.dart';
 class GraphScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final readingName = ModalRoute.of(context).settings.arguments as String;
     return Scaffold(
       body: Layout(
         Column(
@@ -17,7 +18,7 @@ class GraphScreen extends StatelessWidget {
             MainCard(
               ListTile(
                 title: Text(
-                  'Turb 1',
+                  readingName,
                   textAlign: TextAlign.center,
                   style: Theme.of(context).textTheme.headline4,
                 ),
@@ -37,7 +38,7 @@ class GraphScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(height: 300, child: Card()),
+            Container(height: 300, child: Card()), // graph
             RefreshButton(null)
           ],
         ),

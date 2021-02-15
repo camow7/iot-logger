@@ -43,11 +43,19 @@ class Log {
   final DateTime date;
   double progress;
   LogStatus logState;
+  List<Reading> readings;
 
   Log({
     @required this.logId,
     @required this.date,
     this.progress = 0.0,
     this.logState = LogStatus.Loaded,
+    this.readings
   });
+}
+
+class Reading {
+  final String name;
+
+  const Reading(this.name);
 }

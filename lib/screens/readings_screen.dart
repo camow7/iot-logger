@@ -9,7 +9,11 @@ import '../widgets/sensor_item.dart';
 class ReadingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final sensor = ModalRoute.of(context).settings.arguments as Sensor;
+    final routeArgs =
+        ModalRoute.of(context).settings.arguments as Map<Object, Object>;
+    final sensor = routeArgs['sensor'] as Sensor;
+    final readings = routeArgs['readings'] as List<Reading>;
+    // print(sensor);
     return Scaffold(
       body: Layout(
         Column(
@@ -19,12 +23,18 @@ class ReadingsScreen extends StatelessWidget {
               children: [
                 BackButton(),
                 SensorItem(sensor: sensor, progress: 0),
-                InkWell(
-                  onTap: () => Navigator.of(context)
-                      .pushNamed('/graph-reading', arguments: sensor),
-                  borderRadius: BorderRadius.circular(4),
-                  child: ReadingItem(),
-                )
+                Column(
+                  children: readings
+                      .map(
+                        (reading) => InkWell(
+                          onTap: () => Navigator.of(context)
+                              .pushNamed('/graph-reading', arguments: reading.name),
+                          borderRadius: BorderRadius.circular(4),
+                          child: ReadingItem(reading.name),
+                        ),
+                      )
+                      .toList(),
+                ),
               ],
             ),
             RefreshButton(null)

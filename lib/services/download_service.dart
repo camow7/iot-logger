@@ -1,4 +1,4 @@
-import 'package:iot_logger/models/sensor.dart';
+import '../models/sensor.dart';
 
 class DownloadService {
   LogStatus status;

@@ -14,7 +14,10 @@ class LogItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => LogDownloadCubit(),
-      child: _LogItem(sensor: sensor, log: log,),
+      child: _LogItem(
+        sensor: sensor,
+        log: log,
+      ),
     );
   }
 }
@@ -30,18 +33,23 @@ class _LogItem extends StatelessWidget {
       // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
       // print('${log.progress}, ${log.logState}');
       return Card(
-        margin: const EdgeInsets.symmetric(
-          horizontal: 40,
-          vertical: 10,
-        ),
-        child: InkWell(
-                onTap: () => Navigator.of(context).pushNamed('/readings', arguments: sensor),
-                borderRadius: BorderRadius.circular(4),
-                child: Center(
-                  child: logTile(context, state),
-                ),
-              )
-      );
+          margin: const EdgeInsets.symmetric(
+            horizontal: 40,
+            vertical: 10,
+          ),
+          child: InkWell(
+            onTap: () => Navigator.of(context).pushNamed(
+              '/readings',
+              arguments: {
+                'sensor': sensor,
+                'readings': log.readings,
+              },
+            ),
+            borderRadius: BorderRadius.circular(4),
+            child: Center(
+              child: logTile(context, state),
+            ),
+          ));
     });
   }
 

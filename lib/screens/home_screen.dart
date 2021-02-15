@@ -13,11 +13,16 @@ class HomeScreen extends StatelessWidget {
       iconPath: 'plug',
       logs: [
         Log(
-          date: DateTime.now(),
-          logId: '1',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
+            date: DateTime.now(),
+            logId: '1',
+            progress: 0.0,
+            logState: LogStatus.Loaded,
+            readings: [
+              Reading('Turb 1'),
+              Reading('Turb 2'),
+              Reading('Turb 3'),
+              Reading('Temp'),
+            ]),
         Log(
           date: DateTime.now(),
           logId: '2',
