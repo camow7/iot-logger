@@ -5,27 +5,27 @@ import 'package:intl/intl.dart';
 import '../cubits/log_download/log_download_cubit.dart';
 import '../models/sensor.dart';
 
-class LogItems extends StatelessWidget {
+class LogItem extends StatelessWidget {
+  final Sensor sensor;
   final Log log;
-  const LogItems(this.log);
+  const LogItem({this.sensor, this.log});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => LogDownloadCubit(),
-      child: _LogItem(log),
+      child: _LogItem(sensor: sensor, log: log,),
     );
   }
 }
 
 class _LogItem extends StatelessWidget {
+  final Sensor sensor;
   final Log log;
-  const _LogItem(this.log);
+  const _LogItem({this.sensor, this.log});
 
   @override
   Widget build(BuildContext context) {
-    String path = ModalRoute.of(context).settings.name; // current screen path
-    print(path);
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
       // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
       // print('${log.progress}, ${log.logState}');
@@ -35,7 +35,7 @@ class _LogItem extends StatelessWidget {
           vertical: 10,
         ),
         child: InkWell(
-                onTap: () => Navigator.of(context).pushNamed('/readings'),
+                onTap: () => Navigator.of(context).pushNamed('/readings', arguments: sensor),
                 borderRadius: BorderRadius.circular(4),
                 child: Center(
                   child: logTile(context, state),
@@ -93,7 +93,7 @@ class _LogItem extends StatelessWidget {
         // text changes color depending on loading progress bar length
         formatText(
           DateFormat.E().format(log.date),
-          state.progress > 0.2 ? Colors.white : Color.fromRGBO(36, 136, 104, 1),
+          state.progress > 0.2 ? Colors.white : Theme.of(context).focusColor,
         ),
         formatText(
           DateFormat.yMd().format(log.date),

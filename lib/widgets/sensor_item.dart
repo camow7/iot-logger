@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/shared/main_card.dart';
 
 import '../models/sensor.dart';
+
 class SensorItem extends StatelessWidget {
   final Sensor sensor;
   final double progress;
@@ -32,46 +34,9 @@ class SensorItem extends StatelessWidget {
     Navigator.of(context).pop();
   }
 
-  Widget sensorContent(BuildContext context, SvgPicture svgImage) {
-    return ListTile(
-      leading: sensor.state == DeviceState.Loaded
-          ? Icon(
-              Icons.circle,
-              size: 20,
-              color: color,
-            )
-          : Stack(
-              alignment: AlignmentDirectional.center,
-              children: [
-                Text(
-                  '${(progress * 100).toStringAsFixed(0)}%',
-                  style: TextStyle(fontSize: 10),
-                ),
-                CircularProgressIndicator(
-                  backgroundColor: Theme.of(context).accentColor,
-                  value: progress,
-                  valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor,
-                  ),
-                )
-              ],
-            ),
-      title: Text(
-        sensor.name,
-        textAlign: TextAlign.center,
-        style: TextStyle(
-          color: Theme.of(context).accentColor,
-          fontSize: 30,
-        ),
-      ),
-      trailing: svgImage,
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     String path = ModalRoute.of(context).settings.name; // current screen path
-    print('a: $path');
     SvgPicture svgImage = SvgPicture.asset(
       'assets/svgs/${sensor.iconPath}.svg',
       color: Theme.of(context).accentColor,
@@ -79,17 +44,52 @@ class SensorItem extends StatelessWidget {
     return Container(
       width: double.infinity,
       height: 140,
-      child: Card(
-        margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-        elevation: 5,
-        child: InkWell(
-                onTap: () =>
-                    path == '/logs' ? returnHome(context) : viewLogs(context),
+      child: MainCard(
+        path == '/'
+            ? InkWell(
+                onTap: () => viewLogs(context),
                 borderRadius: BorderRadius.circular(4),
-                child: Center(
-                  child: sensorContent(context, svgImage),
-                ),
+                child: sensorContent(context, svgImage),
+              )
+            : sensorContent(context, svgImage),
+      ),
+    );
+  }
+
+  Widget sensorContent(BuildContext context, SvgPicture svgImage) {
+    return Center(
+      child: ListTile(
+        leading: sensor.state == DeviceState.Loaded
+            ? Icon(
+                Icons.circle,
+                size: 20,
+                color: color,
+              )
+            : Stack(
+                alignment: AlignmentDirectional.center,
+                children: [
+                  Text(
+                    '${(progress * 100).toStringAsFixed(0)}%',
+                    style: TextStyle(fontSize: 10),
+                  ),
+                  CircularProgressIndicator(
+                    backgroundColor: Theme.of(context).accentColor,
+                    value: progress,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Theme.of(context).primaryColor,
+                    ),
+                  )
+                ],
               ),
+        title: Text(
+          sensor.name,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: Theme.of(context).accentColor,
+            fontSize: 30,
+          ),
+        ),
+        trailing: svgImage,
       ),
     );
   }

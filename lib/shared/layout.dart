@@ -37,7 +37,7 @@ class Layout extends StatelessWidget {
           decoration: const BoxDecoration(
             gradient: const LinearGradient(
               colors: [
-                Color.fromRGBO(0, 0, 0, 0.3),
+                Color.fromRGBO(0, 0, 0, 0.5),
                 Colors.transparent,
               ],
               begin: Alignment.topCenter,
