@@ -13,7 +13,6 @@ class ReadingsScreen extends StatelessWidget {
         ModalRoute.of(context).settings.arguments as Map<Object, Object>;
     final sensor = routeArgs['sensor'] as Sensor;
     final readings = routeArgs['readings'] as List<Reading>;
-    // print(sensor);
     return Scaffold(
       body: Layout(
         Column(
@@ -22,22 +21,24 @@ class ReadingsScreen extends StatelessWidget {
             Column(
               children: [
                 BackButton(),
-                SensorItem(sensor: sensor, progress: 0),
+                SensorItem(sensor),
                 Container(
                   height: 370,
-                  child: ListView.builder(
-                    itemBuilder: (ctx, index) {
-                      return InkWell(
-                        onTap: () => Navigator.of(context).pushNamed(
-                            '/graph-reading',
-                            arguments: readings[index].name),
-                        borderRadius: BorderRadius.circular(4),
-                        child: ReadingItem(readings[index].name),
-                      );
-                    },
-                    itemCount: readings.length,
-                    padding: const EdgeInsets.only(top: 10),
-                  ),
+                  child: readings != null
+                      ? ListView.builder(
+                          itemBuilder: (ctx, index) {
+                            return InkWell(
+                              onTap: () => Navigator.of(context).pushNamed(
+                                  '/graph-reading',
+                                  arguments: readings[index].name),
+                              borderRadius: BorderRadius.circular(4),
+                              child: ReadingItem(readings[index].name),
+                            );
+                          },
+                          itemCount: readings.length,
+                          padding: const EdgeInsets.only(top: 10),
+                        )
+                      : Text('No readings'),
                 ),
               ],
             ),

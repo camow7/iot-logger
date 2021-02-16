@@ -24,7 +24,7 @@ class LogsScreen extends StatelessWidget {
             Column(
               children: [
                 BackButton(),
-                SensorItem(sensor: sensor, progress: 0),
+                SensorItem(sensor),
                 SubCard(Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,

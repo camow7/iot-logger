@@ -21,10 +21,11 @@ enum DeviceState {
 class Sensor {
   final String id;
   final Status status;
-  String name;
+  final String name;
   final String iconPath;
   final List<Log> logs;
   DeviceState state;
+  double usedSpace;
 
   Sensor({
     @required this.id,
@@ -33,6 +34,7 @@ class Sensor {
     @required this.iconPath,
     this.logs = const [],
     this.state = DeviceState.Loaded,
+    this.usedSpace = 0.25
   });
 }
 

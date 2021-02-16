@@ -6,9 +6,8 @@ import '../shared/main_card.dart';
 
 class SensorItem extends StatelessWidget {
   final Sensor sensor;
-  final double progress;
 
-  SensorItem({this.sensor, this.progress});
+  const SensorItem(this.sensor);
 
   Color get color {
     switch (sensor.status) {
@@ -51,35 +50,36 @@ class SensorItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(4),
                 child: sensorContent(context, svgImage),
               )
-            : sensorContent(context, svgImage),
+            : sensorContent(context, svgImage, path),
       ),
     );
   }
 
-  Widget sensorContent(BuildContext context, SvgPicture svgImage) {
+  Widget sensorContent(BuildContext context, SvgPicture svgImage,
+      [String path]) {
     return Center(
       child: ListTile(
-        leading: sensor.state == DeviceState.Loaded
-            ? Icon(
-                Icons.circle,
-                size: 20,
-                color: color,
-              )
-            : Stack(
+        leading: path != null && path != '/'
+            ? Stack(
                 alignment: AlignmentDirectional.center,
                 children: [
                   Text(
-                    '${(progress * 100).toStringAsFixed(0)}%',
+                    '${(sensor.usedSpace * 100).toStringAsFixed(0)}%',
                     style: TextStyle(fontSize: 10),
                   ),
                   CircularProgressIndicator(
-                    backgroundColor: Theme.of(context).accentColor,
-                    value: progress,
+                    backgroundColor: Theme.of(context).primaryColor,
+                    value: sensor.usedSpace,
                     valueColor: AlwaysStoppedAnimation<Color>(
-                      Theme.of(context).primaryColor,
+                      Theme.of(context).accentColor,
                     ),
                   )
                 ],
+              )
+            : Icon(
+                Icons.circle,
+                size: 20,
+                color: color,
               ),
         title: Text(
           sensor.name,

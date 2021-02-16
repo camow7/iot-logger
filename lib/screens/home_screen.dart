@@ -46,10 +46,7 @@ class HomeScreen extends StatelessWidget {
               'Your Sensor',
               style: Theme.of(context).textTheme.headline1,
             ),
-            SensorItem(
-              sensor: sensor,
-              progress: 0,
-            ),
+            SensorItem(sensor),
             RefreshButton(refreshPage),
           ],
         ),
