@@ -27,29 +27,36 @@ class _LogItem extends StatelessWidget {
   final Log log;
   const _LogItem({this.sensor, this.log});
 
+  routeToReadings(BuildContext context, LogDownloadState logState) {
+    if (logState.status == LogStatus.Downloaded) {
+      Navigator.of(context).pushNamed(
+        '/readings',
+        arguments: {
+          'sensor': sensor,
+          'readings': log.readings,
+        },
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
       // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
       // print('${log.progress}, ${log.logState}');
       return Card(
-          margin: const EdgeInsets.symmetric(
-            horizontal: 40,
-            vertical: 10,
+        margin: const EdgeInsets.symmetric(
+          horizontal: 40,
+          vertical: 10,
+        ),
+        child: InkWell(
+          onTap: () => routeToReadings(context, state),
+          borderRadius: BorderRadius.circular(4),
+          child: Center(
+            child: logTile(context, state),
           ),
-          child: InkWell(
-            onTap: () => Navigator.of(context).pushNamed(
-              '/readings',
-              arguments: {
-                'sensor': sensor,
-                'readings': log.readings,
-              },
-            ),
-            borderRadius: BorderRadius.circular(4),
-            child: Center(
-              child: logTile(context, state),
-            ),
-          ));
+        ),
+      );
     });
   }
 

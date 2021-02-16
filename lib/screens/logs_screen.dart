@@ -36,9 +36,13 @@ class LogsScreen extends StatelessWidget {
                 )),
                 Container(
                   height: 350,
-                  child: ListView.builder(itemBuilder: (ctx, index) {
-                     return LogItem(sensor: sensor, log: sensor.logs[index]);
-                  }, itemCount: sensor.logs.length,padding: const EdgeInsets.only(top: 10),),
+                  child: ListView.builder(
+                    itemBuilder: (ctx, index) {
+                      return LogItem(sensor: sensor, log: sensor.logs[index]);
+                    },
+                    itemCount: sensor.logs.length,
+                    padding: const EdgeInsets.only(top: 10),
+                  ),
                 ),
               ],
             ),
