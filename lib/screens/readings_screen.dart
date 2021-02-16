@@ -7,6 +7,10 @@ import '../widgets/reading_item.dart';
 import '../widgets/sensor_item.dart';
 
 class ReadingsScreen extends StatelessWidget {
+  void refreshPage() {
+    print('refreshing readings screen');
+  }
+
   @override
   Widget build(BuildContext context) {
     final routeArgs =
@@ -36,7 +40,7 @@ class ReadingsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            RefreshButton(null)
+            RefreshButton(refreshPage)
           ],
         ),
       ),

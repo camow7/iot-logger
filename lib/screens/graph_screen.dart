@@ -7,6 +7,10 @@ import '../shared/refresh_button.dart';
 import '../shared/sub_card.dart';
 
 class GraphScreen extends StatelessWidget {
+  void refreshPage() {
+    print('refreshing graph screen');
+  }
+
   @override
   Widget build(BuildContext context) {
     final readingName = ModalRoute.of(context).settings.arguments as String;
@@ -35,16 +39,16 @@ class GraphScreen extends StatelessWidget {
                   ),
                   Text(
                     '5.2',
-                    style: Theme.of(context).textTheme.headline6,
+                    style: Theme.of(context).textTheme.bodyText2,
                   ),
                 ],
               ),
             ),
             Container(
-              padding: const EdgeInsets.all(10),
+              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
               child: GraphItem(),
             ),
-            RefreshButton(null)
+            RefreshButton(refreshPage)
           ],
         ),
       ),

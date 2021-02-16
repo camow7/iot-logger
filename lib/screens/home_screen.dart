@@ -8,7 +8,7 @@ import '../widgets/sensor_item.dart';
 class HomeScreen extends StatelessWidget {
   final Sensor sensor = Sensor(
       id: '1',
-      name: 'Water Tank',
+      name: 'Sensor 1',
       status: DeviceStatus.Connected,
       logs: [
         Log(

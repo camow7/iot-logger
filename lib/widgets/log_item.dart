@@ -94,9 +94,7 @@ class _LogItem extends StatelessWidget {
         ),
         Text(
           '${(state.progress * 100).toStringAsFixed(0)}%',
-          style: TextStyle(
-            fontSize: 10,
-          ),
+          style: Theme.of(context).textTheme.subtitle2,
         )
       ],
     );
@@ -108,10 +106,12 @@ class _LogItem extends StatelessWidget {
       children: [
         // text changes color depending on loading progress bar length
         formatText(
+          context,
           DateFormat.E().format(log.date),
           state.progress > 0.2 ? Colors.white : Theme.of(context).focusColor,
         ),
         formatText(
+          context,
           DateFormat.yMd().format(log.date),
           state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
         )
@@ -119,14 +119,15 @@ class _LogItem extends StatelessWidget {
     );
   }
 
-  Text formatText(String text, Color color) {
+  Text formatText(BuildContext context, String text, Color color) {
     return Text(
       text,
+      // style: Theme.of(context).textTheme.headline4,
       style: TextStyle(
         color: color,
-        fontSize: 25,
+        fontSize: 22,
         fontStyle: FontStyle.italic,
-        fontWeight: FontWeight.w400,
+        fontFamily: 'Montserrat'
       ),
     );
   }

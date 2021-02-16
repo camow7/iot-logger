@@ -14,17 +14,27 @@ class ReadingItem extends StatelessWidget {
       width: double.infinity,
       child: Card(
         child: InkWell(
-          onTap: () => Navigator.of(context).pushNamed('/graph-reading', arguments: name),
+          onTap: () => Navigator.of(context)
+              .pushNamed('/graph-reading', arguments: name),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
             child: ListTile(
               title: Center(
-                child: Text(
-                  name,
-                  style: Theme.of(context).textTheme.headline5,
-                ),
+                child: Text(name, style: Theme.of(context).textTheme.headline6),
               ),
-              trailing: Icon(Icons.arrow_drop_down),
+              trailing: RichText(
+                text: TextSpan(children: [
+                  TextSpan(
+                      text: '5.2',
+                      style: Theme.of(context).textTheme.headline5),
+                  WidgetSpan(
+                    child: Icon(
+                      Icons.arrow_drop_down,
+                      color: Theme.of(context).accentColor,
+                    ),
+                  )
+                ]),
+              ),
             ),
           ),
         ),

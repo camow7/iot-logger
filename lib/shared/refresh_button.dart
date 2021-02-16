@@ -15,9 +15,10 @@ class RefreshButton extends StatelessWidget {
           onPressed: refreshHandler,
           child: Text(
             'Refresh',
+            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w700, fontFamily: 'Montserrat'),
           ),
           shape: const CircleBorder(),
-          padding: const EdgeInsets.all(40),
+          padding: const EdgeInsets.all(35),
           elevation: 3,
           textColor: Theme.of(context).backgroundColor,
         ),

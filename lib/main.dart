@@ -22,24 +22,49 @@ class IotLoggerApp extends StatelessWidget {
         accentColor: darkBlue,
         backgroundColor: Colors.white,
         buttonColor: green,
+        fontFamily: 'Montserrat',
         textTheme: ThemeData.light().textTheme.copyWith(
-            headline1: const TextStyle(
-              color: Colors.white,
-              fontSize: 50,
-              fontWeight: FontWeight.bold,
+              headline1: const TextStyle(
+                color: Colors.white,
+                fontSize: 50,
+                fontWeight: FontWeight.bold,
+              ),
+              // headline2: TextStyle(
+              //     fontWeight: FontWeight.w600, fontSize: 25, color: darkBlue),
+              headline3: TextStyle(
+                fontWeight: FontWeight.w500,
+                fontSize: 25,
+                color: darkBlue,
+              ),
+              headline4: TextStyle(
+                fontWeight: FontWeight.w600,
+                color: darkBlue,
+              ),
+              headline5: TextStyle(
+                color: darkBlue,
+                fontSize: 22,
+                fontWeight: FontWeight.w500,
+              ),
+              headline6: TextStyle(
+                color: darkGreen,
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+              ),
+              bodyText1: TextStyle(
+                color: darkGreen,
+                fontSize: 18,
+                fontWeight: FontWeight.w600,
+              ),
+              bodyText2: TextStyle(
+                color: darkBlue,
+                fontSize: 22,
+                fontWeight: FontWeight.w600,
+              ),
+              // texts within icons
+              subtitle1: TextStyle(color: darkBlue, fontSize: 10),
+              subtitle2: TextStyle(
+                  color: darkBlue, fontSize: 13, fontStyle: FontStyle.italic),
             ),
-            headline4: TextStyle(
-              fontWeight: FontWeight.w600,
-              color: darkBlue,
-            ),
-            headline5: TextStyle(
-              color: darkGreen,
-              // fontSize: 25,
-              fontWeight: FontWeight.w500,
-            ),
-            headline6: TextStyle(fontSize: 23),
-            bodyText1: TextStyle(color: darkGreen, fontSize: 18),
-            bodyText2: TextStyle(color: darkBlue)),
       ),
       routes: {
         '/': (ctx) => HomeScreen(),

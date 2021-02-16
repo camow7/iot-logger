@@ -57,7 +57,7 @@ class SensorItem extends StatelessWidget {
                 children: [
                   Text(
                     '${(sensor.usedSpace * 100).toStringAsFixed(0)}%',
-                    style: TextStyle(fontSize: 10),
+                    style: Theme.of(context).textTheme.subtitle1,
                   ),
                   CircularProgressIndicator(
                     backgroundColor: Theme.of(context).primaryColor,
@@ -76,10 +76,12 @@ class SensorItem extends StatelessWidget {
         title: Text(
           sensor.name,
           textAlign: TextAlign.center,
-          style: TextStyle(
-            color: Theme.of(context).accentColor,
-            fontSize: 30,
-          ),
+          style: Theme.of(context).textTheme.headline3
+          // style: TextStyle(
+          //   fontWeight: FontWeight.w500,
+          //   color: Theme.of(context).accentColor,
+          //   fontSize: 30,
+          // ),
         ),
         trailing: svgImage,
       ),

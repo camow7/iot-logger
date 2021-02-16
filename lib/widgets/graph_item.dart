@@ -10,13 +10,15 @@ class GraphItem extends StatelessWidget {
           aspectRatio: 1.70,
           child: Container(
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.all(
+                borderRadius: const BorderRadius.all(
                   Radius.circular(18),
                 ),
                 color: Theme.of(context).accentColor),
             child: Padding(
-              padding: const EdgeInsets.only(
-                  right: 18.0, left: 18.0, top: 24, bottom: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 18,
+                vertical: 20,
+              ),
               child: LineChart(
                 mainData(),
               ),
@@ -24,10 +26,10 @@ class GraphItem extends StatelessWidget {
           ),
         ),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-          child: Text(
+          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+          child: const Text(
             'Turbidity',
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 14,
               color: Colors.white,
             ),

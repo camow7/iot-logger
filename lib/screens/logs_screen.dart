@@ -9,7 +9,7 @@ import '../shared/sub_card.dart';
 import '../widgets/sensor_item.dart';
 
 class LogsScreen extends StatelessWidget {
-  refreshLogs() {
+  refreshPage() {
     print('refreshing logs');
   }
 
@@ -30,7 +30,11 @@ class LogsScreen extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Text('Past Logs'),
+                      const Text('Past Logs',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 14,
+                          )),
                       const SizedBox(width: 5),
                       SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
                     ],
@@ -48,7 +52,7 @@ class LogsScreen extends StatelessWidget {
                 ),
               ],
             ),
-            RefreshButton(refreshLogs)
+            RefreshButton(refreshPage)
           ],
         ),
       ),
