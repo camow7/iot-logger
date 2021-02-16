@@ -39,7 +39,11 @@ class GraphScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(height: 300, padding: EdgeInsets.all(10), child: GraphItem()), // graph
+            Container(
+              height: 300,
+              padding: EdgeInsets.all(10),
+              child: GraphItem(),
+            ), // graph
             RefreshButton(null)
           ],
         ),

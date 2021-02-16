@@ -34,11 +34,12 @@ class LogsScreen extends StatelessWidget {
                     SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
                   ],
                 )),
-                Column(
-                  children: sensor.logs.map((log) {
-                    return LogItem(sensor: sensor, log: log);
-                  }).toList(),
-                )
+                Container(
+                  height: 350,
+                  child: ListView.builder(itemBuilder: (ctx, index) {
+                     return LogItem(sensor: sensor, log: sensor.logs[index]);
+                  }, itemCount: sensor.logs.length,padding: const EdgeInsets.only(top: 10),),
+                ),
               ],
             ),
             RefreshButton(refreshLogs)

@@ -23,17 +23,21 @@ class ReadingsScreen extends StatelessWidget {
               children: [
                 BackButton(),
                 SensorItem(sensor: sensor, progress: 0),
-                Column(
-                  children: readings
-                      .map(
-                        (reading) => InkWell(
-                          onTap: () => Navigator.of(context)
-                              .pushNamed('/graph-reading', arguments: reading.name),
-                          borderRadius: BorderRadius.circular(4),
-                          child: ReadingItem(reading.name),
-                        ),
-                      )
-                      .toList(),
+                Container(
+                  height: 370,
+                  child: ListView.builder(
+                    itemBuilder: (ctx, index) {
+                      return InkWell(
+                        onTap: () => Navigator.of(context).pushNamed(
+                            '/graph-reading',
+                            arguments: readings[index].name),
+                        borderRadius: BorderRadius.circular(4),
+                        child: ReadingItem(readings[index].name),
+                      );
+                    },
+                    itemCount: readings.length,
+                    padding: const EdgeInsets.only(top: 10),
+                  ),
                 ),
               ],
             ),
