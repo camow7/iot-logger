@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:iot_logger/widgets/graph_item.dart';
 
 import '../shared/layout.dart';
 import '../shared/main_card.dart';
 import '../shared/refresh_button.dart';
 import '../shared/sub_card.dart';
+import '../widgets/graph_item.dart';
 
 class GraphScreen extends StatelessWidget {
   void refreshPage() {
