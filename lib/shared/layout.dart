@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 class Layout extends StatelessWidget {
-  final Widget content;
-  
+  final Widget content;  
   const Layout(this.content);
 
   Widget get saphiLogo {

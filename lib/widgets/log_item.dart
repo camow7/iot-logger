@@ -8,6 +8,7 @@ import '../models/sensor.dart';
 class LogItem extends StatelessWidget {
   final Sensor sensor;
   final Log log;
+
   const LogItem({this.sensor, this.log});
 
   @override

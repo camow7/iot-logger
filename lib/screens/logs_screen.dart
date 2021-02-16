@@ -25,15 +25,17 @@ class LogsScreen extends StatelessWidget {
               children: [
                 BackButton(),
                 SensorItem(sensor),
-                SubCard(Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Text('Past Logs'),
-                    const SizedBox(width: 5),
-                    SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
-                  ],
-                )),
+                SubCard(
+                  content: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Text('Past Logs'),
+                      const SizedBox(width: 5),
+                      SvgPicture.asset('assets/svgs/toggle-arrow.svg'),
+                    ],
+                  ),
+                ),
                 Container(
                   height: 350,
                   child: ListView.builder(

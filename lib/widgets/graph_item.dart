@@ -28,8 +28,9 @@ class GraphItem extends StatelessWidget {
           child: Text(
             'Turbidity',
             style: TextStyle(
-                fontSize: 14,
-                color: Colors.white),
+              fontSize: 14,
+              color: Colors.white,
+            ),
           ),
         ),
       ],
@@ -98,7 +99,8 @@ class GraphItem extends StatelessWidget {
       maxY: 6,
       lineBarsData: [
         LineChartBarData(
-          spots: [ // graph plots
+          spots: [
+            // graph plots
             FlSpot(1, 3),
             FlSpot(2.6, 2),
             FlSpot(4.9, 5),

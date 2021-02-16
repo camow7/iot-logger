@@ -6,22 +6,18 @@ import '../shared/main_card.dart';
 
 class SensorItem extends StatelessWidget {
   final Sensor sensor;
-
   const SensorItem(this.sensor);
 
-  Color get color {
+  SvgPicture getStatusImage(BuildContext context) {
     switch (sensor.status) {
-      case Status.Connected:
-        return Colors.green;
-        break;
-      case Status.Idle:
-        return Colors.amber;
-        break;
-      case Status.Disconnected:
-        return Colors.red;
+      case DeviceStatus.Connected:
+        return SvgPicture.asset('assets/svgs/connected-plug.svg',
+            color: Theme.of(context).accentColor);
         break;
       default:
-        return Colors.grey;
+        return SvgPicture.asset('assets/svgs/plug.svg',
+            color: Theme.of(context).accentColor);
+        break;
     }
   }
 
@@ -36,21 +32,17 @@ class SensorItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String path = ModalRoute.of(context).settings.name; // current screen path
-    SvgPicture svgImage = SvgPicture.asset(
-      'assets/svgs/${sensor.iconPath}.svg',
-      color: Theme.of(context).accentColor,
-    );
     return Container(
       width: double.infinity,
       height: 140,
       child: MainCard(
-        path == '/'
+        content: path == '/'
             ? InkWell(
                 onTap: () => viewLogs(context),
                 borderRadius: BorderRadius.circular(4),
-                child: sensorContent(context, svgImage),
+                child: sensorContent(context, getStatusImage(context)),
               )
-            : sensorContent(context, svgImage, path),
+            : sensorContent(context, getStatusImage(context), path),
       ),
     );
   }
@@ -79,7 +71,7 @@ class SensorItem extends StatelessWidget {
             : Icon(
                 Icons.circle,
                 size: 20,
-                color: color,
+                color: Colors.green,
               ),
         title: Text(
           sensor.name,

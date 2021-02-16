@@ -1,40 +1,29 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-enum Status {
+enum DeviceStatus {
   Connected,
   Disconnected,
-  Idle,
 }
 enum LogStatus {
   Loaded,
   Downloading,
   Downloaded,
-  Viewing
-}
-enum DeviceState {
-  Loaded,
-  Refreshing,
-  Refreshed,
 }
 
 class Sensor {
   final String id;
-  final Status status;
   final String name;
-  final String iconPath;
+  final DeviceStatus status;
   final List<Log> logs;
-  DeviceState state;
-  double usedSpace;
+  final double usedSpace;
 
-  Sensor({
+  const Sensor({
     @required this.id,
-    @required this.status,
     @required this.name,
-    @required this.iconPath,
+    this.status = DeviceStatus.Disconnected,
     this.logs = const [],
-    this.state = DeviceState.Loaded,
-    this.usedSpace = 1
+    this.usedSpace = 1,
   });
 }
 
@@ -43,21 +32,20 @@ class Sensor {
 class Log {
   final String logId;
   final DateTime date;
-  double progress;
-  LogStatus logState;
-  List<Reading> readings;
+  final double progress;
+  final LogStatus logState;
+  final List<Reading> readings;
 
-  Log({
+  const Log({
     @required this.logId,
     @required this.date,
     this.progress = 0.0,
     this.logState = LogStatus.Loaded,
-    this.readings
+    this.readings = const [],
   });
 }
 
 class Reading {
   final String name;
-
   const Reading(this.name);
 }

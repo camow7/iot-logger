@@ -9,8 +9,7 @@ class HomeScreen extends StatelessWidget {
   final Sensor sensor = Sensor(
       id: '1',
       name: 'Water Tank',
-      status: Status.Connected,
-      iconPath: 'plug',
+      status: DeviceStatus.Connected,
       logs: [
         Log(
             date: DateTime.now(),

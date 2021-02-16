@@ -50,13 +50,4 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
           icon: Icon(Icons.done_outline),
         ),
       );
-
-  void view(String date) => emit(
-        LogViewing(
-          date: date,
-          progress: 0.0,
-          status: LogStatus.Viewing,
-          icon: Container(),
-        ),
-      );
 }

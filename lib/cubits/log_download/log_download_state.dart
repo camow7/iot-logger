@@ -24,8 +24,3 @@ class LogDownloaded extends LogDownloadState {
   const LogDownloaded({String date, double progress, LogStatus status, Widget icon})
       : super(date: date, progress: progress, status: status, icon: icon);
 }
-
-class LogViewing extends LogDownloadState {
-  const LogViewing({String date, double progress, LogStatus status, Widget icon})
-      : super(date: date, progress: progress, status: status, icon: icon);
-}

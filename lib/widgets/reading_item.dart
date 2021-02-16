@@ -13,16 +13,19 @@ class ReadingItem extends StatelessWidget {
       ),
       width: double.infinity,
       child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: ListTile(
-            title: Center(
-              child: Text(
-                name,
-                style: Theme.of(context).textTheme.headline5,
+        child: InkWell(
+          onTap: () => Navigator.of(context).pushNamed('/graph-reading', arguments: name),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ListTile(
+              title: Center(
+                child: Text(
+                  name,
+                  style: Theme.of(context).textTheme.headline5,
+                ),
               ),
+              trailing: Icon(Icons.arrow_drop_down),
             ),
-            trailing: Icon(Icons.arrow_drop_down),
           ),
         ),
       ),

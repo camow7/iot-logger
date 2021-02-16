@@ -13,7 +13,7 @@ class DownloadService {
   downloadLog() {
     this.status = LogStatus.Downloading;
     this.progress = _increment(this.progress);
-    print('service progress: ${this.progress}');
+    if (this.progress == 1) print('Download via service complete');
   }
 
   LogStatus getStatus() {

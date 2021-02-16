@@ -24,16 +24,10 @@ class ReadingsScreen extends StatelessWidget {
                 SensorItem(sensor),
                 Container(
                   height: 370,
-                  child: readings != null
+                  child: readings.length > 0
                       ? ListView.builder(
                           itemBuilder: (ctx, index) {
-                            return InkWell(
-                              onTap: () => Navigator.of(context).pushNamed(
-                                  '/graph-reading',
-                                  arguments: readings[index].name),
-                              borderRadius: BorderRadius.circular(4),
-                              child: ReadingItem(readings[index].name),
-                            );
+                            return ReadingItem(readings[index].name);
                           },
                           itemCount: readings.length,
                           padding: const EdgeInsets.only(top: 10),

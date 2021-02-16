@@ -17,7 +17,8 @@ class GraphScreen extends StatelessWidget {
           children: [
             BackButton(),
             MainCard(
-              ListTile(
+              content: ListTile(
+                contentPadding: const EdgeInsets.all(15),
                 title: Text(
                   readingName,
                   textAlign: TextAlign.center,
@@ -26,7 +27,7 @@ class GraphScreen extends StatelessWidget {
               ),
             ),
             SubCard(
-              Column(
+              content: Column(
                 children: [
                   Text(
                     'Last Reading',
@@ -40,10 +41,9 @@ class GraphScreen extends StatelessWidget {
               ),
             ),
             Container(
-              height: 300,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: GraphItem(),
-            ), // graph
+            ),
             RefreshButton(null)
           ],
         ),

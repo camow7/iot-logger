@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 class RefreshButton extends StatelessWidget {
   final Function refreshHandler;
-
   const RefreshButton(this.refreshHandler);
 
   @override
