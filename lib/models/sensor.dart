@@ -34,7 +34,7 @@ class Sensor {
     @required this.iconPath,
     this.logs = const [],
     this.state = DeviceState.Loaded,
-    this.usedSpace = 0.25
+    this.usedSpace = 1
   });
 }
 
