@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_logger/widgets/graph_item.dart';
 
 import '../shared/layout.dart';
 import '../shared/main_card.dart';
@@ -38,7 +39,7 @@ class GraphScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(height: 300, child: Card()), // graph
+            Container(height: 300, padding: EdgeInsets.all(10), child: GraphItem()), // graph
             RefreshButton(null)
           ],
         ),

@@ -27,6 +27,7 @@ dependencies:
   intl: ^0.16.1
   rive: ^0.6.7
   flutter_bloc: ^6.1.1
+  fl_chart: ^0.12.2
 
 
   # The following adds the Cupertino Icons font to your application.
