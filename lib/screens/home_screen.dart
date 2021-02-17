@@ -6,8 +6,8 @@ import '../models/sensor.dart';
 import '../shared/layout.dart';
 
 class HomeScreen extends StatelessWidget {
-  int loggingPeriod = 5000;
-  String logFileName = "21-02-02.CSV";
+  final int loggingPeriod = 5000;
+  final String logFileName = "21-02-12.CSV";
   final List<Sensor> sensors = [
     Sensor(
         id: '1',
@@ -15,12 +15,6 @@ class HomeScreen extends StatelessWidget {
         status: Status.Connected,
         iconPath: 'plug',
         logs: [DateTime.now(), DateTime.now()]),
-    // Sensor(
-    //   id: '2',
-    //   name: 'Sewerage',
-    //   status: Status.Idle,
-    //   iconPath: 'plug',
-    // ),
     Sensor(
       id: '3',
       name: 'Pump',
@@ -111,7 +105,7 @@ class HomeScreen extends StatelessWidget {
                     keyboardType:
                         TextInputType.numberWithOptions(decimal: true),
                     onChanged: (value) {
-                      loggingPeriod = int.parse(value);
+                      //loggingPeriod = int.parse(value);
                     },
                   ),
                 ),
@@ -232,11 +226,63 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
                     onChanged: (value) {
-                      logFileName = value;
+                      //logFileName = value;
                     },
                   ),
                 ),
               ],
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.blueAccent,
+              onPressed: () {
+                context.read<ArduinoBloc>().add(GetCurrentMeasurements(2));
+              },
+              child: Text(
+                "Get Current Measurements",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.blueAccent,
+              onPressed: () {
+                context.read<ArduinoBloc>().add(DeleteLogFile("21-02-08.CSV"));
+              },
+              child: Text(
+                "Delete File",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.blueAccent,
+              onPressed: () {
+                context.read<ArduinoBloc>().add(SetWifiSSID("MATTSArduino"));
+              },
+              child: Text(
+                "Set WIFI SSID",
+                style: TextStyle(fontSize: 20.0),
+              ),
+            ),
+            FlatButton(
+              color: Colors.blue,
+              textColor: Colors.white,
+              padding: EdgeInsets.all(10.0),
+              splashColor: Colors.blueAccent,
+              onPressed: () {
+                context.read<ArduinoBloc>().add(SetWifiPassword("password"));
+              },
+              child: Text(
+                "Set Wifi Password",
+                style: TextStyle(fontSize: 20.0),
+              ),
             ),
           ],
         ),

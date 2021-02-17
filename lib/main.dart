@@ -6,13 +6,15 @@ import 'package:provider/provider.dart';
 import 'screens/home_screen.dart';
 import 'screens/logs_screen.dart';
 
+ArduinoRepository arduinoRepo = ArduinoRepository();
+
 void main() => runApp(
       MultiProvider(
         providers: [
           //Create
           BlocProvider(
             create: (context) =>
-                ArduinoBloc(ArduinoRepository())..add(InitialiseConnection()),
+                ArduinoBloc(arduinoRepo)..add(InitialiseConnection()),
           ),
         ],
         child: IotLoggerApp(),

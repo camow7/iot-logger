@@ -31,3 +31,23 @@ class GetLogFile extends ArduinoEvent {
   final String logFileName;
   GetLogFile(this.logFileName);
 }
+
+class GetCurrentMeasurements extends ArduinoEvent {
+  final int decimalPlaces;
+  GetCurrentMeasurements(this.decimalPlaces);
+}
+
+class DeleteLogFile extends ArduinoEvent {
+  final String fileName;
+  DeleteLogFile(this.fileName);
+}
+
+class SetWifiSSID extends ArduinoEvent {
+  final String ssid;
+  SetWifiSSID(this.ssid);
+}
+
+class SetWifiPassword extends ArduinoEvent {
+  final String password;
+  SetWifiPassword(this.password);
+}

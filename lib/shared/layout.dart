@@ -2,8 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/services/blocs/bloc/arduino_bloc.dart';
-import 'package:iot_logger/services/blocs/network_bloc/network_bloc.dart';
-import 'package:iot_logger/services/blocs/network_bloc/network_state.dart';
 
 class Layout extends StatelessWidget {
   final Widget content;

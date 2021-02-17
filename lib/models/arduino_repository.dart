@@ -1,11 +1,15 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:async/async.dart';
 import 'package:iot_logger/models/message.dart';
+import 'package:path_provider/path_provider.dart';
+import 'dataMessage.dart';
 
 class ArduinoRepository {
+  var directory;
+  String currentFile = '';
+  int currentFileSize = 0;
   final int messageDataIndex =
       5; //Number of bytes before the data part of a message
   final int sensorType = 0; //App is sensor 0
@@ -20,8 +24,15 @@ class ArduinoRepository {
   RestartableTimer countdownTimer;
   bool arduinoisConnected = false;
   RawDatagramSocket _socket;
-  Timer hearBeatTimer;
+  Timer heartBeatTimer;
   int messageCounter = 0;
+  bool newMessageReceived = false;
+  BytesBuilder messageFile;
+
+  ArduinoRepository() {
+    getLocalDirectory();
+    // create message stream
+  }
 
   initialiseConnection(String _wifiIP) {
     // Create UDP Socket to Arduino
@@ -32,7 +43,7 @@ class ArduinoRepository {
         print('UDP Server: ${socket.address.address}:${socket.port}');
 
         // Send Heart Beat
-        hearBeatTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
+        heartBeatTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
           messageBuffer = Uint8List.fromList(
               [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
           sendMessageBuffer(messageBuffer);
@@ -49,6 +60,7 @@ class ArduinoRepository {
         _socket.listen((event) {
           Datagram d = socket.receive();
           if (d == null) return;
+          print(d.data);
           readMessage(d.data);
         });
       });
@@ -81,6 +93,9 @@ class ArduinoRepository {
           print("Bad sequence number: $sequenceNumber vs $messageByte");
         }
         sequenceNumber = messageByte + 1;
+        if (sequenceNumber == 256) {
+          sequenceNumber = 0;
+        }
         currentState = MessageState.SENSOR_TYPE;
         break;
       case MessageState.SENSOR_TYPE:
@@ -113,30 +128,52 @@ class ArduinoRepository {
   }
 
   // Incoming Messages
-  void parsePayload() {
+  Future<void> parsePayload() async {
     //Do something with the data payload
     messageData[currentPayloadByte] = 0;
     switch (messageId) {
       case MessageType.HEART_BEAT:
         print('HEART_BEAT Received');
+        newMessageReceived = true;
         countdownTimer.reset();
         break;
       case MessageType.CONNECT:
+        newMessageReceived = true;
         print('CONNECT ' + String.fromCharCodes(messageData));
         break;
       case MessageType.SEND_LOG_FILE_SIZE:
+        newMessageReceived = true;
+        ByteData logFileSize =
+            ByteData.sublistView(messageData, 0, payloadSize);
+        currentFileSize = logFileSize.getInt32(0, Endian.little);
+        // print('Log File Size Received = ' + currentFileSize.toString());
         break;
       case MessageType.SEND_LOG_FILE_NAME:
+        newMessageReceived = true;
         print('Log File Name Received: ' +
             String.fromCharCodes(
                 messageData.sublist(0, payloadSize))); //messageData
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
-        // Receive A log file here
-        print('Log File Chunck Received');
-        print(messageData.sublist(0, payloadSize));
+        messageFile.add(messageData.sublist(0, payloadSize));
+
+        print("Current Log File Size = " +
+            messageFile.length.toString() +
+            " totalSize = " +
+            currentFileSize.toString() +
+            " sequenceNumber = " +
+            sequenceNumber.toString());
+
+        // When file is downloaded
+        if (messageFile.length >= currentFileSize) {
+          // Write log file chunk to file, if there is no file this will create one
+          File('${directory.path}/$currentFile')
+              .writeAsStringSync(messageFile.toString());
+          print("File Downloaded");
+        }
         break;
       case MessageType.SEND_SD_CARD_INFO:
+        newMessageReceived = true;
         ByteData sdCardInfo = ByteData.sublistView(messageData, 0, payloadSize);
         print(messageData.sublist(0, payloadSize));
         print('Card Used Space: ' +
@@ -145,21 +182,25 @@ class ArduinoRepository {
             sdCardInfo.getInt16(2, Endian.little).toString());
         break;
       case MessageType.SEND_LOGGING_PERIOD:
+        newMessageReceived = true;
         ByteData loggingPeriod =
             ByteData.sublistView(messageData, 0, payloadSize);
         print('Logging Period Received: ' +
             loggingPeriod.getInt32(0, Endian.little).toString());
         break;
       case MessageType.SEND_RTC_TIME:
+        newMessageReceived = true;
         ByteData rtcTime = ByteData.sublistView(messageData, 0, payloadSize);
         print('Received RTC Time = ' +
             rtcTime.getInt32(0, Endian.little).toString());
         break;
       case MessageType.SEND_CURRENT_MEASUREMENTS:
-        // TODO: Handle this case.
-        //save current measurements
+        print('Current Measurements Message Received: ' +
+            String.fromCharCodes(
+                messageData.sublist(0, payloadSize))); //messageData
         break;
       case MessageType.SEND_BATTERY_INFO:
+        newMessageReceived = true;
         ByteData batteryInfo =
             ByteData.sublistView(messageData, 0, payloadSize);
         print('Battery Voltage: ' +
@@ -168,6 +209,7 @@ class ArduinoRepository {
             batteryInfo.getInt32(4, Endian.little).toString());
         break;
       case MessageType.ERROR_MSG:
+        newMessageReceived = true;
         print('Error Message Received: ' +
             String.fromCharCodes(
                 messageData.sublist(0, payloadSize))); //messageData
@@ -179,7 +221,6 @@ class ArduinoRepository {
   }
 
   // Outgoing Messages
-  // Working
   getLoggingPeriod() {
     int payloadSize = 1;
     messageBuffer = new Uint8List(payloadSize + messageDataIndex);
@@ -277,40 +318,118 @@ class ArduinoRepository {
     print('SENT GET LOG LIST REQUEST');
   }
 
-  // Not Finished
-  getCurrentMeasurements() {
-    int payloadSize = 1;
-    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
-    messageBuffer[0] = 0xFE;
-    messageBuffer[1] = payloadSize;
-    messageBuffer[2] = messageCounter;
-    messageBuffer[3] = sensorType;
-    messageBuffer[4] = messageIndexMap[MessageType.GET_CURRENT_MEASURMENTS];
-    messageBuffer[5] = 1; // Payload
-    sendMessageBuffer(messageBuffer);
-    print('SENT CURRENT MEASUREMENT REQUEST');
-  }
-
   getLogFile(String fileName) {
-    List<int> bytes = utf8.encode(
-        fileName); //ASK CAM WHAT TO TRANSFER THESE AS UTF8, UTF 16......
+    messageFile = new BytesBuilder();
+    //clear the file if it is already present
+    if (File('${directory.path}/$fileName').existsSync()) {
+      print("Deleted Existing ${directory.path}/$fileName' file");
+      File('${directory.path}/$fileName').delete();
+    }
 
-    // int payloadSize = fileName.length.bitLength;
+    currentFile = fileName;
+    List<int> bytes = fileName.codeUnits;
+    int payloadSize = bytes.length;
     messageBuffer = new Uint8List(payloadSize + messageDataIndex);
     messageBuffer[0] = 0xFE;
     messageBuffer[1] = payloadSize;
     messageBuffer[2] = messageCounter;
     messageBuffer[3] = sensorType;
     messageBuffer[4] = messageIndexMap[MessageType.GET_LOG_FILE];
-    messageBuffer[5] =
-        1; // Payload//NEED TO SET MESSAGE PAYLOAD TO STRING CONVERTED TO BYTES
+    for (int i = 0; i < payloadSize; i++) {
+      messageBuffer[i + messageDataIndex] =
+          bytes[i]; // insert fileName String as payload
+    }
+
+    sendMessageBuffer(messageBuffer);
+    print('SENT LOG FILE REQUEST: $fileName');
+  }
+
+  getLogFileSize(String fileName) {
+    List<int> bytes = fileName.codeUnits;
+    int payloadSize = bytes.length;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.GET_LOG_FILE_SIZE];
+    for (int i = 0; i < payloadSize; i++) {
+      messageBuffer[i + messageDataIndex] =
+          bytes[i]; // insert fileName as payload
+    }
+
+    sendMessageBuffer(messageBuffer);
+    print('SENT LOG FILE SIZE REQUEST: $fileName');
+  }
+
+  getCurrentMeasurements(int decimalPlaces) {
+    int payloadSize = 4;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.GET_CURRENT_MEASURMENTS];
+    messageBuffer
+      ..buffer
+          .asByteData()
+          .setInt32(5, decimalPlaces, Endian.little); // Payload
     sendMessageBuffer(messageBuffer);
     print('SENT CURRENT MEASUREMENT REQUEST');
   }
 
-  getLogFileInfo() {}
+  setWifiSSID(String ssid) {
+    List<int> bytes = ssid.codeUnits;
+    int payloadSize = bytes.length;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.SET_WIFI_SSID];
+    for (int i = 0; i < payloadSize; i++) {
+      messageBuffer[i + messageDataIndex] =
+          bytes[i]; // insert fileName as payload
+    }
 
-  deleteLogFile() {}
+    sendMessageBuffer(messageBuffer);
+    print('SENT SET WIFI SSID REQUEST');
+  }
+
+  setWifiPassword(String password) {
+    List<int> bytes = password.codeUnits;
+    int payloadSize = bytes.length;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.SET_WIFI_PASSWORD];
+    for (int i = 0; i < payloadSize; i++) {
+      messageBuffer[i + messageDataIndex] = bytes[i]; // insert ssid as payload
+    }
+
+    sendMessageBuffer(messageBuffer);
+    print('SENT SET WIFI PASSWORD REQUEST');
+  }
+
+  deleteLogFile(String fileName) {
+    List<int> bytes = fileName.codeUnits;
+    int payloadSize = bytes.length;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.DELETE_LOG_FILE];
+    for (int i = 0; i < payloadSize; i++) {
+      messageBuffer[i + messageDataIndex] =
+          bytes[i]; // insert fileName as payload
+    }
+
+    sendMessageBuffer(messageBuffer);
+    print('SENT DELETE FILE REQUEST');
+  }
 
   sendMessageBuffer(Uint8List messageBuffer) {
     try {
@@ -319,6 +438,22 @@ class ArduinoRepository {
     } catch (e) {
       print(e);
     }
+  }
+
+  Stream<DataMessage> newMessage() async* {
+    // print("1. messageRecived");
+    while (true) {
+      // print("2. messageRecived");
+      if (newMessageReceived) {
+        print("3. messageRecived");
+        yield DataMessage("message");
+        newMessageReceived = false;
+      }
+    }
+  }
+
+  Future<void> getLocalDirectory() async {
+    directory = await getExternalStorageDirectory();
   }
 }
 
@@ -344,6 +479,8 @@ Map messageIndexMap = {
   MessageType.GET_BATTERY_INFO: 18,
   MessageType.SEND_BATTERY_INFO: 19,
   MessageType.GET_LOG_FILE_SIZE: 20,
+  MessageType.SET_WIFI_SSID: 21,
+  MessageType.SET_WIFI_PASSWORD: 22,
   MessageType.ERROR_MSG: 200
 };
 

@@ -49,6 +49,8 @@ enum MessageType {
   SEND_BATTERY_INFO,
   GET_LOG_FILE_SIZE,
   ERROR_MSG,
+  SET_WIFI_SSID,
+  SET_WIFI_PASSWORD,
 }
 
 Map messageMap = {
@@ -73,5 +75,7 @@ Map messageMap = {
   18: MessageType.GET_BATTERY_INFO,
   19: MessageType.SEND_BATTERY_INFO,
   20: MessageType.GET_LOG_FILE_SIZE,
+  21: MessageType.SET_WIFI_SSID,
+  22: MessageType.SET_WIFI_PASSWORD,
   200: MessageType.ERROR_MSG
 };
