@@ -61,9 +61,15 @@ class IotLoggerApp extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
               // texts within icons
-              subtitle1: TextStyle(color: darkBlue, fontSize: 10),
+              subtitle1: TextStyle(
+                color: darkBlue,
+                fontSize: 10,
+              ),
               subtitle2: TextStyle(
-                  color: darkBlue, fontSize: 13, fontStyle: FontStyle.italic),
+                color: darkBlue,
+                fontSize: 13,
+                fontStyle: FontStyle.italic,
+              ),
             ),
       ),
       routes: {

@@ -62,23 +62,27 @@ class _LogItem extends StatelessWidget {
   }
 
   Widget logTile(BuildContext context, LogDownloadState state) {
-    return Stack(
-      children: [
-        LinearProgressIndicator(
-          minHeight: 60,
-          value: state.progress,
-          valueColor:
-              AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
-        ),
-        ListTile(
-          leading: folderIcon(context, state),
-          title: logDate(context, state),
-          trailing: IconButton(
-            icon: state.icon,
-            onPressed: () => context.read<LogDownloadCubit>().download(),
+    return Container(
+      height: MediaQuery.of(context).size.height * 0.06,
+      child: Stack(
+        fit: StackFit.loose,
+        children: [
+          LinearProgressIndicator(
+            minHeight: double.infinity,
+            value: state.progress,
+            valueColor:
+                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
           ),
-        )
-      ],
+          ListTile(
+            leading: folderIcon(context, state),
+            title: logDate(context, state),
+            trailing: IconButton(
+              icon: state.icon,
+              onPressed: () => context.read<LogDownloadCubit>().download(),
+            ),
+          )
+        ],
+      ),
     );
   }
 

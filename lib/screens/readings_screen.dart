@@ -27,14 +27,14 @@ class ReadingsScreen extends StatelessWidget {
                 BackButton(),
                 SensorItem(sensor),
                 Container(
-                  height: 370,
+                  height: MediaQuery.of(context).size.height * 0.38,
                   child: readings.length > 0
                       ? ListView.builder(
                           itemBuilder: (ctx, index) {
                             return ReadingItem(readings[index].name);
                           },
                           itemCount: readings.length,
-                          padding: const EdgeInsets.only(top: 10),
+                          padding: const EdgeInsets.only(top: 0),
                         )
                       : Text('No readings'),
                 ),

@@ -5,15 +5,16 @@ class Layout extends StatelessWidget {
   final Widget content;  
   const Layout(this.content);
 
-  Widget get saphiLogo {
+  Widget getSaphiLogo(BuildContext context) {
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          height: 150,
+          height: MediaQuery.of(context).size.height * (isLandscape ? 0.2 : 0.15),
           child: SvgPicture.asset(
             'assets/svgs/saphi-logo-white-text.svg',
-            width: 150,
+            width: MediaQuery.of(context).size.height * (isLandscape ? 0.3 : 0.15),
           ),
         ),
       ],
@@ -47,9 +48,9 @@ class Layout extends StatelessWidget {
         Container(
           child: Column(
             children: [
-              saphiLogo,
+              getSaphiLogo(context),
               Container(
-                height: 700,
+                height: MediaQuery.of(context).size.height * 0.7,
                 child: content,
               ),
             ],

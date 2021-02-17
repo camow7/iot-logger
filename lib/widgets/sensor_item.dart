@@ -31,10 +31,11 @@ class SensorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String path = ModalRoute.of(context).settings.name; // current screen path
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final String path = ModalRoute.of(context).settings.name; // current screen path
     return Container(
-      width: double.infinity,
-      height: 140,
+      width: isLandscape ? MediaQuery.of(context).size.width * 0.5 : double.infinity,
+      height: isLandscape ? MediaQuery.of(context).size.height * 0.3 : MediaQuery.of(context).size.height * 0.15,
       child: MainCard(
         content: path == '/'
             ? InkWell(
@@ -51,6 +52,8 @@ class SensorItem extends StatelessWidget {
       [String path]) {
     return Center(
       child: ListTile(
+        // tileColor: Colors.red,
+        // contentPadding: EdgeInsets.all(20),
         leading: path != null && path != '/'
             ? Stack(
                 alignment: AlignmentDirectional.center,

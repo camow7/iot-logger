@@ -41,7 +41,7 @@ class LogsScreen extends StatelessWidget {
                   ),
                 ),
                 Container(
-                  height: 350,
+                  height: MediaQuery.of(context).size.height * 0.3,
                   child: ListView.builder(
                     itemBuilder: (ctx, index) {
                       return LogItem(sensor: sensor, log: sensor.logs[index]);
