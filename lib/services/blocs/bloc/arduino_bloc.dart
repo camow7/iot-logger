@@ -3,13 +3,10 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:iot_logger/models/StateMessage.dart';
 
 import 'package:iot_logger/models/arduino_repository.dart';
-import 'package:iot_logger/models/dataMessage.dart';
 import 'package:meta/meta.dart';
-import 'package:wifi_info_flutter/wifi_info_flutter.dart';
-import 'dart:io' show Platform;
-import 'package:wifi_iot/wifi_iot.dart';
 
 part 'arduino_event.dart';
 part 'arduino_state.dart';
@@ -17,8 +14,8 @@ part 'arduino_state.dart';
 class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
   final ArduinoRepository _arduinoRepository;
 
-  StreamSubscription _subscription;
-  StreamSubscription<DataMessage> messageSubscription;
+  StreamSubscription<StateMessage> _messageSubscription;
+  StreamSubscription<bool> _heartbeatSubscription;
   Stream heartBeatStream;
   final Connectivity _connectivity = Connectivity();
   String wifiName, wifiIP;
@@ -26,6 +23,7 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
   int destinationPort = 2506;
   InternetAddress destinationIP = InternetAddress("10.0.0.1");
   Timer timer;
+  int connectionCounter = 0;
   //Future<String> fileName = 'test.txt';
 
   ArduinoBloc(this._arduinoRepository) : super(ArduinoInitial());
@@ -33,40 +31,11 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
   @override
   Stream<ArduinoState> mapEventToState(ArduinoEvent event) async* {
     if (event is InitialiseConnection) {
-      print("Initialising Wifi Connection...");
-
-      if (Platform.isAndroid) {
-        WiFiForIoTPlugin.forceWifiUsage(true);
-      }
-
-      _subscription = _connectivity.onConnectivityChanged.listen(
-        (status) async {
-          print("Connection Change Detected");
-          try {
-            wifiName = await WifiInfo().getWifiName();
-            wifiIP = await WifiInfo().getWifiIP();
-
-            // If Wifi is connected
-            if (wifiIP != null) {
-              isConnectedToWifi = true;
-              print('Wifi Connected: $wifiName $wifiIP');
-              _arduinoRepository.initialiseConnection(wifiIP);
-              add(ConnectionChanged(ArduinoConnected()));
-            } else {
-              //No Wifi Found
-              print('No Wifi Detected');
-              messageSubscription.cancel();
-              isConnectedToWifi = false;
-
-              add(ConnectionChanged(ArduinoDisconnected()));
-            }
-          } catch (e) {
-            messageSubscription.cancel();
-            print("No Connections Found");
-            print(e.toString());
-          }
-        },
-      );
+      _heartbeatSubscription =
+          _arduinoRepository.heartBeatStream.listen((value) {
+        print("HeartBeat Received");
+      });
+      yield ArduinoConnected();
     } else if (event is GetLoggingPeriod) {
       _arduinoRepository.getLoggingPeriod();
       yield ArduinoConnected();
@@ -90,6 +59,12 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
       yield ArduinoConnected();
     } else if (event is GetLogFile) {
       _arduinoRepository.getLogFile(event.logFileName);
+      _messageSubscription = _arduinoRepository.messageStream.listen((message) {
+        print("Download: " + message.percentage.toString());
+        if (message.percentage >= 100.0) {
+          _messageSubscription.cancel();
+        }
+      });
       yield ArduinoConnected();
     } else if (event is ConnectionChanged) {
       yield event.connection;
@@ -106,11 +81,5 @@ class ArduinoBloc extends Bloc<ArduinoEvent, ArduinoState> {
       _arduinoRepository.setWifiPassword(event.password);
       yield ArduinoConnected();
     }
-  }
-
-  @override
-  Future<void> close() {
-    _subscription?.cancel();
-    return super.close();
   }
 }

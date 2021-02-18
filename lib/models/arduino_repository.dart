@@ -2,8 +2,12 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:async/async.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:iot_logger/models/message.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:wifi_info_flutter/wifi_info_flutter.dart';
+import 'package:wifi_iot/wifi_iot.dart';
+import 'StateMessage.dart';
 import 'dataMessage.dart';
 
 class ArduinoRepository {
@@ -21,52 +25,122 @@ class ArduinoRepository {
   int sequenceNumber = 0;
   int receivedSensorType = 0;
   int currentPayloadByte = 0;
+  int missedBytes = 0;
   RestartableTimer countdownTimer;
-  bool arduinoisConnected = false;
+  bool arduinoisConnected = true;
   RawDatagramSocket _socket;
   Timer heartBeatTimer;
   int messageCounter = 0;
   bool newMessageReceived = false;
   BytesBuilder messageFile;
+  StreamController<StateMessage> controller;
+  Stream messageStream;
+  StreamController<bool> heartBeatController;
+  Stream heartBeatStream;
+  String wifiIP, wifiName;
+  StreamSubscription _subscription;
+  final Connectivity _connectivity = Connectivity();
 
   ArduinoRepository() {
-    getLocalDirectory();
-    // create message stream
+    initialiseWifiConnection();
+    setLocalDirectory();
+    controller = StreamController<StateMessage>.broadcast();
+    messageStream = controller.stream;
+    heartBeatController = StreamController<bool>.broadcast();
+    heartBeatStream = heartBeatController.stream;
   }
 
-  initialiseConnection(String _wifiIP) {
+  initialiseWifiConnection() async {
+    print("Initialising Wifi Connection...");
+    if (Platform.isAndroid) {
+      WiFiForIoTPlugin.forceWifiUsage(true);
+    } else {
+      // iOS needs an initial connection
+      try {
+        wifiName = await WifiInfo().getWifiName();
+        wifiIP = await WifiInfo().getWifiIP();
+        // Wifi Connected
+        if (wifiIP != null && wifiName != null) {
+          print('Wifi Connected: $wifiName $wifiIP');
+          initialiseArduinoConnection(wifiIP);
+        } else {
+          // No Wifi Found
+          print('No Wifi Detected');
+        }
+      } catch (e) {
+        //messageSubscription.cancel();
+        print("No Connections Found");
+        print(e.toString());
+      }
+    }
+
+    // Listen and adjust to changes in the network
+    _subscription = _connectivity.onConnectivityChanged.listen(
+      (status) async {
+        print("Connection Detected");
+        try {
+          wifiName = await WifiInfo().getWifiName();
+          wifiIP = await WifiInfo().getWifiIP();
+
+          // If Wifi is connected
+          // if (wifiIP != null && wifiName != null) {
+          print('Wifi Connected: $wifiName @ $wifiIP');
+
+          initialiseArduinoConnection(wifiIP);
+          // } else {
+          //No Wifi Found
+          // print('No Wifi Detected');
+          // }
+        } catch (e) {
+          //messageSubscription.cancel();
+          print("No Connections Found");
+          print(e.toString());
+        }
+      },
+    );
+  }
+
+  initialiseArduinoConnection(String wifiIP) {
+    print("Initialising Arduino Connection...");
     // Create UDP Socket to Arduino
     try {
-      RawDatagramSocket.bind(InternetAddress(_wifiIP), 4444)
+      RawDatagramSocket.bind(InternetAddress(wifiIP), 4444)
           .then((RawDatagramSocket socket) {
         this._socket = socket;
-        print('UDP Server: ${socket.address.address}:${socket.port}');
+        print('Creating UDP Server @ ${socket.address.address}:${socket.port}');
 
         // Send Heart Beat
-        heartBeatTimer = Timer.periodic(Duration(seconds: 1), (Timer t) {
-          messageBuffer = Uint8List.fromList(
-              [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
-          sendMessageBuffer(messageBuffer);
-          // print("Sent Heart Beat");
+        heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
+          if (arduinoisConnected) {
+            print("heart beat sent");
+            messageBuffer = Uint8List.fromList(
+                [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
+            sendMessageBuffer(messageBuffer);
+          }
         });
 
         // Start connection timer
         countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
-          print('Arduino has timedout');
-          arduinoisConnected = false;
+          heartBeatController.add(false);
+          print("Arduino TimedOut");
         });
 
         //Listen for messages
         _socket.listen((event) {
           Datagram d = socket.receive();
           if (d == null) return;
-          print(d.data);
           readMessage(d.data);
         });
       });
     } catch (e) {
       print(e);
     }
+  }
+
+  stopHeartBeat() {
+    print("arduino disconnected");
+    arduinoisConnected = false;
+    heartBeatTimer.cancel();
   }
 
   readMessage(Uint8List data) {
@@ -91,6 +165,7 @@ class ArduinoRepository {
       case MessageState.SEQUENCE:
         if ((sequenceNumber) != messageByte) {
           print("Bad sequence number: $sequenceNumber vs $messageByte");
+          //missedBytes = missedBytes + ((sequenceNumber - messageByte).abs() * 255);
         }
         sequenceNumber = messageByte + 1;
         if (sequenceNumber == 256) {
@@ -116,7 +191,6 @@ class ArduinoRepository {
   }
 
   void parsePayloadByte(int payloadByte) {
-    // print(String.fromCharCode(payloadByte));
     messageData[currentPayloadByte] = payloadByte;
     currentPayloadByte++;
     if (currentPayloadByte >= payloadSize) {
@@ -128,13 +202,13 @@ class ArduinoRepository {
   }
 
   // Incoming Messages
-  Future<void> parsePayload() async {
+  parsePayload() {
     //Do something with the data payload
     messageData[currentPayloadByte] = 0;
     switch (messageId) {
       case MessageType.HEART_BEAT:
-        print('HEART_BEAT Received');
-        newMessageReceived = true;
+        heartBeatController.add(true);
+        arduinoisConnected = true;
         countdownTimer.reset();
         break;
       case MessageType.CONNECT:
@@ -146,7 +220,7 @@ class ArduinoRepository {
         ByteData logFileSize =
             ByteData.sublistView(messageData, 0, payloadSize);
         currentFileSize = logFileSize.getInt32(0, Endian.little);
-        // print('Log File Size Received = ' + currentFileSize.toString());
+        print('Log File Size Received = ' + currentFileSize.toString());
         break;
       case MessageType.SEND_LOG_FILE_NAME:
         newMessageReceived = true;
@@ -160,16 +234,22 @@ class ArduinoRepository {
         print("Current Log File Size = " +
             messageFile.length.toString() +
             " totalSize = " +
-            currentFileSize.toString() +
-            " sequenceNumber = " +
-            sequenceNumber.toString());
+            currentFileSize.toString());
 
         // When file is downloaded
-        if (messageFile.length >= currentFileSize) {
+        if (messageFile.length / (currentFileSize - missedBytes) == 1.0) {
+          messageFile = BytesBuilder();
+          missedBytes = 0;
+          currentFileSize = 0;
           // Write log file chunk to file, if there is no file this will create one
           File('${directory.path}/$currentFile')
               .writeAsStringSync(messageFile.toString());
+          controller.add(StateMessage(
+              ((messageFile.length / currentFileSize) * 100).roundToDouble()));
           print("File Downloaded");
+        } else {
+          controller.add(StateMessage(
+              ((messageFile.length / currentFileSize) * 100).roundToDouble()));
         }
         break;
       case MessageType.SEND_SD_CARD_INFO:
@@ -319,6 +399,7 @@ class ArduinoRepository {
   }
 
   getLogFile(String fileName) {
+    missedBytes = 0;
     messageFile = new BytesBuilder();
     //clear the file if it is already present
     if (File('${directory.path}/$fileName').existsSync()) {
@@ -440,20 +521,8 @@ class ArduinoRepository {
     }
   }
 
-  Stream<DataMessage> newMessage() async* {
-    // print("1. messageRecived");
-    while (true) {
-      // print("2. messageRecived");
-      if (newMessageReceived) {
-        print("3. messageRecived");
-        yield DataMessage("message");
-        newMessageReceived = false;
-      }
-    }
-  }
-
-  Future<void> getLocalDirectory() async {
-    directory = await getExternalStorageDirectory();
+  Future<void> setLocalDirectory() async {
+    directory = await getApplicationDocumentsDirectory();
   }
 }
 

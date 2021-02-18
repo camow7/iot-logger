@@ -7,7 +7,7 @@ import '../shared/layout.dart';
 
 class HomeScreen extends StatelessWidget {
   final int loggingPeriod = 5000;
-  final String logFileName = "21-02-12.CSV";
+  final String logFileName = "DEV-LOG.CSV";
   final List<Sensor> sensors = [
     Sensor(
         id: '1',
