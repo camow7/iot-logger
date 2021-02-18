@@ -30,7 +30,7 @@ class GraphScreen extends StatelessWidget {
             BackButton(),
             MainCard(
               content: ListTile(
-                contentPadding: const EdgeInsets.all(15),
+                contentPadding: const EdgeInsets.all(20),
                 title: Text(
                   readingName,
                   textAlign: TextAlign.center,

@@ -43,15 +43,13 @@ class _LogItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LogDownloadCubit, LogDownloadState>(builder: (_, state) {
-      // print('${state.date}, ${state.progress}, ${state.status}, ${state.icon}');
-      // print('${log.progress}, ${log.logState}');
       return Card(
         margin: const EdgeInsets.symmetric(
           horizontal: 40,
           vertical: 10,
         ),
         child: InkWell(
-          onTap: () => routeToReadings(context, state),
+          onTap: () => null, // routeToReadings(context, state),
           borderRadius: BorderRadius.circular(4),
           child: Center(
             child: logTile(context, state),

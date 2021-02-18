@@ -17,6 +17,7 @@ class Sensor {
   final DeviceStatus status;
   final List<Log> logs;
   final double usedSpace;
+  final List<Reading> readings;
 
   const Sensor({
     @required this.id,
@@ -24,6 +25,7 @@ class Sensor {
     this.status = DeviceStatus.Disconnected,
     this.logs = const [],
     this.usedSpace = 1,
+    this.readings = const []
   });
 }
 

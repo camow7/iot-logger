@@ -56,6 +56,7 @@ flutter:
     - assets/svgs/download.svg
     - assets/svgs/saphi-logo-white-text.svg
     - assets/svgs/toggle-arrow.svg
+    - assets/svgs/real-time.svg
 
     - assets/images/land.jpg
 

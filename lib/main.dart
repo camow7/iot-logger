@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:iot_logger/screens/sensor_screen.dart';
 
 import './screens/home_screen.dart';
 import './screens/logs_screen.dart';
@@ -74,6 +75,7 @@ class IotLoggerApp extends StatelessWidget {
       ),
       routes: {
         '/': (ctx) => HomeScreen(),
+        '/sensor': (ctx) => SensorScreen(),
         '/logs': (ctx) => LogsScreen(),
         '/readings': (ctx) => ReadingsScreen(),
         '/graph-reading': (ctx) => GraphScreen(),

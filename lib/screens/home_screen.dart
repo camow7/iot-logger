@@ -10,6 +10,12 @@ class HomeScreen extends StatelessWidget {
       id: '1',
       name: 'Sensor 1',
       status: DeviceStatus.Connected,
+      readings: [
+              Reading('Turb 1'),
+              Reading('Turb 2'),
+              Reading('Turb 3'),
+              Reading('Temp'),
+            ],
       logs: [
         Log(
             date: DateTime.now(),
