@@ -13,10 +13,18 @@ class GraphScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final readingName = ModalRoute.of(context).settings.arguments as String;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
       body: Layout(
-        Column(
+        content: isLandscape ? SingleChildScrollView(child: pageContent(context),): pageContent(context),
+      ),
+    );
+  }
+
+  Widget pageContent(BuildContext context) {
+    final readingName = ModalRoute.of(context).settings.arguments as String;
+    return Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             BackButton(),
@@ -45,13 +53,12 @@ class GraphScreen extends StatelessWidget {
               ),
             ),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+              width: MediaQuery.of(context).size.width * 0.9,
+              margin: EdgeInsets.only(top:20),
               child: GraphItem(),
             ),
             RefreshButton(refreshPage)
           ],
-        ),
-      ),
-    );
+        );
   }
 }

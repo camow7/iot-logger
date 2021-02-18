@@ -13,37 +13,50 @@ class ReadingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    return Scaffold(
+      body: Layout(
+        content: isLandscape
+            ? SingleChildScrollView(child: pageContent(context, isLandscape))
+            : pageContent(context, isLandscape),
+      ),
+    );
+  }
+
+  Widget pageContent(BuildContext context, bool isLandscape) {
     final routeArgs =
         ModalRoute.of(context).settings.arguments as Map<Object, Object>;
     final sensor = routeArgs['sensor'] as Sensor;
     final readings = routeArgs['readings'] as List<Reading>;
-    return Scaffold(
-      body: Layout(
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
         Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Column(
-              children: [
-                BackButton(),
-                SensorItem(sensor),
-                Container(
-                  height: MediaQuery.of(context).size.height * 0.38,
-                  child: readings.length > 0
-                      ? ListView.builder(
-                          itemBuilder: (ctx, index) {
-                            return ReadingItem(readings[index].name);
-                          },
-                          itemCount: readings.length,
-                          padding: const EdgeInsets.only(top: 0),
-                        )
-                      : Text('No readings'),
-                ),
-              ],
+            BackButton(),
+            SensorItem(sensor),
+            Container(
+              height: MediaQuery.of(context).size.height * 0.38,
+              child: readings.length > 0
+                  ? GridView(
+                      padding: EdgeInsets.only(top: 10),
+                      children: readings
+                          .map((reading) => ReadingItem(reading.name))
+                          .toList(),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        childAspectRatio: isLandscape ? 5.5 : 4.5,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 5,
+                        maxCrossAxisExtent: 500,
+                      ),
+                    )
+                  : Text('No readings'),
             ),
-            RefreshButton(refreshPage)
           ],
         ),
-      ),
+        RefreshButton(refreshPage)
+      ],
     );
   }
 }

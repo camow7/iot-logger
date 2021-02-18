@@ -31,20 +31,16 @@ class SensorItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
-    final String path = ModalRoute.of(context).settings.name; // current screen path
-    return Container(
-      width: isLandscape ? MediaQuery.of(context).size.width * 0.5 : double.infinity,
-      height: isLandscape ? MediaQuery.of(context).size.height * 0.3 : MediaQuery.of(context).size.height * 0.15,
-      child: MainCard(
-        content: path == '/'
-            ? InkWell(
-                onTap: () => viewLogs(context),
-                borderRadius: BorderRadius.circular(4),
-                child: sensorContent(context, getStatusImage(context)),
-              )
-            : sensorContent(context, getStatusImage(context), path),
-      ),
+    final String path =
+        ModalRoute.of(context).settings.name; // current screen path
+    return MainCard(
+      content: path == '/'
+          ? InkWell(
+              onTap: () => viewLogs(context),
+              borderRadius: BorderRadius.circular(4),
+              child: sensorContent(context, getStatusImage(context)),
+            )
+          : sensorContent(context, getStatusImage(context), path),
     );
   }
 
@@ -76,16 +72,15 @@ class SensorItem extends StatelessWidget {
                 size: 20,
                 color: Colors.green,
               ),
-        title: Text(
-          sensor.name,
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.headline3
-          // style: TextStyle(
-          //   fontWeight: FontWeight.w500,
-          //   color: Theme.of(context).accentColor,
-          //   fontSize: 30,
-          // ),
-        ),
+        title: Text(sensor.name,
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.headline3
+            // style: TextStyle(
+            //   fontWeight: FontWeight.w500,
+            //   color: Theme.of(context).accentColor,
+            //   fontSize: 30,
+            // ),
+            ),
         trailing: svgImage,
       ),
     );

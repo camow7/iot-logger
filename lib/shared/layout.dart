@@ -3,7 +3,7 @@ import 'package:flutter_svg/svg.dart';
 
 class Layout extends StatelessWidget {
   final Widget content;  
-  const Layout(this.content);
+  const Layout({this.content});
 
   Widget getSaphiLogo(BuildContext context) {
     final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;

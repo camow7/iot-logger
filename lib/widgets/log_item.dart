@@ -63,9 +63,7 @@ class _LogItem extends StatelessWidget {
 
   Widget logTile(BuildContext context, LogDownloadState state) {
     return Container(
-      height: MediaQuery.of(context).size.height * 0.06,
       child: Stack(
-        fit: StackFit.loose,
         children: [
           LinearProgressIndicator(
             minHeight: double.infinity,
@@ -128,11 +126,10 @@ class _LogItem extends StatelessWidget {
       text,
       // style: Theme.of(context).textTheme.headline4,
       style: TextStyle(
-        color: color,
-        fontSize: 22,
-        fontStyle: FontStyle.italic,
-        fontFamily: 'Montserrat'
-      ),
+          color: color,
+          fontSize: 22,
+          fontStyle: FontStyle.italic,
+          fontFamily: 'Montserrat'),
     );
   }
 }

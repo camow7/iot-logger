@@ -28,6 +28,30 @@ class HomeScreen extends StatelessWidget {
           progress: 0.0,
           logState: LogStatus.Loaded,
         ),
+        Log(
+          date: DateTime.now(),
+          logId: '2',
+          progress: 0.0,
+          logState: LogStatus.Loaded,
+        ),
+        Log(
+          date: DateTime.now(),
+          logId: '2',
+          progress: 0.0,
+          logState: LogStatus.Loaded,
+        ),
+        Log(
+          date: DateTime.now(),
+          logId: '2',
+          progress: 0.0,
+          logState: LogStatus.Loaded,
+        ),
+        Log(
+          date: DateTime.now(),
+          logId: '2',
+          progress: 0.0,
+          logState: LogStatus.Loaded,
+        ),
       ]);
 
   void refreshPage() {
@@ -38,7 +62,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Layout(
-        Column(
+        content: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
