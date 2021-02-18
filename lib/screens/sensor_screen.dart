@@ -20,15 +20,15 @@ class SensorScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headline1,
             ),
             Container(
-              height: 400,
+              height: 450,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   MainCard(
-                      content: InkWell(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed('/logs', arguments: sensor),
-                    child: Center(
+                    content: InkWell(
+                      onTap: () => Navigator.of(context)
+                          .pushNamed('/logs', arguments: sensor),
+                      child: Center(
                         child: ListTile(
                           leading: Icon(
                             Icons.folder,
@@ -58,26 +58,25 @@ class SensorScreen extends StatelessWidget {
                       ),
                     ),
                   ),
+                  MainCard(
+                    content: InkWell(
+                      onTap: () => null,//Navigator.of(context).pushNamed('/logs', arguments: sensor),
+                      child: Center(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.settings,
+                            color: Theme.of(context).accentColor,
+                            size: 50,
+                          ),
+                          title: cardText(context, 'Settings'),
+                        ),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-
-  Widget cardContent(BuildContext context, String text) {
-    return Center(
-      child: ListTile(
-        leading: Icon(
-          Icons.folder,
-          color: Theme.of(context).accentColor,
-          size: 50,
-        ),
-        title: Text(
-          text,
-          style: Theme.of(context).textTheme.headline3.copyWith(fontSize: 30),
         ),
       ),
     );

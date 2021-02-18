@@ -17,7 +17,11 @@ class GraphScreen extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
       body: Layout(
-        content: isLandscape ? SingleChildScrollView(child: pageContent(context),): pageContent(context),
+        content: isLandscape
+            ? SingleChildScrollView(
+                child: pageContent(context),
+              )
+            : pageContent(context),
       ),
     );
   }
@@ -25,40 +29,40 @@ class GraphScreen extends StatelessWidget {
   Widget pageContent(BuildContext context) {
     final readingName = ModalRoute.of(context).settings.arguments as String;
     return Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BackButton(),
-            MainCard(
-              content: ListTile(
-                contentPadding: const EdgeInsets.all(20),
-                title: Text(
-                  readingName,
-                  textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.headline4,
-                ),
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        BackButton(),
+        MainCard(
+          content: ListTile(
+            contentPadding: const EdgeInsets.all(20),
+            title: Text(
+              readingName,
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.headline4,
+            ),
+          ),
+        ),
+        SubCard(
+          content: Column(
+            children: [
+              Text(
+                'Last Reading',
+                style: Theme.of(context).textTheme.bodyText1,
               ),
-            ),
-            SubCard(
-              content: Column(
-                children: [
-                  Text(
-                    'Last Reading',
-                    style: Theme.of(context).textTheme.bodyText1,
-                  ),
-                  Text(
-                    '5.2',
-                    style: Theme.of(context).textTheme.bodyText2,
-                  ),
-                ],
+              Text(
+                '5.2',
+                style: Theme.of(context).textTheme.bodyText2,
               ),
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width * 0.9,
-              margin: EdgeInsets.only(top:20),
-              child: GraphItem(),
-            ),
-            RefreshButton(refreshPage)
-          ],
-        );
+            ],
+          ),
+        ),
+        Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          margin: EdgeInsets.only(top: 20),
+          child: GraphItem(),
+        ),
+        RefreshButton(refreshPage)
+      ],
+    );
   }
 }
