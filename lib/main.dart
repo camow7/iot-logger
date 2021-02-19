@@ -1,12 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
 import 'package:iot_logger/screens/sensor_screen.dart';
+import 'package:provider/provider.dart';
 
 import './screens/home_screen.dart';
 import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
 import './screens/graph_screen.dart';
+import 'services/arduino_repository.dart';
 
-void main() => runApp(IotLoggerApp());
+ArduinoRepository arduinoRepo = ArduinoRepository();
+
+void main() => runApp(
+      MultiProvider(
+        providers: [
+          //Create
+          BlocProvider(
+              create: (context) => SensorCubit(arduinoRepo)..connect()),
+        ],
+        child: IotLoggerApp(),
+      ),
+    );
 
 class IotLoggerApp extends StatelessWidget {
   final green = const Color.fromRGBO(108, 194, 130, 1);

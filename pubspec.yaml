@@ -29,6 +29,12 @@ dependencies:
   flutter_bloc: ^6.1.1
   fl_chart: ^0.12.2
 
+  path_provider: ^1.6.27 # Locates document directory on both iOS and Android for saving log files
+  connectivity: ^2.0.2   # Detects network changes (i.e from Cellular to Wifi)
+  wifi_info_flutter: ^1.0.3 # Retrieves the local IP from the network
+  wifi_iot: # Forces Android device to send requests to WiFi even though it contains no internet
+    git: https://github.com/tq-systems/WiFiFlutter.git
+  provider: ^4.3.3 # Used to provide the cubits throughout the app
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
