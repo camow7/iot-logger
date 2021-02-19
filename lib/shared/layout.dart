@@ -23,40 +23,42 @@ class Layout extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          height: double.infinity,
-          width: double.infinity,
-          // child: Image.asset(
-          //   'assets/images/land.jpg',
-          //   fit: BoxFit.fill,
-          // ),
-        ),
-        Container(
-          decoration: const BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [
-                Color.fromRGBO(0, 0, 0, 0.5),
-                Colors.transparent,
-              ],
-              begin: Alignment.topCenter,
-              end: Alignment.center,
+    return Scaffold(
+      body: Stack(
+        children: [
+          Container(
+            height: double.infinity,
+            width: double.infinity,
+            // child: Image.asset(
+            //   'assets/images/land.jpg',
+            //   fit: BoxFit.fill,
+            // ),
+          ),
+          Container(
+            decoration: const BoxDecoration(
+              gradient: const LinearGradient(
+                colors: [
+                  Color.fromRGBO(0, 0, 0, 0.5),
+                  Colors.transparent,
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.center,
+              ),
             ),
           ),
-        ),
-        Container(
-          child: Column(
-            children: [
-              getSaphiLogo(context),
-              Container(
-                height: MediaQuery.of(context).size.height * 0.7,
-                child: content,
-              ),
-            ],
-          ),
-        )
-      ],
+          Container(
+            child: Column(
+              children: [
+                getSaphiLogo(context),
+                Container(
+                  height: MediaQuery.of(context).size.height * 0.7,
+                  child: content,
+                ),
+              ],
+            ),
+          )
+        ],
+      ),
     );
   }
 }

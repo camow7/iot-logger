@@ -11,11 +11,11 @@ class HomeScreen extends StatelessWidget {
       name: 'Sensor 1',
       status: DeviceStatus.Connected,
       readings: [
-              Reading('Turb 1'),
-              Reading('Turb 2'),
-              Reading('Turb 3'),
-              Reading('Temp'),
-            ],
+        Reading('Turb 1'),
+        Reading('Turb 2'),
+        Reading('Turb 3'),
+        Reading('Temp'),
+      ],
       logs: [
         Log(
             date: DateTime.now(),
@@ -66,19 +66,17 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Layout(
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              'Your Sensor',
-              style: Theme.of(context).textTheme.headline1,
-            ),
-            SensorItem(sensor),
-            RefreshButton(refreshPage),
-          ],
-        ),
+    return Layout(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Your Sensor',
+            style: Theme.of(context).textTheme.headline1,
+          ),
+          SensorItem(sensor),
+          RefreshButton(refreshPage),
+        ],
       ),
     );
   }

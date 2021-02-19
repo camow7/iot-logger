@@ -1,18 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:iot_logger/screens/sensor_screen.dart';
+
+import './shared/styling.dart';
 
 import './screens/home_screen.dart';
+import './screens/sensor_screen.dart';
 import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
 import './screens/graph_screen.dart';
+import './screens/settings_screen.dart';
 
 void main() => runApp(IotLoggerApp());
 
 class IotLoggerApp extends StatelessWidget {
-  final green = const Color.fromRGBO(108, 194, 130, 1);
-  final darkGreen = const Color.fromRGBO(36, 136, 104, 1);
-  final darkBlue = const Color.fromRGBO(57, 68, 76, 1);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -79,6 +78,7 @@ class IotLoggerApp extends StatelessWidget {
         '/logs': (ctx) => LogsScreen(),
         '/readings': (ctx) => ReadingsScreen(),
         '/graph-reading': (ctx) => GraphScreen(),
+        '/settings': (ctx) => SettingsScreen(),
       },
     );
   }

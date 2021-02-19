@@ -9,75 +9,73 @@ class SensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sensor = ModalRoute.of(context).settings.arguments as Sensor;
-    return Scaffold(
-      body: Layout(
-        content: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            BackButton(),
-            Text(
-              sensor.name,
-              style: Theme.of(context).textTheme.headline1,
+    return Layout(
+      content: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          BackButton(),
+          Text(
+            sensor.name,
+            style: Theme.of(context).textTheme.headline1,
+          ),
+          Container(
+            height: 450,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                MainCard(
+                  content: InkWell(
+                    onTap: () => Navigator.of(context)
+                        .pushNamed('/logs', arguments: sensor),
+                    child: Center(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.folder,
+                          color: Theme.of(context).accentColor,
+                          size: 50,
+                        ),
+                        title: cardText(context, 'Download Logs'),
+                      ),
+                    ),
+                  ),
+                ),
+                MainCard(
+                  content: InkWell(
+                    onTap: () => Navigator.of(context).pushNamed(
+                      '/readings',
+                      arguments: {
+                        'sensor': sensor,
+                        'readings': sensor.readings,
+                      },
+                    ),
+                    child: Center(
+                      child: ListTile(
+                        leading: SvgPicture.asset('assets/svgs/real-time.svg'),
+                        title: cardText(context, 'Real-time data'),
+                      ),
+                    ),
+                  ),
+                ),
+                MainCard(
+                  content: InkWell(
+                    onTap: () => Navigator.of(context)
+                        .pushNamed('/settings', arguments: sensor),
+                    child: Center(
+                      child: ListTile(
+                        leading: Icon(
+                          Icons.settings,
+                          color: Theme.of(context).accentColor,
+                          size: 50,
+                        ),
+                        title: cardText(context, 'Settings'),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            Container(
-              height: 450,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => Navigator.of(context)
-                          .pushNamed('/logs', arguments: sensor),
-                      child: Center(
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.folder,
-                            color: Theme.of(context).accentColor,
-                            size: 50,
-                          ),
-                          title: cardText(context, 'Download Logs'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => Navigator.of(context).pushNamed(
-                        '/readings',
-                        arguments: {
-                          'sensor': sensor,
-                          'readings': sensor.readings,
-                        },
-                      ),
-                      child: Center(
-                        child: ListTile(
-                          leading:
-                              SvgPicture.asset('assets/svgs/real-time.svg'),
-                          title: cardText(context, 'Real-time data'),
-                        ),
-                      ),
-                    ),
-                  ),
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => null,//Navigator.of(context).pushNamed('/logs', arguments: sensor),
-                      child: Center(
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.settings,
-                            color: Theme.of(context).accentColor,
-                            size: 50,
-                          ),
-                          title: cardText(context, 'Settings'),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

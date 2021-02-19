@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:iot_logger/shared/styling.dart';
 
 import '../cubits/log_download/log_download_cubit.dart';
 import '../models/sensor.dart';
@@ -90,7 +91,7 @@ class _LogItem extends StatelessWidget {
           Icons.folder,
           color:
               state.progress > 0 ? Colors.white : Theme.of(context).accentColor,
-          size: 40,
+          size: iconSize,
         ),
         Text(
           '${(state.progress * 100).toStringAsFixed(0)}%',

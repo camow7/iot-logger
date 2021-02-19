@@ -17,12 +17,10 @@ class LogsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    return Scaffold(
-      body: Layout(
-        content: isLandscape
-            ? SingleChildScrollView(child: pageContent(context))
-            : pageContent(context),
-      ),
+    return Layout(
+      content: isLandscape
+          ? SingleChildScrollView(child: pageContent(context))
+          : pageContent(context),
     );
   }
 
