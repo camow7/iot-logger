@@ -2,13 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
-
-import '../models/sensor.dart';
 import '../shared/main_card.dart';
 
 class SensorItem extends StatelessWidget {
-  final Sensor sensor;
-  const SensorItem(this.sensor);
+  const SensorItem();
 
   SvgPicture getStatusImage(BuildContext context, bool connectionStatus) {
     switch (connectionStatus) {
@@ -27,24 +24,21 @@ class SensorItem extends StatelessWidget {
     }
   }
 
-  void viewLogs(BuildContext context) {
-    Navigator.of(context).pushNamed('/sensor', arguments: sensor);
-  }
-
-  void returnHome(BuildContext context) {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
-    final String path =
-        ModalRoute.of(context).settings.name; // current screen path
     return BlocBuilder<SensorCubit, SensorState>(builder: (_, state) {
       if (state is Connected) {
         return MainCard(
             content: InkWell(
-          onTap: () =>
-              Navigator.of(context).pushNamed('/sensor', arguments: sensor),
+          splashColor: ModalRoute.of(context).settings.name == "/"
+              ? Colors.grey
+              : Colors.white,
+          onTap: () => {
+            if (ModalRoute.of(context).settings.name == "/")
+              {
+                Navigator.of(context).pushNamed('/sensor'),
+              }
+          },
           borderRadius: BorderRadius.circular(4),
           child: sensorContent(context, getStatusImage(context, true), true),
         ));
@@ -81,7 +75,7 @@ class SensorItem extends StatelessWidget {
                   )
                 ],
               ),
-        title: Text(sensor.name,
+        title: Text("Sensor 1",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline3),
         trailing: svgImage,

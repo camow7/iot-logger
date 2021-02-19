@@ -35,9 +35,11 @@ class ArduinoRepository {
   Stream messageStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
+  Stream fileNamesStream;
+  StreamController<List<String>> fileNamesController;
   String wifiIP, wifiName;
-  // ignore: cancel_subscriptions
   StreamSubscription networkSubscription;
+  List<String> fileNames = [];
 
   ArduinoRepository() {
     initialiseWifiConnection();
@@ -46,6 +48,8 @@ class ArduinoRepository {
     messageStream = controller.stream;
     isConnectedController = StreamController<bool>.broadcast();
     isConnectedStream = isConnectedController.stream;
+    fileNamesController = StreamController<List<String>>.broadcast();
+    fileNamesStream = fileNamesController.stream;
   }
 
   initialiseWifiConnection() async {
@@ -73,7 +77,7 @@ class ArduinoRepository {
     }
 
     // Listen and adjust to changes in the network
-    networkSubscription = Connectivity().onConnectivityChanged.listen(
+    networkSubscription = new Connectivity().onConnectivityChanged.listen(
       (status) async {
         print("Connection Change Detected");
         try {
@@ -108,7 +112,7 @@ class ArduinoRepository {
 
         // Send Heart Beat
         heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
-          print("heart beat sent");
+          // print("heart beat sent");
           messageBuffer = Uint8List.fromList(
               [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
           sendMessageBuffer(messageBuffer);
@@ -127,6 +131,8 @@ class ArduinoRepository {
           if (d == null) return;
           readMessage(d.data);
         });
+
+        getLogsList();
       });
     } catch (e) {
       print(e);
@@ -221,6 +227,11 @@ class ArduinoRepository {
         print('Log File Name Received: ' +
             String.fromCharCodes(
                 messageData.sublist(0, payloadSize))); //messageData
+
+        fileNames
+            .add(String.fromCharCodes(messageData.sublist(0, payloadSize)));
+
+        fileNamesController.add(fileNames);
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
         messageFile.add(messageData.sublist(0, payloadSize));
@@ -380,6 +391,7 @@ class ArduinoRepository {
   }
 
   getLogsList() {
+    fileNames = [];
     int payloadSize = 1;
     messageBuffer = new Uint8List(payloadSize + messageDataIndex);
     messageBuffer[0] = 0xFE;
@@ -503,6 +515,7 @@ class ArduinoRepository {
     }
 
     sendMessageBuffer(messageBuffer);
+    new Future.delayed(const Duration(seconds: 1), () => getLogsList());
     print('SENT DELETE FILE REQUEST');
   }
 

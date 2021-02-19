@@ -61,7 +61,7 @@ class GraphScreen extends StatelessWidget {
           margin: EdgeInsets.only(top: 20),
           child: GraphItem(),
         ),
-        RefreshButton(refreshPage)
+        RefreshButton()
       ],
     );
   }

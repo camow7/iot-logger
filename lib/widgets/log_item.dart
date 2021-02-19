@@ -6,39 +6,39 @@ import '../cubits/log_download/log_download_cubit.dart';
 import '../models/sensor.dart';
 
 class LogItem extends StatelessWidget {
-  final Sensor sensor;
-  final Log log;
-
-  const LogItem({this.sensor, this.log});
+  final String fileName;
+  const LogItem(this.fileName);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => LogDownloadCubit(),
-      child: _LogItem(
-        sensor: sensor,
-        log: log,
-      ),
-    );
+        create: (context) => LogDownloadCubit(), // add fileName
+        child: _LogItem(fileName: fileName));
+    // return BlocBuilder<LogDownloadCubit, LogDownloadState>(
+    //   cubit: LogDownloadCubit(), // provide the local bloc instance
+    //   builder: (context, state) {
+    //     // return widget here based on BlocA's state
+    //     return Text("");
+    //   },
+    // );
   }
 }
 
 class _LogItem extends StatelessWidget {
-  final Sensor sensor;
-  final Log log;
-  const _LogItem({this.sensor, this.log});
+  final String fileName;
+  const _LogItem({this.fileName});
 
-  routeToReadings(BuildContext context, LogDownloadState logState) {
-    if (logState.status == LogStatus.Downloaded) {
-      Navigator.of(context).pushNamed(
-        '/readings',
-        arguments: {
-          'sensor': sensor,
-          'readings': log.readings,
-        },
-      );
-    }
-  }
+  // routeToReadings(BuildContext context, LogDownloadState logState) {
+  //   if (logState.status == LogStatus.Downloaded) {
+  //     Navigator.of(context).pushNamed(
+  //       '/readings',
+  //       arguments: {
+  //         'sensor': sensor,
+  //         'readings': log.readings,
+  //       },
+  //     );
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,14 +52,15 @@ class _LogItem extends StatelessWidget {
           onTap: () => null, // routeToReadings(context, state),
           borderRadius: BorderRadius.circular(4),
           child: Center(
-            child: logTile(context, state),
+            child: logTile(context, state, fileName),
           ),
         ),
       );
     });
   }
 
-  Widget logTile(BuildContext context, LogDownloadState state) {
+  Widget logTile(
+      BuildContext context, LogDownloadState state, String fileName) {
     return Container(
       child: Stack(
         children: [
@@ -71,7 +72,7 @@ class _LogItem extends StatelessWidget {
           ),
           ListTile(
             leading: folderIcon(context, state),
-            title: logDate(context, state),
+            title: logDate(context, state, fileName),
             trailing: IconButton(
               icon: state.icon,
               onPressed: () => context.read<LogDownloadCubit>().download(),
@@ -100,21 +101,22 @@ class _LogItem extends StatelessWidget {
     );
   }
 
-  Widget logDate(BuildContext context, LogDownloadState state) {
+  Widget logDate(
+      BuildContext context, LogDownloadState state, String fileName) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         // text changes color depending on loading progress bar length
         formatText(
           context,
-          DateFormat.E().format(log.date),
-          state.progress > 0.2 ? Colors.white : Theme.of(context).focusColor,
+          fileName,
+          Theme.of(context).focusColor,
         ),
-        formatText(
-          context,
-          DateFormat.yMd().format(log.date),
-          state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
-        )
+        // formatText(
+        //   context,
+        //   fileName,
+        //   state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
+        // )
       ],
     );
   }
@@ -125,7 +127,7 @@ class _LogItem extends StatelessWidget {
       // style: Theme.of(context).textTheme.headline4,
       style: TextStyle(
           color: color,
-          fontSize: 22,
+          fontSize: 18,
           fontStyle: FontStyle.italic,
           fontFamily: 'Montserrat'),
     );

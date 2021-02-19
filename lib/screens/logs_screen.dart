@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/files_cubit.dart/files_cubit.dart';
 
 import '../models/sensor.dart';
 import '../shared/refresh_button.dart';
@@ -33,8 +35,7 @@ class LogsScreen extends StatelessWidget {
       children: [
         Column(
           children: [
-            BackButton(),
-            SensorItem(sensor),
+            SensorItem(),
             SubCard(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -51,25 +52,41 @@ class LogsScreen extends StatelessWidget {
               ),
             ),
             Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: GridView(
-                padding: EdgeInsets.only(top: 10),
-                children: sensor.logs
-                    .map(
-                      (log) => LogItem(sensor: sensor, log: log),
-                    )
-                    .toList(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  childAspectRatio: 5.5,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 5,
-                  maxCrossAxisExtent: 500,
-                ),
+              height: MediaQuery.of(context).size.height * 0.45,
+              child: BlocBuilder<FilesCubit, FilesState>(
+                builder: (_, state) {
+                  if (state is LoadingFiles) {
+                    return CircularProgressIndicator(
+                      backgroundColor: Colors.white,
+                      valueColor: AlwaysStoppedAnimation<Color>(
+                        Colors.blue,
+                      ),
+                    );
+                  }
+                  if (state is Files) {
+                    return GridView(
+                      padding: EdgeInsets.only(top: 10),
+                      children: state.fileNames
+                          .map(
+                            (fileName) => new LogItem(fileName),
+                          )
+                          .toList(),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        childAspectRatio: 5.5,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 5,
+                        maxCrossAxisExtent: 500,
+                      ),
+                    );
+                  } else {
+                    return Text("sds");
+                  }
+                },
               ),
-            ),
+            )
           ],
         ),
-        RefreshButton(refreshPage)
+        RefreshButton()
       ],
     );
   }

@@ -8,16 +8,20 @@ import './screens/home_screen.dart';
 import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
 import './screens/graph_screen.dart';
+import 'cubits/files_cubit.dart/files_cubit.dart';
+import 'cubits/log_download/log_download_cubit.dart';
 import 'services/arduino_repository.dart';
 
 ArduinoRepository arduinoRepo = ArduinoRepository();
 
 void main() => runApp(
-      MultiProvider(
+      MultiBlocProvider(
         providers: [
           //Create
           BlocProvider(
               create: (context) => SensorCubit(arduinoRepo)..connect()),
+          BlocProvider(
+              create: (context) => FilesCubit(arduinoRepo)..getFiles()),
         ],
         child: IotLoggerApp(),
       ),

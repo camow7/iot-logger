@@ -16,7 +16,7 @@ class SensorCubit extends Cubit<SensorState> {
   ) : super(Disconnected());
 
   void connect() {
-    print("connect triggered");
+    //print("connect triggered");
     _isConnectedSubscription =
         _arduinoRepository.isConnectedStream.listen((value) {
       if (value == true) {
@@ -27,5 +27,9 @@ class SensorCubit extends Cubit<SensorState> {
         emit(Disconnected());
       }
     });
+  }
+
+  void refresh() {
+    _arduinoRepository.initialiseWifiConnection();
   }
 }

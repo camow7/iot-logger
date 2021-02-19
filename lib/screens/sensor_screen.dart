@@ -14,20 +14,19 @@ class SensorScreen extends StatelessWidget {
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            BackButton(),
             Text(
-              sensor.name,
+              "Sensor 1",
               style: Theme.of(context).textTheme.headline1,
             ),
             Container(
-              height: 450,
+              // color: Colors.blue[50],
+              height: MediaQuery.of(context).size.height * 0.7,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   MainCard(
                     content: InkWell(
-                      onTap: () => Navigator.of(context)
-                          .pushNamed('/logs', arguments: sensor),
+                      onTap: () => Navigator.of(context).pushNamed('/logs'),
                       child: Center(
                         child: ListTile(
                           leading: Icon(
@@ -44,10 +43,7 @@ class SensorScreen extends StatelessWidget {
                     content: InkWell(
                       onTap: () => Navigator.of(context).pushNamed(
                         '/readings',
-                        arguments: {
-                          'sensor': sensor,
-                          'readings': sensor.readings,
-                        },
+                        arguments: {},
                       ),
                       child: Center(
                         child: ListTile(
@@ -60,7 +56,8 @@ class SensorScreen extends StatelessWidget {
                   ),
                   MainCard(
                     content: InkWell(
-                      onTap: () => null,//Navigator.of(context).pushNamed('/logs', arguments: sensor),
+                      onTap: () =>
+                          null, //Navigator.of(context).pushNamed('/logs', arguments: sensor),
                       child: Center(
                         child: ListTile(
                           leading: Icon(
@@ -85,7 +82,10 @@ class SensorScreen extends StatelessWidget {
   Text cardText(BuildContext context, String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.headline3.copyWith(fontSize: 30),
+      style: Theme.of(context)
+          .textTheme
+          .headline3
+          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.07)),
     );
   }
 }

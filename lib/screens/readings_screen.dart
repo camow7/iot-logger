@@ -35,7 +35,7 @@ class ReadingsScreen extends StatelessWidget {
         Column(
           children: [
             BackButton(),
-            SensorItem(sensor),
+            SensorItem(),
             Container(
               height: MediaQuery.of(context).size.height * 0.38,
               child: readings.length > 0
@@ -55,7 +55,7 @@ class ReadingsScreen extends StatelessWidget {
             ),
           ],
         ),
-        RefreshButton(refreshPage)
+        RefreshButton()
       ],
     );
   }
