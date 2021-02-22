@@ -18,7 +18,7 @@ class MainCard extends StatelessWidget {
       child: Card(
           margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
           elevation: 5,
-          child: content),
+          child: Center(child: content)),
     );
   }
 }

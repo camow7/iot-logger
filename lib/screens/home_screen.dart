@@ -6,60 +6,6 @@ import '../shared/refresh_button.dart';
 import '../widgets/sensor_item.dart';
 
 class HomeScreen extends StatelessWidget {
-  final Sensor sensor = Sensor(
-      id: '1',
-      name: 'Sensor 1',
-      status: DeviceStatus.Connected,
-      readings: [
-        Reading('Turb 1'),
-        Reading('Turb 2'),
-        Reading('Turb 3'),
-        Reading('Temp'),
-      ],
-      logs: [
-        Log(
-            date: DateTime.now(),
-            logId: '1',
-            progress: 0.0,
-            logState: LogStatus.Loaded,
-            readings: [
-              Reading('Turb 1'),
-              Reading('Turb 2'),
-              Reading('Turb 3'),
-              Reading('Temp'),
-            ]),
-        Log(
-          date: DateTime.now(),
-          logId: '2',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
-        Log(
-          date: DateTime.now(),
-          logId: '2',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
-        Log(
-          date: DateTime.now(),
-          logId: '2',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
-        Log(
-          date: DateTime.now(),
-          logId: '2',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
-        Log(
-          date: DateTime.now(),
-          logId: '2',
-          progress: 0.0,
-          logState: LogStatus.Loaded,
-        ),
-      ]);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(

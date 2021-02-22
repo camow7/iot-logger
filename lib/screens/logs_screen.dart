@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit.dart/files_cubit.dart';
+import 'package:iot_logger/services/arduino_repository.dart';
 
 import '../models/sensor.dart';
 import '../shared/refresh_button.dart';
@@ -11,6 +12,9 @@ import '../shared/sub_card.dart';
 import '../widgets/sensor_item.dart';
 
 class LogsScreen extends StatelessWidget {
+  final ArduinoRepository arduinoRepo;
+  LogsScreen(this.arduinoRepo);
+
   refreshPage() {
     print('refreshing logs');
   }
@@ -51,24 +55,32 @@ class LogsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.45,
-              child: BlocBuilder<FilesCubit, FilesState>(
-                builder: (_, state) {
-                  if (state is LoadingFiles) {
-                    return CircularProgressIndicator(
-                      backgroundColor: Colors.white,
-                      valueColor: AlwaysStoppedAnimation<Color>(
-                        Colors.blue,
+            BlocBuilder<FilesCubit, FilesState>(
+              builder: (_, state) {
+                if (state is LoadingFiles) {
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                    child: Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.40,
+                      height: MediaQuery.of(context).size.width * 0.40,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blue,
+                        ),
                       ),
-                    );
-                  }
-                  if (state is Files) {
-                    return GridView(
+                    ),
+                  );
+                }
+                if (state is Files) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.45,
+                    child: GridView(
                       padding: EdgeInsets.only(top: 10),
                       children: state.fileNames
                           .map(
-                            (fileName) => new LogItem(fileName),
+                            (fileName) => new LogItem(fileName, arduinoRepo),
                           )
                           .toList(),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
@@ -77,13 +89,18 @@ class LogsScreen extends StatelessWidget {
                         mainAxisSpacing: 5,
                         maxCrossAxisExtent: 500,
                       ),
-                    );
-                  } else {
-                    return Text("sds");
-                  }
-                },
-              ),
-            )
+                    ),
+                  );
+                } else {
+                  return CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.blue,
+                    ),
+                  );
+                }
+              },
+            ),
           ],
         ),
         RefreshButton()

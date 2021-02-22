@@ -1,44 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:intl/intl.dart';
-
+import 'package:iot_logger/services/arduino_repository.dart';
 import '../cubits/log_download/log_download_cubit.dart';
-import '../models/sensor.dart';
 
 class LogItem extends StatelessWidget {
   final String fileName;
-  const LogItem(this.fileName);
+  final ArduinoRepository arduinoRepository;
+  const LogItem(this.fileName, this.arduinoRepository);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (context) => LogDownloadCubit(), // add fileName
-        child: _LogItem(fileName: fileName));
-    // return BlocBuilder<LogDownloadCubit, LogDownloadState>(
-    //   cubit: LogDownloadCubit(), // provide the local bloc instance
-    //   builder: (context, state) {
-    //     // return widget here based on BlocA's state
-    //     return Text("");
-    //   },
-    // );
+      create: (context) => LogDownloadCubit(arduinoRepository), // add fileName
+      child: _LogItem(fileName: fileName),
+    );
   }
 }
 
 class _LogItem extends StatelessWidget {
   final String fileName;
   const _LogItem({this.fileName});
-
-  // routeToReadings(BuildContext context, LogDownloadState logState) {
-  //   if (logState.status == LogStatus.Downloaded) {
-  //     Navigator.of(context).pushNamed(
-  //       '/readings',
-  //       arguments: {
-  //         'sensor': sensor,
-  //         'readings': log.readings,
-  //       },
-  //     );
-  //   }
-  // }
 
   @override
   Widget build(BuildContext context) {
@@ -61,26 +42,52 @@ class _LogItem extends StatelessWidget {
 
   Widget logTile(
       BuildContext context, LogDownloadState state, String fileName) {
-    return Container(
-      child: Stack(
-        children: [
-          LinearProgressIndicator(
-            minHeight: double.infinity,
-            value: state.progress,
-            valueColor:
-                AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+    if (state is LogDownloaded) {
+      return GestureDetector(
+        onTap: () => Navigator.of(context)
+            .pushNamed('/graph-reading', arguments: {'fileName': fileName}),
+        child: Container(
+          child: Stack(
+            children: [
+              LinearProgressIndicator(
+                minHeight: double.infinity,
+                value: state.progress,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+              ListTile(
+                leading: folderIcon(context, state),
+                title: logDate(context, state, fileName),
+                trailing: IconButton(
+                  icon: state.icon,
+                  onPressed: () => {},
+                ),
+              ),
+            ],
           ),
-          ListTile(
-            leading: folderIcon(context, state),
-            title: logDate(context, state, fileName),
-            trailing: IconButton(
-              icon: state.icon,
-              onPressed: () => context.read<LogDownloadCubit>().download(),
-            ),
-          )
-        ],
-      ),
-    );
+        ),
+      );
+    } else {
+      return GestureDetector(
+        onTap: () => context.read<LogDownloadCubit>().downloadFile(fileName),
+        child: Container(
+          child: Stack(
+            children: [
+              LinearProgressIndicator(
+                minHeight: double.infinity,
+                value: state.progress,
+                valueColor: AlwaysStoppedAnimation<Color>(
+                    Theme.of(context).primaryColor),
+              ),
+              ListTile(
+                  leading: folderIcon(context, state),
+                  title: logDate(context, state, fileName),
+                  trailing: IconButton(icon: state.icon, onPressed: () => {}))
+            ],
+          ),
+        ),
+      );
+    }
   }
 
   Widget folderIcon(BuildContext context, LogDownloadState state) {

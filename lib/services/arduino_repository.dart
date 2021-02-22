@@ -11,7 +11,7 @@ import 'package:connectivity/connectivity.dart';
 class ArduinoRepository {
   var directory;
   String currentFile = '';
-  int currentFileSize = 0;
+  int fileSize = 0;
   final int messageDataIndex =
       5; //Number of bytes before the data part of a message
   final int sensorType = 0; //App is sensor 0
@@ -31,8 +31,8 @@ class ArduinoRepository {
   int messageCounter = 0;
   bool newMessageReceived = false;
   BytesBuilder messageFile;
-  StreamController<StateMessage> controller;
-  Stream messageStream;
+  StreamController<double> fileController;
+  Stream fileStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
   Stream fileNamesStream;
@@ -44,8 +44,8 @@ class ArduinoRepository {
   ArduinoRepository() {
     initialiseWifiConnection();
     setLocalDirectory();
-    controller = StreamController<StateMessage>.broadcast();
-    messageStream = controller.stream;
+    fileController = StreamController<double>.broadcast();
+    fileStream = fileController.stream;
     isConnectedController = StreamController<bool>.broadcast();
     isConnectedStream = isConnectedController.stream;
     fileNamesController = StreamController<List<String>>.broadcast();
@@ -132,7 +132,7 @@ class ArduinoRepository {
           readMessage(d.data);
         });
 
-        getLogsList();
+        //getLogsList();
       });
     } catch (e) {
       print(e);
@@ -167,7 +167,15 @@ class ArduinoRepository {
       case MessageState.SEQUENCE:
         if ((sequenceNumber) != messageByte) {
           print("Bad sequence number: $sequenceNumber vs $messageByte");
-          //missedBytes = missedBytes + ((sequenceNumber - messageByte).abs() * 255);
+
+          //26 vs 33
+          if (sequenceNumber < messageByte) {
+            missedBytes = missedBytes + ((messageByte - sequenceNumber) * 255);
+          } else {
+            //242 vs 4
+            missedBytes =
+                missedBytes + (((255 - sequenceNumber) + messageByte) * 255);
+          }
         }
         sequenceNumber = messageByte + 1;
         if (sequenceNumber == 256) {
@@ -220,8 +228,8 @@ class ArduinoRepository {
       case MessageType.SEND_LOG_FILE_SIZE:
         ByteData logFileSize =
             ByteData.sublistView(messageData, 0, payloadSize);
-        currentFileSize = logFileSize.getInt32(0, Endian.little);
-        print('Log File Size Received = ' + currentFileSize.toString());
+        fileSize = logFileSize.getInt32(0, Endian.little);
+        print('Log File Size Received = ' + fileSize.toString());
         break;
       case MessageType.SEND_LOG_FILE_NAME:
         print('Log File Name Received: ' +
@@ -235,26 +243,22 @@ class ArduinoRepository {
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
         messageFile.add(messageData.sublist(0, payloadSize));
-
+        double filePercantage = (messageFile.length / (fileSize - missedBytes));
         print("Current Log File Size = " +
             messageFile.length.toString() +
-            " totalSize = " +
-            currentFileSize.toString());
+            " estimatedtotalSize = " +
+            (fileSize - missedBytes).toString());
 
         // When file is downloaded
-        if (messageFile.length / (currentFileSize - missedBytes) == 1.0) {
-          messageFile = BytesBuilder();
-          missedBytes = 0;
-          currentFileSize = 0;
+        if (filePercantage >= 1.0) {
           // Write log file chunk to file, if there is no file this will create one
+          print('${directory.path}/$currentFile');
           File('${directory.path}/$currentFile')
               .writeAsStringSync(messageFile.toString());
-          controller.add(StateMessage(
-              ((messageFile.length / currentFileSize) * 100).roundToDouble()));
+          fileController.add(filePercantage);
           print("File Downloaded");
         } else {
-          controller.add(StateMessage(
-              ((messageFile.length / currentFileSize) * 100).roundToDouble()));
+          fileController.add(filePercantage);
         }
         break;
       case MessageType.SEND_SD_CARD_INFO:
@@ -406,6 +410,7 @@ class ArduinoRepository {
 
   getLogFile(String fileName) {
     missedBytes = 0;
+    fileSize = 0;
     messageFile = new BytesBuilder();
     //clear the file if it is already present
     if (File('${directory.path}/$fileName').existsSync()) {

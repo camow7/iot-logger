@@ -1,45 +1,81 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:csv/csv.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/cubits/graph_cubit/graph_cubit.dart';
+import 'package:path_provider/path_provider.dart';
 
 class GraphItem extends StatelessWidget {
+  final String fileName;
+  GraphItem(this.fileName);
+
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        AspectRatio(
-          aspectRatio: 1.70,
-          child: Container(
-            decoration: BoxDecoration(
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(18),
+    return BlocBuilder<GraphCubit, GraphState>(
+      cubit: GraphCubit()..loadGraph(fileName),
+      builder: (_, state) {
+        if (state is Loaded) {
+          return Stack(
+            children: <Widget>[
+              AspectRatio(
+                aspectRatio: 1.70,
+                child: Container(
+                  decoration: BoxDecoration(
+                      borderRadius: const BorderRadius.all(
+                        Radius.circular(18),
+                      ),
+                      color: Theme.of(context).accentColor),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 18,
+                      vertical: 20,
+                    ),
+                    child: LineChart(
+                      mainData(state.data),
+                    ),
+                  ),
                 ),
-                color: Theme.of(context).accentColor),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 18,
-                vertical: 20,
               ),
-              child: LineChart(
-                mainData(),
+              Padding(
+                padding:
+                    const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
+                child: const Text(
+                  'Turbidity',
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: Colors.white,
+                  ),
+                ),
               ),
-            ),
-          ),
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 10),
-          child: const Text(
-            'Turbidity',
-            style: const TextStyle(
-              fontSize: 14,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ],
+            ],
+          );
+        } else {
+          return Stack(
+            children: <Widget>[
+              Center(
+                child: Container(
+                  // color: Colors.blue[50],
+                  width: MediaQuery.of(context).size.width * 0.40,
+                  height: MediaQuery.of(context).size.width * 0.40,
+                  child: CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.blue,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          );
+        }
+      },
     );
   }
 
-  LineChartData mainData() {
+  LineChartData mainData(rowsAsListOfValues) {
     return LineChartData(
       gridData: FlGridData(
         show: true,
@@ -60,7 +96,7 @@ class GraphItem extends StatelessWidget {
           getTitles: (value) {
             switch (value.toInt()) {
               case 2:
-                return '2:00';
+                return '2';
               case 4:
                 return '4:00';
               case 6:
@@ -99,29 +135,73 @@ class GraphItem extends StatelessWidget {
       maxX: 24,
       minY: 0,
       maxY: 6,
-      lineBarsData: [
-        LineChartBarData(
-          spots: [
-            // graph plots
-            FlSpot(1, 3),
-            FlSpot(2.6, 2),
-            FlSpot(4.9, 5),
-            FlSpot(6.8, 3.1),
-            FlSpot(8, 4),
-            FlSpot(9.5, 3),
-            FlSpot(11, 4),
-            FlSpot(12, 0),
-            FlSpot(12.5, 1),
-          ],
-          isCurved: true,
-          colors: [const Color(0xff00D381)],
-          barWidth: 2,
-          isStrokeCapRound: true,
-          dotData: FlDotData(
-            show: false,
-          ),
-        ),
-      ],
+      lineBarsData: linesBarData(rowsAsListOfValues),
     );
   }
+}
+
+List<LineChartBarData> linesBarData(rowsAsListOfValues) {
+  final LineChartBarData tempData = LineChartBarData(
+    spots: [FlSpot(1, 1)],
+    isCurved: true,
+    colors: [
+      const Color(0xff4af699),
+    ],
+    barWidth: 8,
+    isStrokeCapRound: true,
+    dotData: FlDotData(
+      show: false,
+    ),
+    belowBarData: BarAreaData(
+      show: false,
+    ),
+  );
+  final LineChartBarData nepheloNTUData = LineChartBarData(
+    spots: [
+      FlSpot(1, 1),
+      FlSpot(3, 2.8),
+      FlSpot(7, 1.2),
+      FlSpot(10, 2.8),
+      FlSpot(12, 2.6),
+      FlSpot(13, 3.9),
+    ],
+    isCurved: false,
+    colors: [
+      const Color(0xffaa4cfc),
+    ],
+    barWidth: 8,
+    isStrokeCapRound: true,
+    dotData: FlDotData(
+      show: false,
+    ),
+    belowBarData: BarAreaData(show: false, colors: [
+      const Color(0x00aa4cfc),
+    ]),
+  );
+  final LineChartBarData nepheloFNUData = LineChartBarData(
+    spots: [
+      FlSpot(1, 2.8),
+      FlSpot(3, 1.9),
+      FlSpot(6, 3),
+      FlSpot(10, 1.3),
+      FlSpot(13, 2.5),
+    ],
+    isCurved: true,
+    colors: const [
+      Color(0xff27b6fc),
+    ],
+    barWidth: 8,
+    isStrokeCapRound: true,
+    dotData: FlDotData(
+      show: false,
+    ),
+    belowBarData: BarAreaData(
+      show: false,
+    ),
+  );
+  return [
+    tempData,
+    nepheloNTUData,
+    nepheloFNUData,
+  ];
 }

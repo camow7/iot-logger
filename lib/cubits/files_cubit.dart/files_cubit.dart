@@ -17,7 +17,7 @@ class FilesCubit extends Cubit<FilesState> {
   ) : super(LoadingFiles());
 
   void getFiles() {
-    print("get files triggered");
+    // print("get files triggered");
     _arduinoRepository.getLogsList();
     _fileNamesStreamSubscription =
         _arduinoRepository.fileNamesStream.listen((data) {
@@ -25,7 +25,6 @@ class FilesCubit extends Cubit<FilesState> {
       if (fileNames.length == 0) {
         emit(NoFiles());
       } else {
-        //print(fileNames);
         emit(Files(fileNames: fileNames));
       }
     });

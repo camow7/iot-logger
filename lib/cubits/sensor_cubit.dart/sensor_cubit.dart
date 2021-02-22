@@ -29,6 +29,7 @@ class SensorCubit extends Cubit<SensorState> {
     });
   }
 
+  // Not used at the moment
   void refresh() {
     _arduinoRepository.initialiseWifiConnection();
   }

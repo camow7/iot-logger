@@ -34,7 +34,7 @@ dependencies:
   wifi_info_flutter: ^1.0.3 # Retrieves the local IP from the network
   wifi_iot: # Forces Android device to send requests to WiFi even though it contains no internet
     git: https://github.com/tq-systems/WiFiFlutter.git
-  provider: ^4.3.3 # Used to provide the cubits throughout the app
+  csv: ^4.1.0 # Used to read in the CSV files for the graphs
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
