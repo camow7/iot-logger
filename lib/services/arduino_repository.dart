@@ -107,12 +107,12 @@ class ArduinoRepository {
     try {
       RawDatagramSocket.bind(InternetAddress(wifiIP), 4444)
           .then((RawDatagramSocket socket) {
-        this._socket = socket;
+        _socket = socket;
         print('Creating UDP Server @ ${socket.address.address}:${socket.port}');
 
         // Send Heart Beat
         heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
-          // print("heart beat sent");
+          print("heart beat sent");
           messageBuffer = Uint8List.fromList(
               [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
           sendMessageBuffer(messageBuffer);
@@ -127,7 +127,7 @@ class ArduinoRepository {
 
         //Listen for messages
         _socket.listen((event) {
-          Datagram d = socket.receive();
+          Datagram d = _socket.receive();
           if (d == null) return;
           readMessage(d.data);
         });
@@ -142,13 +142,20 @@ class ArduinoRepository {
   stopHeartBeat() {
     print("arduino disconnected");
     arduinoisConnected = false;
-    heartBeatTimer.cancel();
+    // heartBeatTimer.cancel();
   }
 
   readMessage(Uint8List data) {
     for (int i = 0; i < data.length; i++) {
       msgParseByte(data[i]);
     }
+  }
+
+  void closeConnections() {
+    _socket.close();
+    networkSubscription.cancel();
+    heartBeatTimer.cancel();
+    countdownTimer.cancel();
   }
 
   void msgParseByte(int messageByte) {
@@ -479,6 +486,7 @@ class ArduinoRepository {
     messageBuffer[2] = messageCounter;
     messageBuffer[3] = sensorType;
     messageBuffer[4] = messageIndexMap[MessageType.SET_WIFI_SSID];
+
     for (int i = 0; i < payloadSize; i++) {
       messageBuffer[i + messageDataIndex] =
           bytes[i]; // insert fileName as payload
@@ -525,13 +533,11 @@ class ArduinoRepository {
   }
 
   sendMessageBuffer(Uint8List messageBuffer) {
-    if (arduinoisConnected) {
-      try {
-        _socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
-        messageCounter++;
-      } catch (e) {
-        print(e);
-      }
+    try {
+      _socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
+      messageCounter++;
+    } catch (e) {
+      print(e);
     }
   }
 

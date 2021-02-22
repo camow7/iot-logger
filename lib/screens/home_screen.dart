@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import '../models/sensor.dart';
 import '../shared/layout.dart';
 import '../shared/refresh_button.dart';
 import '../widgets/sensor_item.dart';

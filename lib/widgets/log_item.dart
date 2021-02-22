@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/cubits/log_download_cubit/log_download_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
-import '../cubits/log_download/log_download_cubit.dart';
 
 class LogItem extends StatelessWidget {
   final String fileName;

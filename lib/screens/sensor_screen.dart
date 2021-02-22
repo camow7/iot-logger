@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
-import '../models/sensor.dart';
 import '../shared/layout.dart';
 import '../shared/main_card.dart';
 
 class SensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final sensor = ModalRoute.of(context).settings.arguments as Sensor;
     return Scaffold(
       body: Layout(
         content: Column(
@@ -56,8 +54,7 @@ class SensorScreen extends StatelessWidget {
                   ),
                   MainCard(
                     content: InkWell(
-                      onTap: () =>
-                          null, //Navigator.of(context).pushNamed('/logs', arguments: sensor),
+                      onTap: () => Navigator.of(context).pushNamed('/settings'),
                       child: Center(
                         child: ListTile(
                           leading: Icon(

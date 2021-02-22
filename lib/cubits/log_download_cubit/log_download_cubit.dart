@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 import 'package:meta/meta.dart';
-
-import '../../services/download_service.dart';
 import '../../models/sensor.dart';
 import '../../shared/rive_animation.dart';
 

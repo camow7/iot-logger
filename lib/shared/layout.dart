@@ -12,8 +12,10 @@ class Layout extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
+          // color: Colors.red[40],s
+          alignment: Alignment.center,
           height:
-              MediaQuery.of(context).size.height * (isLandscape ? 0.2 : 0.15),
+              MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
           child: SvgPicture.asset(
             'assets/svgs/saphi-logo-white-text.svg',
             width:
@@ -63,8 +65,7 @@ class Layout extends StatelessWidget {
             children: [
               getSaphiLogo(context),
               Container(
-                // color: Colors.blue[50],
-                height: MediaQuery.of(context).size.height * 0.8,
+                height: MediaQuery.of(context).size.height * 0.85,
                 child: content,
               ),
             ],

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:iot_logger/cubits/files_cubit.dart/files_cubit.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 
 import '../models/sensor.dart';
