@@ -108,14 +108,17 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   setWifiSSD(String name) {
     _arduinoRepository.setWifiSSID(name);
+    getWifiDetails();
   }
 
   setWifiPassword(String password) {
     _arduinoRepository.setWifiPassword(password);
+    getWifiDetails();
   }
 
-  getArduinoTime() {
-    _arduinoRepository.getRTCTime();
+  setLoggingPeriod(int loggingPeriod) {
+    _arduinoRepository.setLoggingPeriod(loggingPeriod);
+    getLoggingPeriod();
   }
 
   setArduinoTime() {

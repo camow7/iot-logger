@@ -13,10 +13,6 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text(
-              'Your Sensor',
-              style: Theme.of(context).textTheme.headline1,
-            ),
             SensorItem(),
             RefreshButton(),
           ],

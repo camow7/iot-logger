@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/settings_cubit/settings_cubit.dart';
@@ -7,6 +8,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomPadding: false,
       body: Layout(
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -83,6 +85,10 @@ class SettingsScreen extends StatelessWidget {
                                     ),
                                     ListTile(
                                       title: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
                                         onPressed: () => {
                                           context
                                               .read<SettingsCubit>()
@@ -91,14 +97,10 @@ class SettingsScreen extends StatelessWidget {
                                         child: Text(
                                           'Set Time',
                                           style: TextStyle(
-                                              fontSize: 11,
+                                              fontSize: 18,
                                               fontWeight: FontWeight.w700,
                                               fontFamily: 'Montserrat'),
                                         ),
-                                        // shape: isLandscape
-                                        //     ? Border()
-                                        //     : CircleBorder(),
-
                                         elevation: 3,
                                         textColor:
                                             Theme.of(context).backgroundColor,
@@ -175,46 +177,61 @@ class SettingsScreen extends StatelessWidget {
                                       ),
                                     ),
                                     ListTile(
-                                      title: SizedBox(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                0.4,
-                                        child: RaisedButton(
-                                          onPressed: () => {
-                                            // setLoggingPeriod(context),
-                                          },
-                                          child: Text(
-                                            'Set SSID',
-                                            style: TextStyle(
-                                                fontSize: 18,
-                                                fontWeight: FontWeight.w700,
-                                                fontFamily: 'Montserrat'),
+                                      title: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () => {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) =>
+                                                    SetWifiSSID(context, state),
+                                                barrierDismissible: true,
+                                              ),
+                                            },
+                                            child: Text(
+                                              "Set SSID",
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontFamily: 'Montserrat'),
+                                            ),
+                                            elevation: 3,
+                                            textColor: Theme.of(context)
+                                                .backgroundColor,
                                           ),
-                                          elevation: 3,
-                                          textColor:
-                                              Theme.of(context).backgroundColor,
-                                        ),
+                                          RaisedButton(
+                                            shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(10.0),
+                                            ),
+                                            onPressed: () => {
+                                              showDialog(
+                                                context: context,
+                                                builder: (_) => SetWifiPassword(
+                                                    context, state),
+                                                barrierDismissible: true,
+                                              ),
+                                            },
+                                            child: Text(
+                                              'Set Password',
+                                              style: TextStyle(
+                                                  fontSize: 18,
+                                                  fontWeight: FontWeight.w700,
+                                                  fontFamily: 'Montserrat'),
+                                            ),
+                                            elevation: 3,
+                                            textColor: Theme.of(context)
+                                                .backgroundColor,
+                                          ),
+                                        ],
                                       ),
-                                      trailing: RaisedButton(
-                                        onPressed: () => {
-                                          // setLoggingPeriod(context),
-                                        },
-                                        child: Text(
-                                          'Set Password',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w700,
-                                              fontFamily: 'Montserrat'),
-                                        ),
-                                        // shape: isLandscape
-                                        //     ? Border()
-                                        //     : CircleBorder(),
-
-                                        elevation: 3,
-                                        textColor:
-                                            Theme.of(context).backgroundColor,
-                                      ),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -273,8 +290,17 @@ class SettingsScreen extends StatelessWidget {
                                     ),
                                     ListTile(
                                       title: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
                                         onPressed: () => {
-                                          // setLoggingPeriod(context),
+                                          showDialog(
+                                              context: context,
+                                              builder: (_) =>
+                                                  SetLoggingPeriodDialog(
+                                                      context, state),
+                                              barrierDismissible: true)
                                         },
                                         child: Text(
                                           'Set Logging Period',
@@ -387,20 +413,20 @@ class SettingsScreen extends StatelessWidget {
                                     ),
                                     ListTile(
                                       title: RaisedButton(
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(10.0),
+                                        ),
                                         onPressed: () => {
                                           refreshOtherSetting(context),
                                         },
                                         child: Text(
                                           'Refresh',
                                           style: TextStyle(
-                                              fontSize: 11,
+                                              fontSize: 18,
                                               fontWeight: FontWeight.w700,
                                               fontFamily: 'Montserrat'),
                                         ),
-                                        // shape: isLandscape
-                                        //     ? Border()
-                                        //     : CircleBorder(),
-
                                         elevation: 3,
                                         textColor:
                                             Theme.of(context).backgroundColor,
@@ -416,7 +442,20 @@ class SettingsScreen extends StatelessWidget {
                     ),
                   );
                 } else {
-                  return Text("Loading");
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                    child: Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.40,
+                      height: MediaQuery.of(context).size.width * 0.40,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blue,
+                        ),
+                      ),
+                    ),
+                  );
                 }
               },
             )
@@ -425,6 +464,220 @@ class SettingsScreen extends StatelessWidget {
       ),
     );
   }
+}
+
+// ignore: non_constant_identifier_names
+Widget SetLoggingPeriodDialog(BuildContext context, state) {
+  int loggingPeriod;
+  bool loggingPeriodisInt = false;
+
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(28.0),
+    ),
+    child: Container(
+      height: MediaQuery.of(context).size.height * 0.20,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Text(
+              "Set Logging Period",
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: TextField(
+              style: TextStyle(
+                fontSize: 20.0,
+                color: loggingPeriodisInt ? Colors.red : Colors.black,
+              ),
+              maxLines: 1,
+              textAlignVertical: TextAlignVertical.top,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: '${state.loggingPeriod}',
+              ),
+              onChanged: (String value) {
+                // print("Checking");
+                if (int.tryParse(value) != null) {
+                  // print("pass");
+                  loggingPeriod = int.parse(value);
+
+                  loggingPeriodisInt = true;
+                } else {
+                  loggingPeriodisInt = false;
+                }
+              },
+              keyboardType: TextInputType.numberWithOptions(decimal: false),
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () => {
+                    Navigator.pop(context),
+                  },
+                ),
+                VerticalDivider(
+                  thickness: 1,
+                ),
+                FlatButton(
+                  child: Text("Set"),
+                  onPressed: () => {
+                    if (loggingPeriodisInt)
+                      {
+                        context
+                            .read<SettingsCubit>()
+                            .setLoggingPeriod(loggingPeriod),
+                        Navigator.pop(context),
+                      },
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+// ignore: non_constant_identifier_names
+Widget SetWifiSSID(BuildContext context, state) {
+  String ssid;
+
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(28.0),
+    ),
+    child: Container(
+      height: MediaQuery.of(context).size.height * 0.20,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Text(
+              "Set Wifi SSID",
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: TextField(
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
+              maxLines: 1,
+              textAlignVertical: TextAlignVertical.top,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: '${state.ssid}',
+              ),
+              onChanged: (String value) {
+                ssid = value;
+              },
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () => {
+                    Navigator.pop(context),
+                  },
+                ),
+                VerticalDivider(
+                  thickness: 1,
+                ),
+                FlatButton(
+                  child: Text("Set"),
+                  onPressed: () => {
+                    context.read<SettingsCubit>().setWifiSSD(ssid),
+                    Navigator.pop(context),
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
+// ignore: non_constant_identifier_names
+Widget SetWifiPassword(BuildContext context, state) {
+  String password;
+
+  return Dialog(
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(28.0),
+    ),
+    child: Container(
+      height: MediaQuery.of(context).size.height * 0.20,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            child: Text(
+              "Set Wifi Password",
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            child: TextField(
+              style: TextStyle(
+                fontSize: 20.0,
+              ),
+              maxLines: 1,
+              textAlignVertical: TextAlignVertical.top,
+              textAlign: TextAlign.center,
+              decoration: InputDecoration(
+                hintText: '${state.password}',
+              ),
+              onChanged: (String value) {
+                password = value;
+              },
+            ),
+          ),
+          Container(
+            height: MediaQuery.of(context).size.height * 0.05,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FlatButton(
+                  child: Text("Cancel"),
+                  onPressed: () => {
+                    Navigator.pop(context),
+                  },
+                ),
+                VerticalDivider(
+                  thickness: 1,
+                ),
+                FlatButton(
+                  child: Text("Set"),
+                  onPressed: () => {
+                    context.read<SettingsCubit>().setWifiPassword(password),
+                    Navigator.pop(context),
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
 }
 
 refreshOtherSetting(BuildContext context) async {

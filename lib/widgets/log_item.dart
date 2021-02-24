@@ -55,12 +55,29 @@ class _LogItem extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(
                     Theme.of(context).primaryColor),
               ),
-              ListTile(
-                leading: folderIcon(context, state),
-                title: logDate(context, state, fileName),
-                trailing: IconButton(
-                  icon: state.icon,
-                  onPressed: () => {},
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: folderIcon(context, state),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      alignment: Alignment.center,
+                      child: logDate(context, state, fileName),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: state.icon,
+                    ),
+                  ],
                 ),
               ),
             ],
@@ -79,10 +96,34 @@ class _LogItem extends StatelessWidget {
                 valueColor: AlwaysStoppedAnimation<Color>(
                     Theme.of(context).primaryColor),
               ),
-              ListTile(
-                  leading: folderIcon(context, state),
-                  title: logDate(context, state, fileName),
-                  trailing: IconButton(icon: state.icon, onPressed: () => {}))
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: folderIcon(context, state),
+                    ),
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      alignment: Alignment.center,
+                      child: logDate(context, state, fileName),
+                    ),
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: state.icon,
+                    ),
+                  ],
+                ),
+              )
             ],
           ),
         ),
@@ -110,21 +151,16 @@ class _LogItem extends StatelessWidget {
 
   Widget logDate(
       BuildContext context, LogDownloadState state, String fileName) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        // text changes color depending on loading progress bar length
-        formatText(
-          context,
-          fileName,
-          Theme.of(context).focusColor,
-        ),
-        // formatText(
-        //   context,
-        //   fileName,
-        //   state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
-        // )
-      ],
+    return formatText(
+      context,
+      fileName,
+      Theme.of(context).focusColor,
+
+      // formatText(
+      //   context,
+      //   fileName,
+      //   state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
+      // )
     );
   }
 
