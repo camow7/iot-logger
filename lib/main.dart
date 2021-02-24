@@ -21,7 +21,9 @@ void main() => runApp(
               create: (context) => SensorCubit(arduinoRepo)..connect()),
           BlocProvider(
               create: (context) => FilesCubit(arduinoRepo)..getFiles()),
-          BlocProvider(create: (context) => SettingsCubit(arduinoRepo)),
+          BlocProvider(
+              create: (context) =>
+                  SettingsCubit(arduinoRepo)..getAllSettings()),
         ],
         child: IotLoggerApp(),
       ),

@@ -11,9 +11,7 @@ class SensorCubit extends Cubit<SensorState> {
   final ArduinoRepository _arduinoRepository;
   StreamSubscription<bool> _isConnectedSubscription;
 
-  SensorCubit(
-    this._arduinoRepository,
-  ) : super(Disconnected());
+  SensorCubit(this._arduinoRepository) : super(Disconnected());
 
   void connect() {
     //print("connect triggered");
@@ -29,7 +27,6 @@ class SensorCubit extends Cubit<SensorState> {
     });
   }
 
-  // Not used at the moment
   void refresh() {
     print("Refreshing in cubit");
     _arduinoRepository.closeConnections();

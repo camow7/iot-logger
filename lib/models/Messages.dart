@@ -25,6 +25,8 @@ enum MessageType {
   ERROR_MSG,
   SET_WIFI_SSID,
   SET_WIFI_PASSWORD,
+  GET_WIFI_DETAILS,
+  SEND_WIFI_DETAILS
 }
 
 class StateMessage {
@@ -59,5 +61,7 @@ Map messageMap = {
   20: MessageType.GET_LOG_FILE_SIZE,
   21: MessageType.SET_WIFI_SSID,
   22: MessageType.SET_WIFI_PASSWORD,
+  23: MessageType.GET_WIFI_DETAILS,
+  24: MessageType.SEND_WIFI_DETAILS,
   200: MessageType.ERROR_MSG
 };

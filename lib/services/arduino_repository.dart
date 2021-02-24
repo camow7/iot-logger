@@ -29,16 +29,19 @@ class ArduinoRepository {
   RawDatagramSocket _socket;
   Timer heartBeatTimer;
   int messageCounter = 0;
-  bool newMessageReceived = false;
   BytesBuilder messageFile;
   StreamController<double> fileController;
   Stream fileStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
   Stream fileNamesStream;
+
   StreamController<List<String>> fileNamesController;
-  String wifiIP, wifiName;
   StreamSubscription networkSubscription;
+  StreamController<String> settingStreamController;
+  Stream<String> settingsStream;
+  String wifiIP, wifiName;
+
   List<String> fileNames = [];
 
   ArduinoRepository() {
@@ -50,6 +53,8 @@ class ArduinoRepository {
     isConnectedStream = isConnectedController.stream;
     fileNamesController = StreamController<List<String>>.broadcast();
     fileNamesStream = fileNamesController.stream;
+    settingStreamController = StreamController<String>.broadcast(sync: true);
+    settingsStream = settingStreamController.stream;
   }
 
   initialiseWifiConnection() async {
@@ -112,7 +117,7 @@ class ArduinoRepository {
 
         // Send Heart Beat
         heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
-          print("heart beat sent");
+          // print("heart beat sent");
           messageBuffer = Uint8List.fromList(
               [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
           sendMessageBuffer(messageBuffer);
@@ -269,26 +274,42 @@ class ArduinoRepository {
         }
         break;
       case MessageType.SEND_SD_CARD_INFO:
-        newMessageReceived = true;
         ByteData sdCardInfo = ByteData.sublistView(messageData, 0, payloadSize);
-        print(messageData.sublist(0, payloadSize));
         print('Card Used Space: ' +
             sdCardInfo.getInt16(0, Endian.little).toString() +
             ' Card Remaining Space: ' +
             sdCardInfo.getInt16(2, Endian.little).toString());
+        settingStreamController.add(
+            "${sdCardInfo.getInt16(0, Endian.little).toString()},${sdCardInfo.getInt16(2, Endian.little).toString()}");
         break;
       case MessageType.SEND_LOGGING_PERIOD:
-        newMessageReceived = true;
         ByteData loggingPeriod =
             ByteData.sublistView(messageData, 0, payloadSize);
         print('Logging Period Received: ' +
             loggingPeriod.getInt32(0, Endian.little).toString());
+        settingStreamController
+            .add(loggingPeriod.getInt32(0, Endian.little).toString());
         break;
       case MessageType.SEND_RTC_TIME:
-        newMessageReceived = true;
         ByteData rtcTime = ByteData.sublistView(messageData, 0, payloadSize);
         print('Received RTC Time = ' +
             rtcTime.getInt32(0, Endian.little).toString());
+        DateTime time = new DateTime.fromMillisecondsSinceEpoch(
+            (rtcTime.getInt32(0, Endian.little) * 1000),
+            isUtc: false);
+        String minutes = time.minute.toString();
+        if (minutes.length != 2) {
+          minutes = '0' + minutes;
+        }
+        settingStreamController.add(time.hour.toString() +
+            ":" +
+            minutes.toString() +
+            " " +
+            time.day.toString() +
+            "/" +
+            time.month.toString() +
+            "/" +
+            time.year.toString());
         break;
       case MessageType.SEND_CURRENT_MEASUREMENTS:
         print('Current Measurements Message Received: ' +
@@ -296,16 +317,21 @@ class ArduinoRepository {
                 messageData.sublist(0, payloadSize))); //messageData
         break;
       case MessageType.SEND_BATTERY_INFO:
-        newMessageReceived = true;
         ByteData batteryInfo =
             ByteData.sublistView(messageData, 0, payloadSize);
         print('Battery Voltage: ' +
             batteryInfo.getFloat32(0, Endian.little).toString() +
             ' Battery ADC Reading: ' +
             batteryInfo.getInt32(4, Endian.little).toString());
+        settingStreamController.add(
+            "${batteryInfo.getFloat32(0, Endian.little).toStringAsFixed(2)},${batteryInfo.getInt32(4, Endian.little).toString()}");
+        break;
+      case MessageType.SEND_WIFI_DETAILS:
+        settingStreamController.add(String.fromCharCodes(
+            messageData.sublist(0, payloadSize))); //messageData
+
         break;
       case MessageType.ERROR_MSG:
-        newMessageReceived = true;
         print('Error Message Received: ' +
             String.fromCharCodes(
                 messageData.sublist(0, payloadSize))); //messageData
@@ -413,6 +439,19 @@ class ArduinoRepository {
     messageBuffer[5] = 1; // Payload
     sendMessageBuffer(messageBuffer);
     print('SENT GET LOG LIST REQUEST');
+  }
+
+  getWifiDetails() {
+    int payloadSize = 1;
+    messageBuffer = new Uint8List(payloadSize + messageDataIndex);
+    messageBuffer[0] = 0xFE;
+    messageBuffer[1] = payloadSize;
+    messageBuffer[2] = messageCounter;
+    messageBuffer[3] = sensorType;
+    messageBuffer[4] = messageIndexMap[MessageType.GET_WIFI_DETAILS];
+    messageBuffer[5] = 1; // Payload
+    sendMessageBuffer(messageBuffer);
+    print('SENT GET WIFI DETAILS REQUEST');
   }
 
   getLogFile(String fileName) {
@@ -570,6 +609,8 @@ Map messageIndexMap = {
   MessageType.GET_LOG_FILE_SIZE: 20,
   MessageType.SET_WIFI_SSID: 21,
   MessageType.SET_WIFI_PASSWORD: 22,
+  MessageType.GET_WIFI_DETAILS: 23,
+  MessageType.SEND_WIFI_DETAILS: 24,
   MessageType.ERROR_MSG: 200
 };
 

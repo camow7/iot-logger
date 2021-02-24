@@ -5,10 +5,27 @@ abstract class SettingsState {
   const SettingsState();
 }
 
-class InitialState extends SettingsState {
-  const InitialState() : super();
+class LoadingSettings extends SettingsState {
+  const LoadingSettings() : super();
 }
 
 class Loaded extends SettingsState {
-  const Loaded() : super();
+  final String usedSpace;
+  final String remainingSpace;
+  final String batteryADC;
+  final String batteryVoltage;
+  final String loggingPeriod;
+  final String time;
+  final String ssid;
+  final String password;
+  const Loaded({
+    this.usedSpace,
+    this.remainingSpace,
+    this.batteryADC,
+    this.batteryVoltage,
+    this.loggingPeriod,
+    this.time,
+    this.ssid,
+    this.password,
+  }) : super();
 }
