@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 
-import '../models/sensor.dart';
 import '../shared/refresh_button.dart';
 import '../shared/layout.dart';
 import '../widgets/log_item.dart';
@@ -33,7 +32,6 @@ class LogsScreen extends StatelessWidget {
   }
 
   Widget pageContent(BuildContext context) {
-    final sensor = ModalRoute.of(context).settings.arguments as Sensor;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

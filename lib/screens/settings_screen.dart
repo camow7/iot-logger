@@ -32,7 +32,7 @@ class SettingsScreen extends StatelessWidget {
                       children: [
                         //Sensor Time
                         Padding(
-                          padding: EdgeInsets.fromLTRB(0, 8, 8, 8),
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 8),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(18),
@@ -114,7 +114,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         //Wifi Details
                         Padding(
-                          padding: EdgeInsets.all(8),
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(18),
@@ -240,7 +240,7 @@ class SettingsScreen extends StatelessWidget {
                         ),
                         //File Logging Period
                         Padding(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(18),
@@ -321,7 +321,7 @@ class SettingsScreen extends StatelessWidget {
                           ),
                         ),
                         Padding(
-                          padding: EdgeInsets.all(5),
+                          padding: EdgeInsets.fromLTRB(0, 8, 0, 8),
                           child: ClipRRect(
                             borderRadius: const BorderRadius.all(
                               Radius.circular(18),
