@@ -40,6 +40,8 @@ class ArduinoRepository {
   StreamSubscription networkSubscription;
   StreamController<String> settingStreamController;
   Stream<String> settingsStream;
+  StreamController<String> currentMeasurementsStreamController;
+  Stream<String> currentMeasurementsStream;
   String wifiIP, wifiName;
 
   List<String> fileNames = [];
@@ -53,8 +55,10 @@ class ArduinoRepository {
     isConnectedStream = isConnectedController.stream;
     fileNamesController = StreamController<List<String>>.broadcast();
     fileNamesStream = fileNamesController.stream;
-    settingStreamController = StreamController<String>.broadcast(sync: true);
+    settingStreamController = StreamController<String>.broadcast();
     settingsStream = settingStreamController.stream;
+    currentMeasurementsStreamController = StreamController<String>.broadcast();
+    currentMeasurementsStream = currentMeasurementsStreamController.stream;
   }
 
   initialiseWifiConnection() async {
@@ -229,7 +233,7 @@ class ArduinoRepository {
     messageData[currentPayloadByte] = 0;
     switch (messageId) {
       case MessageType.HEART_BEAT:
-        print("heart beat received");
+        // print("heart beat received");
         arduinoisConnected = true;
         isConnectedController.add(true);
         countdownTimer.reset();
@@ -312,9 +316,10 @@ class ArduinoRepository {
             time.year.toString());
         break;
       case MessageType.SEND_CURRENT_MEASUREMENTS:
-        print('Current Measurements Message Received: ' +
-            String.fromCharCodes(
-                messageData.sublist(0, payloadSize))); //messageData
+        // print("SEND CURRENT MEASUREMENTS RECEIVED: " +
+        //     String.fromCharCodes(messageData.sublist(0, payloadSize)));
+        currentMeasurementsStreamController
+            .add(String.fromCharCodes(messageData.sublist(0, payloadSize)));
         break;
       case MessageType.SEND_BATTERY_INFO:
         ByteData batteryInfo =
@@ -408,7 +413,7 @@ class ArduinoRepository {
       ..buffer.asByteData().setInt32(5, time, Endian.little); // Payload
     //print(messageBuffer.sublist(0, payloadSize + messageDataIndex).toString());
     sendMessageBuffer(messageBuffer);
-    print('SENT CURRENT MEASUREMENT REQUEST');
+    // print('SENT CURRENT MEASUREMENT REQUEST');
   }
 
   setLoggingPeriod(int loggingPeriod) {
@@ -424,7 +429,6 @@ class ArduinoRepository {
           .asByteData()
           .setInt32(5, loggingPeriod, Endian.little); // Payload
     sendMessageBuffer(messageBuffer);
-    print('SENT CURRENT MEASUREMENT REQUEST');
   }
 
   getLogsList() {
@@ -513,7 +517,7 @@ class ArduinoRepository {
           .asByteData()
           .setInt32(5, decimalPlaces, Endian.little); // Payload
     sendMessageBuffer(messageBuffer);
-    print('SENT CURRENT MEASUREMENT REQUEST');
+    // print('SENT CURRENT MEASUREMENT REQUEST');
   }
 
   setWifiSSID(String ssid) {

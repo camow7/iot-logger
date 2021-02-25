@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
+import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 import 'package:iot_logger/cubits/settings_cubit/settings_cubit.dart';
 import 'package:iot_logger/screens/sensor_screen.dart';
 import 'package:iot_logger/screens/settings_screen.dart';
@@ -9,6 +10,7 @@ import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
 import './screens/graph_screen.dart';
 import 'cubits/files_cubit/files_cubit.dart';
+import 'screens/individual_sensor_screen.dart';
 import 'services/arduino_repository.dart';
 
 ArduinoRepository arduinoRepo = ArduinoRepository();
@@ -24,6 +26,7 @@ void main() => runApp(
           BlocProvider(
               create: (context) =>
                   SettingsCubit(arduinoRepo)..getAllSettings()),
+          BlocProvider(create: (context) => SensorReadingCubit(arduinoRepo)),
         ],
         child: IotLoggerApp(),
       ),
@@ -102,6 +105,7 @@ class IotLoggerApp extends StatelessWidget {
         '/readings': (ctx) => ReadingsScreen(),
         '/graph-reading': (ctx) => GraphScreen(),
         '/settings': (ctx) => SettingsScreen(),
+        '/individual-sensor-screen': (ctx) => IndividualSensorScreen(),
       },
     );
   }

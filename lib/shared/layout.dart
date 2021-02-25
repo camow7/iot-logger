@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 
 class Layout extends StatelessWidget {
   final Widget content;
@@ -56,6 +58,11 @@ class Layout extends StatelessWidget {
             child: Align(
               alignment: Alignment.topLeft,
               child: BackButton(
+                onPressed: () => {
+                  if (ModalRoute.of(context).settings.name == "/readings")
+                    {context.read<SensorReadingCubit>().closeTimer()},
+                  Navigator.pop(context),
+                },
                 color: Colors.white,
               ),
             ),

@@ -56,6 +56,7 @@ class LogsScreen extends StatelessWidget {
             BlocBuilder<FilesCubit, FilesState>(
               builder: (_, state) {
                 if (state is LoadingFiles) {
+                  //Loading Spinner
                   return Padding(
                     padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
                     child: Container(
@@ -73,7 +74,7 @@ class LogsScreen extends StatelessWidget {
                 }
                 if (state is Files) {
                   return Container(
-                    height: MediaQuery.of(context).size.height * 0.45,
+                    height: MediaQuery.of(context).size.height * 0.62,
                     child: GridView(
                       padding: EdgeInsets.only(top: 10),
                       children: state.fileNames
@@ -101,7 +102,6 @@ class LogsScreen extends StatelessWidget {
             ),
           ],
         ),
-        RefreshButton()
       ],
     );
   }

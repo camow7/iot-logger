@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../shared/layout.dart';
 import '../shared/refresh_button.dart';
-import '../widgets/graph_item.dart';
+import '../widgets/graph_item_from_file.dart';
 
 class GraphScreen extends StatelessWidget {
   void refreshPage() {
@@ -28,7 +28,7 @@ class GraphScreen extends StatelessWidget {
     Map arguments = ModalRoute.of(context).settings.arguments;
     String fileName = arguments['fileName'];
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         Container(
           width: MediaQuery.of(context).size.width * 0.8,
@@ -50,9 +50,8 @@ class GraphScreen extends StatelessWidget {
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.4,
           margin: EdgeInsets.only(top: 20),
-          child: GraphItem(fileName),
+          child: GraphItemFromFile(fileName),
         ),
-        RefreshButton()
       ],
     );
   }

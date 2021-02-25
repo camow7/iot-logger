@@ -27,7 +27,8 @@ class SettingsCubit extends Cubit<SettingsState> {
     await getRTCTime();
     await getWifiDetails();
 
-    emit(Loaded(
+    emit(
+      Loaded(
         remainingSpace: this.remainingSpace,
         usedSpace: this.usedSpace,
         batteryADC: this.batteryADC,
@@ -35,12 +36,15 @@ class SettingsCubit extends Cubit<SettingsState> {
         loggingPeriod: this.loggingPeriod,
         time: this.time,
         ssid: this.ssid,
-        password: this.password));
+        password: this.password,
+      ),
+    );
   }
 
   void refresh() {
     print("settings updated");
-    emit(Loaded(
+    emit(
+      Loaded(
         remainingSpace: this.remainingSpace,
         usedSpace: this.usedSpace,
         batteryADC: this.batteryADC,
@@ -48,7 +52,9 @@ class SettingsCubit extends Cubit<SettingsState> {
         loggingPeriod: this.loggingPeriod,
         time: this.time,
         ssid: this.ssid,
-        password: this.password));
+        password: this.password,
+      ),
+    );
   }
 
   getRTCTime() async {

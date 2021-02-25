@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/graph_cubit/graph_cubit.dart';
 
-class GraphItem extends StatelessWidget {
+class GraphItemFromFile extends StatelessWidget {
   final String fileName;
-  GraphItem(this.fileName);
+  GraphItemFromFile(this.fileName);
 
   @override
   Widget build(BuildContext context) {
