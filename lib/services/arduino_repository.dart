@@ -34,7 +34,7 @@ class ArduinoRepository {
   Stream<double> fileStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
-  Stream fileNamesStream;
+  Stream<List<String>> fileNamesStream;
 
   StreamController<List<String>> fileNamesController;
   StreamSubscription networkSubscription;

@@ -11,7 +11,8 @@ class Loading extends GraphState {
 
 class Loaded extends GraphState {
   final List<List<FlSpot>> readings;
-  const Loaded({this.readings}) : super();
+  final double min, max;
+  const Loaded({this.readings, this.max, this.min}) : super();
 }
 
 class CannotLoad extends GraphState {}

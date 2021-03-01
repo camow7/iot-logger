@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -7,20 +9,20 @@ part 'files_state.dart';
 
 class FilesCubit extends Cubit<FilesState> {
   final ArduinoRepository _arduinoRepository;
-  List<String> fileNames;
+  StreamSubscription fileNameStreamSubscription;
+  List<String> fileNames = [];
 
   FilesCubit(
     this._arduinoRepository,
   ) : super(LoadingFiles());
 
-  void getFiles() async {
-    // print("get files triggered");
+  void getFiles() {
     _arduinoRepository.getLogsList();
-    fileNames = await _arduinoRepository.fileNamesController.stream.first;
-    if (fileNames.length == 0) {
-      emit(NoFiles());
-    } else {
+
+    fileNameStreamSubscription =
+        _arduinoRepository.fileNamesStream.listen((List<String> files) {
+      fileNames = files;
       emit(Files(fileNames: fileNames));
-    }
+    });
   }
 }

@@ -13,15 +13,34 @@ class GraphCubit extends Cubit<GraphState> {
   List<FlSpot> nepheloFNU = [];
   List<FlSpot> tu = [];
   GraphCubit() : super(Loading());
+  double max;
+  double min;
 
   loadGraph(String fileName) async {
+    min = 0;
+    max = 0;
     var directory = await getApplicationDocumentsDirectory();
 
-    File('${directory.path}/$fileName').readAsLines().then(
+    await File('${directory.path}/$fileName').readAsLines().then(
       (List<String> lines) {
         for (int i = 1; i < lines.length; i++) {
           List<String> readingsList = lines[i].split(",");
           if (readingsList.length == 6) {
+            // Check for new max temp
+            if (double.parse(readingsList[2]) > max) {
+              max = double.parse(readingsList[2]);
+            }
+
+            //Check for new min
+            if (double.parse(readingsList[3]) < min) {
+              min = double.parse(readingsList[3]);
+            }
+
+            //Check for new min
+            if (double.parse(readingsList[5]) < min) {
+              min = double.parse(readingsList[5]);
+            }
+
             temp.add(FlSpot(
                 double.parse(readingsList[0].substring(11, 13) +
                     "." +
@@ -52,6 +71,8 @@ class GraphCubit extends Cubit<GraphState> {
 
     readings = [temp, nepheloNTU, nepheloFNU, tu];
 
-    emit(Loaded(readings: readings));
+    print("Min: ${min * -1.2} Max: ${max * 1.2}");
+
+    emit(Loaded(readings: readings, min: min, max: max));
   }
 }

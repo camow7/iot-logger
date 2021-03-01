@@ -17,12 +17,12 @@ class GraphItemFromFile extends StatelessWidget {
           return Stack(
             children: <Widget>[
               Align(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.center,
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height * 0.35,
                   child: LineChart(
-                    mainData(context, state.readings),
+                    mainData(context, state.readings, state.min, state.max),
                   ),
                 ),
               ),
@@ -51,7 +51,8 @@ class GraphItemFromFile extends StatelessWidget {
     );
   }
 
-  LineChartData mainData(BuildContext context, List<List<FlSpot>> readings) {
+  LineChartData mainData(BuildContext context, List<List<FlSpot>> readings,
+      double min, double max) {
     return LineChartData(
       backgroundColor: Theme.of(context).accentColor,
       gridData: FlGridData(
@@ -89,8 +90,8 @@ class GraphItemFromFile extends StatelessWidget {
           border: Border.all(color: const Color(0xff37434d), width: 1)),
       minX: 0,
       maxX: 24.00,
-      minY: 0,
-      maxY: 30,
+      minY: min * -1.2,
+      maxY: max * 1.2,
       lineBarsData: linesBarData(readings),
     );
   }
@@ -100,7 +101,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[0],
       isCurved: false,
       colors: [
-        const Color(0xff4af699),
+        const Color(0xff4af699), // Green Color
       ],
       barWidth: 3,
       isStrokeCapRound: true,
@@ -116,7 +117,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[1],
       isCurved: false,
       colors: [
-        const Color(0xff4af699),
+        Colors.yellow, // Yellow Color
       ],
       barWidth: 3,
       isStrokeCapRound: true,
@@ -132,7 +133,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[2],
       isCurved: false,
       colors: [
-        const Color(0xffaa4cfc),
+        const Color(0xffaa4cfc), // Purple line
       ],
       barWidth: 3,
       isStrokeCapRound: true,
@@ -148,7 +149,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[3],
       isCurved: false,
       colors: [
-        const Color(0xff27b6fc),
+        const Color(0xff27b6fc), // Color blue
       ],
       barWidth: 3,
       isStrokeCapRound: true,
