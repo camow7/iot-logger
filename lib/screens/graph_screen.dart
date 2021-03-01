@@ -41,10 +41,14 @@ class GraphScreen extends StatelessWidget {
           ),
         ),
         Container(
-          //color: Colors.blue[50],
+          decoration: BoxDecoration(
+            borderRadius: const BorderRadius.all(
+              Radius.circular(18),
+            ),
+            color: Theme.of(context).accentColor,
+          ),
           width: MediaQuery.of(context).size.width * 0.9,
           height: MediaQuery.of(context).size.height * 0.4,
-          margin: EdgeInsets.only(top: 20),
           child: GraphItemFromFile(fileName),
         ),
       ],

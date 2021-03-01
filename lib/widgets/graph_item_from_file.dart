@@ -56,7 +56,7 @@ class GraphItemFromFile extends StatelessWidget {
       backgroundColor: Theme.of(context).accentColor,
       gridData: FlGridData(
         show: true,
-        horizontalInterval: 22,
+        horizontalInterval: 9,
         getDrawingHorizontalLine: (value) {
           return FlLine(
             color: const Color(0x44EBEDF4),
@@ -132,7 +132,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[2],
       isCurved: false,
       colors: [
-        const Color(0xff4af699),
+        const Color(0xffaa4cfc),
       ],
       barWidth: 3,
       isStrokeCapRound: true,
@@ -148,7 +148,7 @@ class GraphItemFromFile extends StatelessWidget {
       spots: readings[3],
       isCurved: false,
       colors: [
-        const Color(0xff4af699),
+        const Color(0xff27b6fc),
       ],
       barWidth: 3,
       isStrokeCapRound: true,
