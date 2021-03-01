@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/log_download_cubit/log_download_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
+import 'package:iot_logger/shared/rive_animation.dart';
 
 class LogItem extends StatelessWidget {
   final String fileName;
@@ -30,7 +32,7 @@ class _LogItem extends StatelessWidget {
           vertical: 10,
         ),
         child: InkWell(
-          onTap: () => null, // routeToReadings(context, state),
+          onTap: () => null,
           borderRadius: BorderRadius.circular(4),
           child: Center(
             child: logTile(context, state, fileName),
@@ -42,19 +44,110 @@ class _LogItem extends StatelessWidget {
 
   Widget logTile(
       BuildContext context, LogDownloadState state, String fileName) {
-    if (state is LogDownloaded) {
+    if (state is LogLoaded) {
+      // When file is loaded (Initial State)
+      return GestureDetector(
+        onTap: () => context.read<LogDownloadCubit>().downloadFile(fileName),
+        child: Container(
+          child: Stack(
+            children: [
+              Container(
+                width: MediaQuery.of(context).size.width * 0.8,
+                alignment: Alignment.center,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: Icon(
+                        Icons.folder,
+                        color: Theme.of(context).accentColor,
+                        size: 40,
+                      ),
+                    ),
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.45,
+                      alignment: Alignment.center,
+                      child: logDate(context, state, fileName),
+                    ),
+                    Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: SvgPicture.asset(
+                        'assets/svgs/download.svg',
+                      ),
+                    ),
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      );
+    } else if (state is LogDownloading) {
+      // When file is downloading
+      return Container(
+        child: Stack(
+          children: [
+            LinearProgressIndicator(
+              minHeight: double.infinity,
+              value: state.progress,
+              valueColor:
+                  AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.8,
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    // color: Colors.blue[50],
+                    width: MediaQuery.of(context).size.width * 0.1,
+                    alignment: Alignment.center,
+                    child: folderIcon(context, state),
+                  ),
+                  Container(
+                    // color: Colors.blue[50],
+                    width: MediaQuery.of(context).size.width * 0.45,
+                    alignment: Alignment.center,
+                    child: logDate(context, state, fileName),
+                  ),
+                  // Container(
+                  //   // color: Colors.blue[50],
+                  //   width: MediaQuery.of(context).size.width * 0.01,
+                  //   alignment: Alignment.center,
+                  //   child: RiveAnimation(),
+                  // ),
+                  GestureDetector(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      alignment: Alignment.center,
+                      child: Icon(Icons.close),
+                    ),
+                    onTap: () =>
+                        context.read<LogDownloadCubit>().stopDownload(),
+                  ),
+                ],
+              ),
+            )
+          ],
+        ),
+      );
+    } else {
+      //When file is downloaded
       return GestureDetector(
         onTap: () => Navigator.of(context)
             .pushNamed('/graph-reading', arguments: {'fileName': fileName}),
         child: Container(
           child: Stack(
             children: [
-              LinearProgressIndicator(
-                minHeight: double.infinity,
-                value: state.progress,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
               Container(
                 width: MediaQuery.of(context).size.width * 0.8,
                 alignment: Alignment.center,
@@ -65,7 +158,11 @@ class _LogItem extends StatelessWidget {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.1,
                       alignment: Alignment.center,
-                      child: folderIcon(context, state),
+                      child: Icon(
+                        Icons.folder,
+                        color: Theme.of(context).accentColor,
+                        size: 40,
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width * 0.45,
@@ -75,55 +172,11 @@ class _LogItem extends StatelessWidget {
                     Container(
                       width: MediaQuery.of(context).size.width * 0.1,
                       alignment: Alignment.center,
-                      child: state.icon,
+                      child: Icon(Icons.done_outline),
                     ),
                   ],
                 ),
               ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      return GestureDetector(
-        onTap: () => context.read<LogDownloadCubit>().downloadFile(fileName),
-        child: Container(
-          child: Stack(
-            children: [
-              LinearProgressIndicator(
-                minHeight: double.infinity,
-                value: state.progress,
-                valueColor: AlwaysStoppedAnimation<Color>(
-                    Theme.of(context).primaryColor),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: folderIcon(context, state),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      alignment: Alignment.center,
-                      child: logDate(context, state, fileName),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: state.icon,
-                    ),
-                  ],
-                ),
-              )
             ],
           ),
         ),
@@ -135,12 +188,6 @@ class _LogItem extends StatelessWidget {
     return Stack(
       alignment: AlignmentDirectional.center,
       children: [
-        Icon(
-          Icons.folder,
-          color:
-              state.progress > 0 ? Colors.white : Theme.of(context).accentColor,
-          size: 40,
-        ),
         Text(
           '${(state.progress * 100).toStringAsFixed(0)}%',
           style: Theme.of(context).textTheme.subtitle2,
@@ -151,25 +198,10 @@ class _LogItem extends StatelessWidget {
 
   Widget logDate(
       BuildContext context, LogDownloadState state, String fileName) {
-    return formatText(
-      context,
-      fileName,
-      Theme.of(context).focusColor,
-
-      // formatText(
-      //   context,
-      //   fileName,
-      //   state.progress > 0.4 ? Colors.white : Theme.of(context).accentColor,
-      // )
-    );
-  }
-
-  Text formatText(BuildContext context, String text, Color color) {
     return Text(
-      text,
-      // style: Theme.of(context).textTheme.headline4,
+      fileName,
       style: TextStyle(
-          color: color,
+          color: Theme.of(context).focusColor,
           fontSize: 18,
           fontStyle: FontStyle.italic,
           fontFamily: 'Montserrat'),

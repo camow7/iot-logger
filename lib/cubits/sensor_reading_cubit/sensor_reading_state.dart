@@ -15,14 +15,3 @@ class Loaded extends SensorReadingState {
     this.readings,
   }) : super();
 }
-
-class SensorReading {
-  String sensorReading = "";
-  String sensorName = "";
-  DateTime dateTime;
-  SensorReading(String sensorReading, String sensorName) {
-    this.dateTime = DateTime.now();
-    this.sensorReading = sensorReading;
-    this.sensorName = sensorName;
-  }
-}

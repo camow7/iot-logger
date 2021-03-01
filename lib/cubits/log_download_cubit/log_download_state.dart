@@ -10,17 +10,15 @@ abstract class LogDownloadState {
   const LogDownloadState({this.date, this.progress, this.status, this.icon});
 }
 
-class LogInitial extends LogDownloadState {
-  const LogInitial({String date, double progress, LogStatus status, Widget icon})
+class LogLoaded extends LogDownloadState {
+  const LogLoaded({String date, double progress, LogStatus status, Widget icon})
       : super(date: date, progress: progress, status: status, icon: icon);
 }
 
 class LogDownloading extends LogDownloadState {
-  const LogDownloading({String date, double progress, LogStatus status, Widget icon})
-      : super(date: date, progress: progress, status: status, icon: icon);
+  const LogDownloading({double progress}) : super(progress: progress);
 }
 
 class LogDownloaded extends LogDownloadState {
-  const LogDownloaded({String date, double progress, LogStatus status, Widget icon})
-      : super(date: date, progress: progress, status: status, icon: icon);
+  const LogDownloaded() : super();
 }

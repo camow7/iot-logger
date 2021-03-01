@@ -1,6 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
+import 'package:iot_logger/models/SensorReading.dart';
 
 class GraphItemFromList extends StatelessWidget {
   final List<SensorReading> data;

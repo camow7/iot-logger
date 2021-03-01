@@ -31,7 +31,7 @@ class ArduinoRepository {
   int messageCounter = 0;
   BytesBuilder messageFile;
   StreamController<double> fileController;
-  Stream fileStream;
+  Stream<double> fileStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
   Stream fileNamesStream;
@@ -259,20 +259,17 @@ class ArduinoRepository {
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
         messageFile.add(messageData.sublist(0, payloadSize));
-        double filePercantage = (messageFile.length / (fileSize - missedBytes));
+        double filePercantage = (messageFile.length / (fileSize));
         print("Current Log File Size = " +
             messageFile.length.toString() +
             " estimatedtotalSize = " +
-            (fileSize - missedBytes).toString());
+            (fileSize).toString());
 
         // When file is downloaded
         if (filePercantage >= 1.0) {
-          // Write log file chunk to file, if there is no file this will create one
-          print('${directory.path}/$currentFile');
-          File('${directory.path}/$currentFile')
-              .writeAsStringSync(messageFile.toString());
+          writeMessageToFile();
+
           fileController.add(filePercantage);
-          print("File Downloaded");
         } else {
           fileController.add(filePercantage);
         }
@@ -316,8 +313,6 @@ class ArduinoRepository {
             time.year.toString());
         break;
       case MessageType.SEND_CURRENT_MEASUREMENTS:
-        // print("SEND CURRENT MEASUREMENTS RECEIVED: " +
-        //     String.fromCharCodes(messageData.sublist(0, payloadSize)));
         currentMeasurementsStreamController
             .add(String.fromCharCodes(messageData.sublist(0, payloadSize)));
         break;
@@ -345,6 +340,13 @@ class ArduinoRepository {
         print(
             'Default Message Type (means this message type has not been mapped');
     }
+  }
+
+  void writeMessageToFile() {
+    // Write log file chunk to file, if there is no file this will create one
+    print('Writing download string to file at: ${directory.path}/$currentFile');
+    File('${directory.path}/$currentFile')
+        .writeAsString(String.fromCharCodes(messageFile.takeBytes()));
   }
 
   // Outgoing Messages
@@ -586,6 +588,7 @@ class ArduinoRepository {
 
   Future<void> setLocalDirectory() async {
     directory = await getApplicationDocumentsDirectory();
+    print(directory);
   }
 }
 

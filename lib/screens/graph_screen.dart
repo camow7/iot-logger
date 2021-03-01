@@ -1,14 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../shared/layout.dart';
-import '../shared/refresh_button.dart';
 import '../widgets/graph_item_from_file.dart';
 
 class GraphScreen extends StatelessWidget {
-  void refreshPage() {
-    print('refreshing graph screen');
-  }
-
   @override
   Widget build(BuildContext context) {
     final isLandscape =

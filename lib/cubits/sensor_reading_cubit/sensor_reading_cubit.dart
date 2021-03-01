@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:iot_logger/models/SensorReading.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 
 part 'sensor_reading_state.dart';
@@ -40,14 +40,12 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
     this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
     this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
     this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
-    counter++;
 
-    if (counter == 60) {
+    while (this.temp.length > 60) {
       this.temp.removeLast();
       this.nepheloNTU.removeLast();
       this.nepheloFNU.removeLast();
       this.tu.removeLast();
-      counter--;
     }
 
     this.readings = [temp, nepheloNTU, nepheloFNU, tu];

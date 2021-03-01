@@ -10,8 +10,8 @@ class Loading extends GraphState {
 }
 
 class Loaded extends GraphState {
-  final List<List<dynamic>> data;
-  const Loaded({this.data}) : super();
+  final List<List<FlSpot>> readings;
+  const Loaded({this.readings}) : super();
 }
 
 class CannotLoad extends GraphState {}
