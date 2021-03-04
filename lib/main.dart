@@ -21,8 +21,7 @@ void main() => runApp(
           //Create
           BlocProvider(
               create: (context) => SensorCubit(arduinoRepo)..connect()),
-          BlocProvider(
-              create: (context) => FilesCubit(arduinoRepo)..getFiles()),
+          BlocProvider(create: (context) => FilesCubit(arduinoRepo)),
           BlocProvider(
               create: (context) =>
                   SettingsCubit(arduinoRepo)..getAllSettings()),

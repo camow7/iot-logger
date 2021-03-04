@@ -29,11 +29,12 @@ enum MessageType {
   SEND_WIFI_DETAILS
 }
 
-class StateMessage {
+class MessageFile {
   double percentage;
-  String fileName;
-  StateMessage(double percentage) {
+  List<List<int>> file;
+  MessageFile(double percentage, List<List<int>> file) {
     this.percentage = percentage;
+    this.file = file;
   }
 }
 

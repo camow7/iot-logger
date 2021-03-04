@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 
 import '../shared/layout.dart';
@@ -26,7 +27,10 @@ class SensorScreen extends StatelessWidget {
                 children: [
                   MainCard(
                     content: InkWell(
-                      onTap: () => Navigator.of(context).pushNamed('/logs'),
+                      onTap: () => {
+                        Navigator.of(context).pushNamed('/logs'),
+                        context.read<FilesCubit>().getFiles()
+                      },
                       child: Center(
                         child: ListTile(
                           leading: Icon(

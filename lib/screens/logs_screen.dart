@@ -4,7 +4,6 @@ import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 
-import '../shared/refresh_button.dart';
 import '../shared/layout.dart';
 import '../widgets/log_item.dart';
 import '../shared/sub_card.dart';

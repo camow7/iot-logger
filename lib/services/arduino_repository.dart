@@ -30,8 +30,8 @@ class ArduinoRepository {
   Timer heartBeatTimer;
   int messageCounter = 0;
   BytesBuilder messageFile;
-  StreamController<double> fileController;
-  Stream<double> fileStream;
+  StreamController<MessageFile> fileController;
+  Stream<MessageFile> fileStream;
   StreamController<bool> isConnectedController;
   Stream isConnectedStream;
   Stream<List<String>> fileNamesStream;
@@ -45,11 +45,13 @@ class ArduinoRepository {
   String wifiIP, wifiName;
 
   List<String> fileNames = [];
+  List<List<int>> indexedFile = [[]];
+  int fileIndexCount = 0;
 
   ArduinoRepository() {
     initialiseWifiConnection();
     setLocalDirectory();
-    fileController = StreamController<double>.broadcast();
+    fileController = StreamController<MessageFile>.broadcast();
     fileStream = fileController.stream;
     isConnectedController = StreamController<bool>.broadcast();
     isConnectedStream = isConnectedController.stream;
@@ -259,7 +261,14 @@ class ArduinoRepository {
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
         messageFile.add(messageData.sublist(0, payloadSize));
+
+        addChunkToFile(messageData.sublist(0, payloadSize));
+
+        // print(messageData.sublist(0, 58));
+        // print(String.fromCharCodes(messageData.sublist(0, 58)));
+
         double filePercantage = (messageFile.length / (fileSize));
+
         print("Current Log File Size = " +
             messageFile.length.toString() +
             " estimatedtotalSize = " +
@@ -268,11 +277,11 @@ class ArduinoRepository {
         // When file is downloaded
         if (filePercantage >= 1.0) {
           writeMessageToFile();
-
-          fileController.add(filePercantage);
+          fileController.add(MessageFile(filePercantage, indexedFile));
         } else {
-          fileController.add(filePercantage);
+          fileController.add(MessageFile(filePercantage, indexedFile));
         }
+
         break;
       case MessageType.SEND_SD_CARD_INFO:
         ByteData sdCardInfo = ByteData.sublistView(messageData, 0, payloadSize);
@@ -340,6 +349,34 @@ class ArduinoRepository {
         print(
             'Default Message Type (means this message type has not been mapped');
     }
+  }
+
+  addChunkToFile(Uint8List chunk) {
+    for (int i = 0; i < chunk.length; i++) {
+      if (chunk[i] != 10) {
+        indexedFile[fileIndexCount].add(chunk[i]);
+      } else {
+        if (String.fromCharCodes(indexedFile[fileIndexCount])
+                .split(",")
+                .length !=
+            6) {
+          print("BAD LINE FOUND");
+          print(String.fromCharCodes(indexedFile[fileIndexCount]));
+          indexedFile[fileIndexCount] = [];
+        }
+
+        fileIndexCount++;
+        indexedFile.add([]);
+      }
+    }
+
+    // for (int i = 0; i < indexedFile.length; i++) {
+    //   print(i.toString() +
+    //       " Elements: " +
+    //       String.fromCharCodes(indexedFile[i]).split(",").length.toString() +
+    //       " " +
+    //       String.fromCharCodes(indexedFile[i]));
+    // }
   }
 
   void writeMessageToFile() {
@@ -464,6 +501,8 @@ class ArduinoRepository {
     missedBytes = 0;
     fileSize = 0;
     messageFile = new BytesBuilder();
+    indexedFile = [[]];
+    fileIndexCount = 0;
     //clear the file if it is already present
     if (File('${directory.path}/$fileName').existsSync()) {
       print("Deleted Existing ${directory.path}/$fileName' file");
