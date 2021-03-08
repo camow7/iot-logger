@@ -23,11 +23,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_svg: ^0.18.0
+  flutter_svg: ^0.21.0-nullsafety.0
   intl: ^0.16.1
   rive: ^0.6.7
   flutter_bloc: ^6.1.1
-  fl_chart: ^0.12.2
+  fl_chart: ^0.20.1
 
   path_provider: ^1.6.27 # Locates document directory on both iOS and Android for saving log files
   connectivity: ^2.0.2   # Detects network changes (i.e from Cellular to Wifi)

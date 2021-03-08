@@ -31,10 +31,10 @@ enum MessageType {
 
 class MessageFile {
   double percentage;
-  List<List<int>> file;
-  MessageFile(double percentage, List<List<int>> file) {
+  List<String> list;
+  MessageFile(double percentage, List<String> list) {
     this.percentage = percentage;
-    this.file = file;
+    this.list = list;
   }
 }
 

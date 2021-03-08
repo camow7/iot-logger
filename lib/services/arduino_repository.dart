@@ -20,6 +20,7 @@ class ArduinoRepository {
   MessageState currentState = MessageState.START;
   MessageType messageId = MessageType.CONNECT;
   int payloadSize = 0;
+  int fileSizeCount = 0;
   int sequenceNumber = 0;
   int receivedSensorType = 0;
   int currentPayloadByte = 0;
@@ -45,7 +46,8 @@ class ArduinoRepository {
   String wifiIP, wifiName;
 
   List<String> fileNames = [];
-  List<List<int>> indexedFile = [[]];
+  BytesBuilder fileLine = new BytesBuilder();
+  List<String> indexedFile = [];
   int fileIndexCount = 0;
 
   ArduinoRepository() {
@@ -247,7 +249,7 @@ class ArduinoRepository {
         ByteData logFileSize =
             ByteData.sublistView(messageData, 0, payloadSize);
         fileSize = logFileSize.getInt32(0, Endian.little);
-        print('Log File Size Received = ' + fileSize.toString());
+        // print('Log File Size Received = ' + fileSize.toString());
         break;
       case MessageType.SEND_LOG_FILE_NAME:
         print('Log File Name Received: ' +
@@ -260,27 +262,18 @@ class ArduinoRepository {
         fileNamesController.add(fileNames);
         break;
       case MessageType.SEND_LOG_FILE_CHUNK:
-        messageFile.add(messageData.sublist(0, payloadSize));
+        fileSizeCount += messageData.sublist(0, payloadSize).lengthInBytes;
 
         addChunkToFile(messageData.sublist(0, payloadSize));
 
-        // print(messageData.sublist(0, 58));
-        // print(String.fromCharCodes(messageData.sublist(0, 58)));
-
-        double filePercantage = (messageFile.length / (fileSize));
+        double fileSizePercantage = (fileSizeCount / (fileSize));
 
         print("Current Log File Size = " +
-            messageFile.length.toString() +
+            fileSizeCount.toString() +
             " estimatedtotalSize = " +
             (fileSize).toString());
 
-        // When file is downloaded
-        if (filePercantage >= 1.0) {
-          writeMessageToFile();
-          fileController.add(MessageFile(filePercantage, indexedFile));
-        } else {
-          fileController.add(MessageFile(filePercantage, indexedFile));
-        }
+        fileController.add(MessageFile(fileSizePercantage, indexedFile));
 
         break;
       case MessageType.SEND_SD_CARD_INFO:
@@ -351,39 +344,35 @@ class ArduinoRepository {
     }
   }
 
-  addChunkToFile(Uint8List chunk) {
+  void addChunkToFile(Uint8List chunk) {
+    String line = "";
+
     for (int i = 0; i < chunk.length; i++) {
       if (chunk[i] != 10) {
-        indexedFile[fileIndexCount].add(chunk[i]);
+        fileLine.add([chunk[i]]);
       } else {
-        if (String.fromCharCodes(indexedFile[fileIndexCount])
-                .split(",")
-                .length !=
-            6) {
-          print("BAD LINE FOUND");
-          print(String.fromCharCodes(indexedFile[fileIndexCount]));
-          indexedFile[fileIndexCount] = [];
-        }
+        fileLine.add([chunk[i]]); // add END OF LINE char
+        line = String.fromCharCodes(fileLine.takeBytes());
 
-        fileIndexCount++;
-        indexedFile.add([]);
+        //At end of line, check for six different strings, if there arent six strings remove
+        if (line.split(",").length != 6) {
+          print("BAD LINE FOUND");
+          // print(line);
+        } else {
+          // print(line);
+          indexedFile.add(line);
+        }
       }
     }
-
-    // for (int i = 0; i < indexedFile.length; i++) {
-    //   print(i.toString() +
-    //       " Elements: " +
-    //       String.fromCharCodes(indexedFile[i]).split(",").length.toString() +
-    //       " " +
-    //       String.fromCharCodes(indexedFile[i]));
-    // }
   }
 
-  void writeMessageToFile() {
+  void writeListToFile(List<String> list) {
     // Write log file chunk to file, if there is no file this will create one
     print('Writing download string to file at: ${directory.path}/$currentFile');
-    File('${directory.path}/$currentFile')
-        .writeAsString(String.fromCharCodes(messageFile.takeBytes()));
+    for (int i = 0; i < list.length; i++) {
+      File('${directory.path}/$currentFile')
+          .writeAsStringSync(list[i], mode: FileMode.append);
+    }
   }
 
   // Outgoing Messages
@@ -450,9 +439,7 @@ class ArduinoRepository {
     messageBuffer[4] = messageIndexMap[MessageType.SET_RTC_TIME];
     messageBuffer
       ..buffer.asByteData().setInt32(5, time, Endian.little); // Payload
-    //print(messageBuffer.sublist(0, payloadSize + messageDataIndex).toString());
     sendMessageBuffer(messageBuffer);
-    // print('SENT CURRENT MEASUREMENT REQUEST');
   }
 
   setLoggingPeriod(int loggingPeriod) {
@@ -498,10 +485,12 @@ class ArduinoRepository {
   }
 
   getLogFile(String fileName) {
+    fileSizeCount = 0;
     missedBytes = 0;
     fileSize = 0;
     messageFile = new BytesBuilder();
-    indexedFile = [[]];
+    fileLine = new BytesBuilder();
+    indexedFile = [];
     fileIndexCount = 0;
     //clear the file if it is already present
     if (File('${directory.path}/$fileName').existsSync()) {
