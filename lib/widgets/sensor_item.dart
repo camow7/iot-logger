@@ -40,7 +40,8 @@ class SensorItem extends StatelessWidget {
               }
           },
           borderRadius: BorderRadius.circular(4),
-          child: sensorContent(context, getStatusImage(context, true), true),
+          child: sensorContent(
+              context, getStatusImage(context, true), true, state.sensorID),
         ));
       } else {
         return MainCard(
@@ -48,14 +49,15 @@ class SensorItem extends StatelessWidget {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(4),
           ),
-          child: sensorContent(context, getStatusImage(context, false), false),
+          child: sensorContent(
+              context, getStatusImage(context, false), false, state.sensorID),
         ));
       }
     });
   }
 
-  Widget sensorContent(
-      BuildContext context, SvgPicture svgImage, bool isConnected) {
+  Widget sensorContent(BuildContext context, SvgPicture svgImage,
+      bool isConnected, String sensorID) {
     return Center(
       child: ListTile(
         leading: isConnected
@@ -75,7 +77,7 @@ class SensorItem extends StatelessWidget {
                   )
                 ],
               ),
-        title: Text("Sensor 1",
+        title: Text("$sensorID",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headline3),
         trailing: svgImage,

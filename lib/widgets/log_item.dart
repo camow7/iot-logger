@@ -47,7 +47,9 @@ class _LogItem extends StatelessWidget {
     if (state is LogLoaded) {
       // When file is loaded (Initial State)
       return GestureDetector(
-        onTap: () => context.read<LogDownloadCubit>().downloadFile(fileName),
+        onTapDown: (TapDownDetails details) {
+          context.read<LogDownloadCubit>().downloadFile(fileName);
+        },
         child: Container(
           child: Stack(
             children: [
@@ -119,20 +121,12 @@ class _LogItem extends StatelessWidget {
                     alignment: Alignment.center,
                     child: logDate(context, state, fileName),
                   ),
-                  // Container(
-                  //   // color: Colors.blue[50],
-                  //   width: MediaQuery.of(context).size.width * 0.01,
-                  //   alignment: Alignment.center,
-                  //   child: RiveAnimation(),
-                  // ),
-                  GestureDetector(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: Icon(Icons.close),
-                    ),
-                    onTap: () =>
-                        context.read<LogDownloadCubit>().stopDownload(),
+                  Container(
+                    // color: Colors.blue[50],
+                    width: MediaQuery.of(context).size.width * 0.08,
+                    height: MediaQuery.of(context).size.width * 0.08,
+                    alignment: Alignment.center,
+                    child: RiveAnimation(),
                   ),
                 ],
               ),
@@ -143,8 +137,10 @@ class _LogItem extends StatelessWidget {
     } else {
       //When file is downloaded
       return GestureDetector(
-        onTap: () => Navigator.of(context)
-            .pushNamed('/graph-reading', arguments: {'fileName': fileName}),
+        onTapDown: (TapDownDetails details) {
+          Navigator.of(context)
+              .pushNamed('/graph-reading', arguments: {'fileName': fileName});
+        },
         child: Container(
           child: Stack(
             children: [

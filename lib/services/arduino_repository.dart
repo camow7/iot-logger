@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:async/async.dart';
+import 'package:iot_logger/models/HeartBeatMessage.dart';
 import 'package:iot_logger/models/Messages.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
@@ -33,8 +34,8 @@ class ArduinoRepository {
   BytesBuilder messageFile;
   StreamController<MessageFile> fileController;
   Stream<MessageFile> fileStream;
-  StreamController<bool> isConnectedController;
-  Stream isConnectedStream;
+  StreamController<HeartBeatMessage> isConnectedController;
+  Stream<HeartBeatMessage> isConnectedStream;
   Stream<List<String>> fileNamesStream;
 
   StreamController<List<String>> fileNamesController;
@@ -55,7 +56,7 @@ class ArduinoRepository {
     setLocalDirectory();
     fileController = StreamController<MessageFile>.broadcast();
     fileStream = fileController.stream;
-    isConnectedController = StreamController<bool>.broadcast();
+    isConnectedController = StreamController<HeartBeatMessage>.broadcast();
     isConnectedStream = isConnectedController.stream;
     fileNamesController = StreamController<List<String>>.broadcast();
     fileNamesStream = fileNamesController.stream;
@@ -134,7 +135,8 @@ class ArduinoRepository {
         // Start connection timer
         countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
           arduinoisConnected = false;
-          isConnectedController.add(false);
+          isConnectedController
+              .add(HeartBeatMessage(false, receivedSensorType));
           print("Arduino TimedOut");
         });
 
@@ -239,7 +241,7 @@ class ArduinoRepository {
       case MessageType.HEART_BEAT:
         // print("heart beat received");
         arduinoisConnected = true;
-        isConnectedController.add(true);
+        isConnectedController.add(HeartBeatMessage(true, receivedSensorType));
         countdownTimer.reset();
         break;
       case MessageType.CONNECT:
@@ -300,6 +302,7 @@ class ArduinoRepository {
         DateTime time = new DateTime.fromMillisecondsSinceEpoch(
             (rtcTime.getInt32(0, Endian.little) * 1000),
             isUtc: false);
+
         String minutes = time.minute.toString();
         if (minutes.length != 2) {
           minutes = '0' + minutes;
@@ -346,21 +349,26 @@ class ArduinoRepository {
 
   void addChunkToFile(Uint8List chunk) {
     String line = "";
+    List<String> splitLine = [];
 
     for (int i = 0; i < chunk.length; i++) {
-      if (chunk[i] != 10) {
-        fileLine.add([chunk[i]]);
-      } else {
-        fileLine.add([chunk[i]]); // add END OF LINE char
+      fileLine.add([chunk[i]]);
+      if (chunk[i] == 10) {
         line = String.fromCharCodes(fileLine.takeBytes());
+        splitLine = line.split(",");
 
-        //At end of line, check for six different strings, if there arent six strings remove
-        if (line.split(",").length != 6) {
-          print("BAD LINE FOUND");
-          // print(line);
-        } else {
-          // print(line);
+        //At end of line, check for six strings and the starting  if there arent six strings remove
+        if (splitLine.length == 6 &&
+            line.length < 62 &&
+            (splitLine[0].length == 19 || splitLine[0].length == 9)) {
           indexedFile.add(line);
+        } else {
+          //Checks if the line is apart of a DEV-LOG.CSV file
+          if (splitLine.length == 1) {
+            indexedFile.add(line);
+          } else {
+            print("BAD LINE FOUND: $line ${splitLine.length}");
+          }
         }
       }
     }
@@ -370,7 +378,7 @@ class ArduinoRepository {
     // Write log file chunk to file, if there is no file this will create one
     print('Writing download string to file at: ${directory.path}/$currentFile');
     for (int i = 0; i < list.length; i++) {
-      File('${directory.path}/$currentFile')
+      File('${directory.path}/${wifiName}_$currentFile')
           .writeAsStringSync(list[i], mode: FileMode.append);
     }
   }
@@ -485,6 +493,7 @@ class ArduinoRepository {
   }
 
   getLogFile(String fileName) {
+    //fileStream = fileController.stream;
     fileSizeCount = 0;
     missedBytes = 0;
     fileSize = 0;
@@ -492,13 +501,15 @@ class ArduinoRepository {
     fileLine = new BytesBuilder();
     indexedFile = [];
     fileIndexCount = 0;
+    currentFile = fileName;
+
     //clear the file if it is already present
-    if (File('${directory.path}/$fileName').existsSync()) {
-      print("Deleted Existing ${directory.path}/$fileName' file");
-      File('${directory.path}/$fileName').delete();
+    if (File('${directory.path}/${wifiName}_$currentFile').existsSync()) {
+      print(
+          "Deleted Existing ${directory.path}/${wifiName}_$currentFile' file");
+      File('${directory.path}/${wifiName}_$currentFile').delete();
     }
 
-    currentFile = fileName;
     List<int> bytes = fileName.codeUnits;
     int payloadSize = bytes.length;
     messageBuffer = new Uint8List(payloadSize + messageDataIndex);

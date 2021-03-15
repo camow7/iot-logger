@@ -15,7 +15,7 @@ import 'package:async/async.dart';
 part 'log_download_state.dart';
 
 class LogDownloadCubit extends Cubit<LogDownloadState> {
-  int currentPercentage = 0;
+  double currentPercentage = 0;
 
   ArduinoRepository arduinoRepository;
   RestartableTimer timeoutTimer;
@@ -33,7 +33,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
         );
 
   Future<MessageFile> getIndexedFile(String fileName) async {
-    MessageFile file;
+    MessageFile file = MessageFile(0.0, []);
     arduinoRepository.getLogFile(fileName);
 
     await for (MessageFile tempFile in arduinoRepository.fileStream
@@ -46,7 +46,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       if (file.percentage == 1.0) {
         break;
       } else {
-        emit(LogDownloading(progress: file.percentage));
+        emit(LogDownloading(progress: percentage(file.percentage)));
       }
     }
 
@@ -56,67 +56,52 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
   void downloadFile(String fileName) async {
     int count = 0;
     List<String> newList = [];
-    int newListSize = 0;
+    MessageFile file;
+    int newListSizeInBytes = 0;
+    double newListPercentage = 0;
     bool fileIsComplete = false;
     print("Waiting for log file");
 
-    // First Attempt of getting the file
-    MessageFile file = await getIndexedFile(fileName);
-    print("log file returned ");
-    print("List Size: ${file.list.length}");
-
-    // Check for Success
-    if (file.percentage == 1.0) {
-      fileIsComplete = true;
-      print("file is complete");
-    }
-
-    // Re-attempt to get file 4 more times
-    while (count < 4 && fileIsComplete != true) {
+    // Re-attempt to get file 5 more times
+    while (count < 5 && fileIsComplete != true) {
       print("Download Attempt: $count");
+
+      // Make download attempt
       MessageFile tempFile = await getIndexedFile(fileName);
+      print("List Size: ${tempFile.list.length}");
 
-      // Check for success
-      if (tempFile.percentage == 1.0) {
-        print("temp file completed");
-        file = tempFile;
-        fileIsComplete = true;
-      } else {
-        print("merging files.....");
-        // Otherwise merge attempts
-        if (count == 0) {
-          newList = [
-            ...tempFile.list,
-            ...file.list,
-          ].toSet().toList();
-        } else {
-          newList = [...tempFile.list, ...newList].toSet().toList();
-        }
+      // Merge attempt with other attempts
+      newList = [...tempFile.list, ...newList].toSet().toList();
+      newListSizeInBytes = 0;
 
-        // Calculate size of merged attempt
-
-        for (int i = 0; i < newList.length; i++) {
-          newListSize += Uint8List.fromList(newList[0].codeUnits).lengthInBytes;
-        }
-
-        print(
-            "New List Size: ${newList.length} = ${(newListSize / arduinoRepository.fileSize).toString()}%");
-
-        // Check for Success
-        if (newListSize == arduinoRepository.fileSize) {
-          print("temp file merged successfully");
-          file = MessageFile(1.0, newList);
-          fileIsComplete = true;
-        }
+      // Calculate the size of merged attempt
+      for (int i = 0; i < newList.length; i++) {
+        newListSizeInBytes +=
+            Uint8List.fromList(newList[i].codeUnits).lengthInBytes;
       }
+
+      //Update current file
+      file = MessageFile(newListPercentage, newList);
+
+      // Check for Success
+      newListPercentage = newListSizeInBytes / arduinoRepository.fileSize;
+      print(
+          "Merged List Size: ${newList.length} = ${newListPercentage.toString()}%");
+
+      if (newListSizeInBytes >= arduinoRepository.fileSize) {
+        print("temp file merged successfully");
+        fileIsComplete = true;
+      }
+
       count++;
     }
 
+    // Prints finale file
     for (int i = 0; i < file.list.length; i++) {
       print(i.toString() + " " + file.list[i]);
     }
 
-    print("EMITTING RESULT");
+    print("EMITTING RESULT @ $newListPercentage");
     emit(LogDownloaded());
     arduinoRepository.writeListToFile(file.list);
   }
@@ -126,11 +111,10 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
     // arduinoRepository.writeMessageToFile();
   }
 
-  int percentage(int newPercentage) {
+  double percentage(double newPercentage) {
     if (newPercentage > currentPercentage) {
       currentPercentage = newPercentage;
-      return newPercentage;
-    } else
-      return currentPercentage;
+    }
+    return currentPercentage > 1.00 ? 1.00 : currentPercentage;
   }
 }

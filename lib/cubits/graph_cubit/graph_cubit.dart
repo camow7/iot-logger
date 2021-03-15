@@ -24,6 +24,7 @@ class GraphCubit extends Cubit<GraphState> {
     await File('${directory.path}/$fileName').readAsLines().then(
       (List<String> lines) {
         for (int i = 1; i < lines.length; i++) {
+          print(lines[i]);
           List<String> readingsList = lines[i].split(",");
           if (readingsList.length == 6) {
             // Check for new max temp

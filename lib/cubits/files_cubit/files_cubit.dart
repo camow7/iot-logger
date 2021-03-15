@@ -16,13 +16,28 @@ class FilesCubit extends Cubit<FilesState> {
     this._arduinoRepository,
   ) : super(LoadingFiles());
 
-  void getFiles() {
+  getFiles() {
     _arduinoRepository.getLogsList();
 
-    fileNameStreamSubscription =
-        _arduinoRepository.fileNamesStream.listen((List<String> files) {
+    fileNameStreamSubscription = _arduinoRepository.fileNamesStream
+        .timeout(Duration(seconds: 2), onTimeout: (stream) {
+      stream.close();
+    }).listen((List<String> files) {
       fileNames = files;
       emit(Files(fileNames: fileNames));
+    });
+  }
+
+  refresh() {
+    emit(LoadingFiles());
+
+    _arduinoRepository.getLogsList();
+
+    fileNameStreamSubscription = _arduinoRepository.fileNamesStream
+        .timeout(Duration(seconds: 2), onTimeout: (stream) {
+      stream.close();
+    }).listen((List<String> files) {
+      emit(Files(fileNames: files));
     });
   }
 }

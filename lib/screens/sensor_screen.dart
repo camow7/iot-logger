@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
+import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 
 import '../shared/layout.dart';
@@ -15,9 +16,13 @@ class SensorScreen extends StatelessWidget {
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Text(
-              "Sensor 1",
-              style: Theme.of(context).textTheme.headline1,
+            BlocBuilder<SensorCubit, SensorState>(
+              builder: (_, state) {
+                return Text(
+                  "${state.sensorID}",
+                  style: Theme.of(context).textTheme.headline1,
+                );
+              },
             ),
             Container(
               // color: Colors.blue[50],
@@ -29,7 +34,6 @@ class SensorScreen extends StatelessWidget {
                     content: InkWell(
                       onTap: () => {
                         Navigator.of(context).pushNamed('/logs'),
-                        context.read<FilesCubit>().getFiles()
                       },
                       child: Center(
                         child: ListTile(

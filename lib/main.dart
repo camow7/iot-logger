@@ -21,7 +21,8 @@ void main() => runApp(
           //Create
           BlocProvider(
               create: (context) => SensorCubit(arduinoRepo)..connect()),
-          BlocProvider(create: (context) => FilesCubit(arduinoRepo)),
+          BlocProvider(
+              create: (context) => FilesCubit(arduinoRepo)..getFiles()),
           BlocProvider(
               create: (context) =>
                   SettingsCubit(arduinoRepo)..getAllSettings()),
@@ -102,7 +103,8 @@ class IotLoggerApp extends StatelessWidget {
         '/sensor': (ctx) => SensorScreen(),
         '/logs': (ctx) => LogsScreen(arduinoRepo),
         '/readings': (ctx) => ReadingsScreen(),
-        '/graph-reading': (ctx) => GraphScreen(),
+        '/graph-reading': (ctx) => GraphScreen(arduinoRepo
+            .wifiName), // passing wifiName to find the correct graph file
         '/settings': (ctx) => SettingsScreen(),
         '/individual-sensor-screen': (ctx) => IndividualSensorScreen(),
       },

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 
 class Layout extends StatelessWidget {
@@ -52,6 +53,7 @@ class Layout extends StatelessWidget {
             ),
           ),
         ),
+        // Back Button
         if (ModalRoute.of(context).settings.name != "/")
           Padding(
             padding: EdgeInsets.fromLTRB(10, 30, 0, 0),
@@ -60,10 +62,46 @@ class Layout extends StatelessWidget {
               child: BackButton(
                 onPressed: () => {
                   if (ModalRoute.of(context).settings.name == "/readings")
-                    {context.read<SensorReadingCubit>().closeTimer()},
+                    {BlocProvider.of<SensorReadingCubit>(context).closeTimer()},
                   Navigator.pop(context),
                 },
                 color: Colors.white,
+              ),
+            ),
+          ),
+        // Refresh Button
+        if (ModalRoute.of(context).settings.name == "/logs")
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 42, 20, 0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                child: Icon(
+                  Icons.refresh,
+                  color: Colors.white,
+                  size: 25,
+                ),
+                onTap: () {
+                  BlocProvider.of<FilesCubit>(context).refresh();
+                },
+              ),
+            ),
+          ),
+        // Delete Button
+        if (ModalRoute.of(context).settings.name == "/graph-reading")
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 42, 20, 0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.red[600],
+                  size: 30,
+                ),
+                onTap: () {
+                  BlocProvider.of<FilesCubit>(context).refresh();
+                },
               ),
             ),
           ),
