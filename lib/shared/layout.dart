@@ -87,24 +87,7 @@ class Layout extends StatelessWidget {
               ),
             ),
           ),
-        // Delete Button
-        if (ModalRoute.of(context).settings.name == "/graph-reading")
-          Padding(
-            padding: EdgeInsets.fromLTRB(0, 42, 20, 0),
-            child: Align(
-              alignment: Alignment.topRight,
-              child: GestureDetector(
-                child: Icon(
-                  Icons.delete,
-                  color: Colors.red[600],
-                  size: 30,
-                ),
-                onTap: () {
-                  BlocProvider.of<FilesCubit>(context).refresh();
-                },
-              ),
-            ),
-          ),
+
         Container(
           child: Column(
             children: [

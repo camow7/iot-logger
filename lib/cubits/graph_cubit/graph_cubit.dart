@@ -7,73 +7,125 @@ import 'package:path_provider/path_provider.dart';
 part 'graph_state.dart';
 
 class GraphCubit extends Cubit<GraphState> {
-  List<List<FlSpot>> readings = [];
+  GraphCubit() : super(Loading());
   List<FlSpot> temp = [];
   List<FlSpot> nepheloNTU = [];
   List<FlSpot> nepheloFNU = [];
   List<FlSpot> tu = [];
-  GraphCubit() : super(Loading());
-  double max;
-  double min;
+
+  double tempMax = -1000;
+  double tempMin = 1000;
+  double nepheloNTUMax = -1000;
+  double nepheloNTUMin = 1000;
+  double nepheloFNUMax = -1000;
+  double nepheloFNUMin = 1000;
+  double tuMax = -1000;
+  double tuMin = 1000;
 
   loadGraph(String fileName) async {
-    min = 0;
-    max = 0;
     var directory = await getApplicationDocumentsDirectory();
 
     await File('${directory.path}/$fileName').readAsLines().then(
       (List<String> lines) {
         for (int i = 1; i < lines.length; i++) {
-          print(lines[i]);
           List<String> readingsList = lines[i].split(",");
           if (readingsList.length == 6) {
-            // Check for new max temp
-            if (double.parse(readingsList[2]) > max) {
-              max = double.parse(readingsList[2]);
+            // Check temp
+            if (double.parse(readingsList[2]) > tempMax) {
+              tempMax = double.parse(readingsList[2]);
+            }
+            if (double.parse(readingsList[2]) < tempMin) {
+              tempMin = double.parse(readingsList[2]);
             }
 
-            //Check for new min
-            if (double.parse(readingsList[3]) < min) {
-              min = double.parse(readingsList[3]);
+            // Check nepheloNTU
+            if (double.parse(readingsList[3]) > nepheloNTUMax) {
+              nepheloNTUMax = double.parse(readingsList[3]);
+            }
+            if (double.parse(readingsList[3]) < nepheloNTUMin) {
+              nepheloNTUMin = double.parse(readingsList[3]);
             }
 
-            //Check for new min
-            if (double.parse(readingsList[5]) < min) {
-              min = double.parse(readingsList[5]);
+            // Check nepheloFNU
+            if (double.parse(readingsList[4]) > nepheloFNUMax) {
+              nepheloFNUMax = double.parse(readingsList[4]);
+            }
+            if (double.parse(readingsList[4]) < nepheloFNUMin) {
+              nepheloFNUMin = double.parse(readingsList[4]);
             }
 
-            temp.add(FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                double.parse(readingsList[2])));
-            nepheloNTU.add(FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                double.parse(readingsList[3])));
-            nepheloFNU.add(FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                double.parse(readingsList[4])));
-            tu.add(FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                double.parse(readingsList[5])));
-            // print(readingsList[0].substring(11, 13) +
-            //     "." +
-            //     readingsList[0].substring(14, 16));
+            // Check tu
+            if (double.parse(readingsList[5]) > tuMax) {
+              tuMax = double.parse(readingsList[5]);
+            }
+            if (double.parse(readingsList[5]) < tuMin) {
+              tuMin = double.parse(readingsList[5]);
+            }
           }
+        }
+
+        // Add each line to graph dataset as normalised value
+        for (int i = 1; i < lines.length; i++) {
+          List<String> readingsList = lines[i].split(",");
+
+          temp.add(
+            FlSpot(
+              double.parse(
+                readingsList[0].substring(11, 13) +
+                    "." +
+                    readingsList[0].substring(14, 16),
+              ),
+              normaliseValue(double.parse(readingsList[2]), tempMin, tempMax),
+            ),
+          );
+
+          nepheloNTU.add(
+            FlSpot(
+              double.parse(readingsList[0].substring(11, 13) +
+                  "." +
+                  readingsList[0].substring(14, 16)),
+              normaliseValue(
+                  double.parse(readingsList[3]), nepheloNTUMin, nepheloNTUMax),
+            ),
+          );
+
+          nepheloFNU.add(
+            FlSpot(
+              double.parse(readingsList[0].substring(11, 13) +
+                  "." +
+                  readingsList[0].substring(14, 16)),
+              normaliseValue(
+                  double.parse(readingsList[4]), nepheloFNUMin, nepheloFNUMax),
+            ),
+          );
+
+          tu.add(
+            FlSpot(
+              double.parse(readingsList[0].substring(11, 13) +
+                  "." +
+                  readingsList[0].substring(14, 16)),
+              normaliseValue(double.parse(readingsList[5]), tuMin, tuMax),
+            ),
+          );
         }
       },
     );
 
-    readings = [temp, nepheloNTU, nepheloFNU, tu];
+    emit(Loaded(
+      readings: [temp, nepheloNTU, nepheloFNU, tu],
+      tempMax: tempMax,
+      tempMin: tempMin,
+      nepheloNTUMax: nepheloNTUMax,
+      nepheloNTUMin: nepheloNTUMin,
+      nepheloFNUMax: nepheloFNUMax,
+      nepheloFNUMin: nepheloFNUMin,
+      tuMax: tuMax,
+      tuMin: tuMin,
+    ));
+  }
 
-    print("Min: ${min * -1.2} Max: ${max * 1.2}");
-
-    emit(Loaded(readings: readings, min: min, max: max));
+  double normaliseValue(double value, double min, double max) {
+    double result = ((value - min) / (max - min));
+    return result;
   }
 }

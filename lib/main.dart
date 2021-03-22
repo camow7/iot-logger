@@ -54,8 +54,11 @@ class IotLoggerApp extends StatelessWidget {
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),
-              // headline2: TextStyle(
-              //     fontWeight: FontWeight.w600, fontSize: 25, color: darkBlue),
+              headline2: TextStyle(
+                fontStyle: FontStyle.normal,
+                fontSize: 12,
+                color: Colors.white,
+              ),
               headline3: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 25,

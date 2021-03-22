@@ -9,7 +9,6 @@ import 'package:iot_logger/models/Messages.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 import 'package:meta/meta.dart';
 import '../../models/sensor.dart';
-import '../../shared/rive_animation.dart';
 import 'package:async/async.dart';
 
 part 'log_download_state.dart';
@@ -95,6 +94,18 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
 
       count++;
     }
+
+    // Prints finale file
+    for (int i = 0; i < file.list.length; i++) {
+      print(i.toString() + " " + file.list[i]);
+    }
+
+    List<String> tempList = file.list.sublist(1);
+
+    tempList.sort((a, b) => double.parse(a.substring(20, 30))
+        .compareTo(double.parse(b.substring(20, 30))));
+
+    file.list = file.list.sublist(0, 1) + tempList;
 
     // Prints finale file
     for (int i = 0; i < file.list.length; i++) {

@@ -357,7 +357,7 @@ class ArduinoRepository {
         line = String.fromCharCodes(fileLine.takeBytes());
         splitLine = line.split(",");
 
-        //At end of line, check for six strings and the starting  if there arent six strings remove
+        //At end of line, check for six strings and the starting if there arent six strings remove
         if (splitLine.length == 6 &&
             line.length < 62 &&
             (splitLine[0].length == 19 || splitLine[0].length == 9)) {

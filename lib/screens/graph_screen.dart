@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
-
-import '../widgets/graph_item_from_file.dart';
+import '../widgets/graph_card_from_file.dart';
 
 class GraphScreen extends StatelessWidget {
   final String wifiName;
@@ -42,13 +41,16 @@ class GraphScreen extends StatelessWidget {
           padding: EdgeInsets.fromLTRB(10, 30, 0, 0),
           child: Align(
             alignment: Alignment.topLeft,
-            child: BackButton(
-              onPressed: () => {
-                if (ModalRoute.of(context).settings.name == "/readings")
-                  {BlocProvider.of<SensorReadingCubit>(context).closeTimer()},
-                Navigator.pop(context),
-              },
-              color: Colors.white,
+            child: Material(
+              type: MaterialType.transparency,
+              child: BackButton(
+                onPressed: () => {
+                  if (ModalRoute.of(context).settings.name == "/readings")
+                    {BlocProvider.of<SensorReadingCubit>(context).closeTimer()},
+                  Navigator.pop(context),
+                },
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -94,6 +96,7 @@ class GraphScreen extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceAround,
       children: [
+        // File Name Card (White)
         Container(
           width: MediaQuery.of(context).size.width * 0.8,
           height: MediaQuery.of(context).size.height * 0.1,
@@ -109,16 +112,12 @@ class GraphScreen extends StatelessWidget {
             ),
           ),
         ),
+        // Graph Card and Legend
         Container(
-          decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(
-              Radius.circular(18),
-            ),
-            color: Theme.of(context).accentColor,
-          ),
+          // color: Colors.blue[50],
           width: MediaQuery.of(context).size.width * 0.9,
-          height: MediaQuery.of(context).size.height * 0.4,
-          child: GraphItemFromFile("${wifiName}_$fileName"),
+          height: MediaQuery.of(context).size.height * 0.7,
+          child: GraphCardFromFile("${wifiName}_$fileName"),
         ),
       ],
     );
