@@ -40,4 +40,9 @@ class FilesCubit extends Cubit<FilesState> {
       emit(Files(fileNames: files));
     });
   }
+
+  deleteFile(String fileName) {
+    _arduinoRepository.deleteLogFile(fileName);
+    refresh();
+  }
 }

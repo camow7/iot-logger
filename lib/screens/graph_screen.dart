@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 import '../widgets/graph_card_from_file.dart';
 
@@ -66,11 +67,9 @@ class GraphScreen extends StatelessWidget {
                 size: 30,
               ),
               onTap: () {
-                //BlocProvider.of<FilesCubit>(context).refresh();
                 showDialog(
                   context: context,
-                  builder: (_) =>
-                      showDeleteDialog(context, "${wifiName}_$fileName"),
+                  builder: (_) => showDeleteDialog(context, "$fileName"),
                   barrierDismissible: true,
                 );
               },
@@ -180,8 +179,8 @@ class GraphScreen extends StatelessWidget {
                   FlatButton(
                     child: Text("Yes"),
                     onPressed: () => {
-                      //context.read<SettingsCubit>().setWifiPassword(password),
-                      Navigator.pop(context),
+                      BlocProvider.of<FilesCubit>(context).deleteFile(fileName),
+                      Navigator.popUntil(context, ModalRoute.withName('/logs')),
                     },
                   ),
                 ],
