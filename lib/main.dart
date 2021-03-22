@@ -1,17 +1,42 @@
 import 'package:flutter/material.dart';
-
-import './shared/styling.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
+import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
+import 'package:iot_logger/cubits/settings_cubit/settings_cubit.dart';
+import 'package:iot_logger/screens/sensor_screen.dart';
+import 'package:iot_logger/screens/settings_screen.dart';
 import './screens/home_screen.dart';
-import './screens/sensor_screen.dart';
 import './screens/logs_screen.dart';
 import './screens/readings_screen.dart';
 import './screens/graph_screen.dart';
-import './screens/settings_screen.dart';
+import 'cubits/files_cubit/files_cubit.dart';
+import 'screens/individual_sensor_screen.dart';
+import 'services/arduino_repository.dart';
 
-void main() => runApp(IotLoggerApp());
+ArduinoRepository arduinoRepo = ArduinoRepository();
+
+void main() => runApp(
+      MultiBlocProvider(
+        providers: [
+          //Create
+          BlocProvider(
+              create: (context) => SensorCubit(arduinoRepo)..connect()),
+          BlocProvider(
+              create: (context) => FilesCubit(arduinoRepo)..getFiles()),
+          BlocProvider(
+              create: (context) =>
+                  SettingsCubit(arduinoRepo)..getAllSettings()),
+          BlocProvider(create: (context) => SensorReadingCubit(arduinoRepo)),
+        ],
+        child: IotLoggerApp(),
+      ),
+    );
 
 class IotLoggerApp extends StatelessWidget {
+  final green = const Color.fromRGBO(108, 194, 130, 1);
+  final darkGreen = const Color.fromRGBO(36, 136, 104, 1);
+  final darkBlue = const Color.fromRGBO(57, 68, 76, 1);
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -29,14 +54,18 @@ class IotLoggerApp extends StatelessWidget {
                 fontSize: 50,
                 fontWeight: FontWeight.bold,
               ),
-              // headline2: TextStyle(
-              //     fontWeight: FontWeight.w600, fontSize: 25, color: darkBlue),
+              headline2: TextStyle(
+                fontStyle: FontStyle.normal,
+                fontSize: 12,
+                color: Colors.white,
+              ),
               headline3: TextStyle(
                 fontWeight: FontWeight.w500,
                 fontSize: 25,
                 color: darkBlue,
               ),
               headline4: TextStyle(
+                fontSize: 30,
                 fontWeight: FontWeight.w600,
                 color: darkBlue,
               ),
@@ -75,10 +104,12 @@ class IotLoggerApp extends StatelessWidget {
       routes: {
         '/': (ctx) => HomeScreen(),
         '/sensor': (ctx) => SensorScreen(),
-        '/logs': (ctx) => LogsScreen(),
+        '/logs': (ctx) => LogsScreen(arduinoRepo),
         '/readings': (ctx) => ReadingsScreen(),
-        '/graph-reading': (ctx) => GraphScreen(),
+        '/graph-reading': (ctx) => GraphScreen(arduinoRepo
+            .wifiName), // passing wifiName to find the correct graph file
         '/settings': (ctx) => SettingsScreen(),
+        '/individual-sensor-screen': (ctx) => IndividualSensorScreen(),
       },
     );
   }

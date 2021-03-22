@@ -5,6 +5,7 @@ enum DeviceStatus {
   Connected,
   Disconnected,
 }
+
 enum LogStatus {
   Loaded,
   Downloading,
@@ -19,14 +20,13 @@ class Sensor {
   final double usedSpace;
   final List<Reading> readings;
 
-  const Sensor({
-    @required this.id,
-    @required this.name,
-    this.status = DeviceStatus.Disconnected,
-    this.logs = const [],
-    this.usedSpace = 1,
-    this.readings = const []
-  });
+  const Sensor(
+      {@required this.id,
+      @required this.name,
+      this.status = DeviceStatus.Disconnected,
+      this.logs = const [],
+      this.usedSpace = 1,
+      this.readings = const []});
 }
 
 /// `logState` is set to [LogState.Downloading] if progress bar has values >0 and <1.

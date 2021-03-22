@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
+import 'package:iot_logger/services/arduino_repository.dart';
 
-import '../models/sensor.dart';
-import '../shared/refresh_button.dart';
 import '../shared/layout.dart';
 import '../widgets/log_item.dart';
 import '../shared/sub_card.dart';
 import '../widgets/sensor_item.dart';
 
 class LogsScreen extends StatelessWidget {
+  final ArduinoRepository arduinoRepo;
+  LogsScreen(this.arduinoRepo);
+
   refreshPage() {
     print('refreshing logs');
   }
@@ -25,14 +29,12 @@ class LogsScreen extends StatelessWidget {
   }
 
   Widget pageContent(BuildContext context) {
-    final sensor = ModalRoute.of(context).settings.arguments as Sensor;
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Column(
           children: [
-            BackButton(),
-            SensorItem(sensor),
+            SensorItem(),
             SubCard(
               content: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -48,26 +50,55 @@ class LogsScreen extends StatelessWidget {
                 ],
               ),
             ),
-            Container(
-              height: MediaQuery.of(context).size.height * 0.3,
-              child: GridView(
-                padding: EdgeInsets.only(top: 10),
-                children: sensor.logs
-                    .map(
-                      (log) => LogItem(sensor: sensor, log: log),
-                    )
-                    .toList(),
-                gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                  childAspectRatio: 5.5,
-                  crossAxisSpacing: 10,
-                  mainAxisSpacing: 5,
-                  maxCrossAxisExtent: 500,
-                ),
-              ),
+            BlocBuilder<FilesCubit, FilesState>(
+              builder: (_, state) {
+                if (state is LoadingFiles) {
+                  //Loading Spinner
+                  return Padding(
+                    padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                    child: Container(
+                      // color: Colors.blue[50],
+                      width: MediaQuery.of(context).size.width * 0.40,
+                      height: MediaQuery.of(context).size.width * 0.40,
+                      child: CircularProgressIndicator(
+                        backgroundColor: Colors.white,
+                        valueColor: AlwaysStoppedAnimation<Color>(
+                          Colors.blue,
+                        ),
+                      ),
+                    ),
+                  );
+                }
+                if (state is Files) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.62,
+                    child: GridView(
+                      padding: EdgeInsets.only(top: 10),
+                      children: state.fileNames
+                          .map(
+                            (fileName) => new LogItem(fileName, arduinoRepo),
+                          )
+                          .toList(),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        childAspectRatio: 5.5,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 5,
+                        maxCrossAxisExtent: 500,
+                      ),
+                    ),
+                  );
+                } else {
+                  return CircularProgressIndicator(
+                    backgroundColor: Colors.white,
+                    valueColor: AlwaysStoppedAnimation<Color>(
+                      Colors.blue,
+                    ),
+                  );
+                }
+              },
             ),
           ],
         ),
-        RefreshButton(refreshPage)
       ],
     );
   }

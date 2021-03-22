@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class RefreshButton extends StatelessWidget {
-  final Function refreshHandler;
-  const RefreshButton(this.refreshHandler);
+  const RefreshButton();
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +15,7 @@ class RefreshButton extends StatelessWidget {
           height: 20,
         ),
         RaisedButton(
-          onPressed: refreshHandler,
+          onPressed: () => context.read<SensorCubit>().refresh(),
           child: Text(
             'Refresh',
             style: TextStyle(

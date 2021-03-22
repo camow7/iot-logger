@@ -1,81 +1,88 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
+import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 
-import '../models/sensor.dart';
 import '../shared/layout.dart';
 import '../shared/main_card.dart';
 
 class SensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final sensor = ModalRoute.of(context).settings.arguments as Sensor;
-    return Layout(
-      content: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        children: [
-          BackButton(),
-          Text(
-            sensor.name,
-            style: Theme.of(context).textTheme.headline1,
-          ),
-          Container(
-            height: 450,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                MainCard(
-                  content: InkWell(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed('/logs', arguments: sensor),
-                    child: Center(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.folder,
-                          color: Theme.of(context).accentColor,
-                          size: 50,
-                        ),
-                        title: cardText(context, 'Download Logs'),
-                      ),
-                    ),
-                  ),
-                ),
-                MainCard(
-                  content: InkWell(
-                    onTap: () => Navigator.of(context).pushNamed(
-                      '/readings',
-                      arguments: {
-                        'sensor': sensor,
-                        'readings': sensor.readings,
-                      },
-                    ),
-                    child: Center(
-                      child: ListTile(
-                        leading: SvgPicture.asset('assets/svgs/real-time.svg'),
-                        title: cardText(context, 'Real-time data'),
-                      ),
-                    ),
-                  ),
-                ),
-                MainCard(
-                  content: InkWell(
-                    onTap: () => Navigator.of(context)
-                        .pushNamed('/settings', arguments: sensor),
-                    child: Center(
-                      child: ListTile(
-                        leading: Icon(
-                          Icons.settings,
-                          color: Theme.of(context).accentColor,
-                          size: 50,
-                        ),
-                        title: cardText(context, 'Settings'),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+    return Scaffold(
+      body: Layout(
+        content: Column(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            BlocBuilder<SensorCubit, SensorState>(
+              builder: (_, state) {
+                return Text(
+                  "${state.sensorID}",
+                  style: Theme.of(context).textTheme.headline1,
+                );
+              },
             ),
-          ),
-        ],
+            Container(
+              // color: Colors.blue[50],
+              height: MediaQuery.of(context).size.height * 0.7,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  MainCard(
+                    content: InkWell(
+                      onTap: () => {
+                        Navigator.of(context).pushNamed('/logs'),
+                      },
+                      child: Center(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.folder,
+                            color: Theme.of(context).accentColor,
+                            size: 50,
+                          ),
+                          title: cardText(context, 'Download Logs'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  MainCard(
+                    content: InkWell(
+                      onTap: () => {
+                        context
+                            .read<SensorReadingCubit>()
+                            .getCurrentMeasurements(),
+                        Navigator.of(context).pushNamed('/readings'),
+                      },
+                      child: Center(
+                        child: ListTile(
+                          leading:
+                              SvgPicture.asset('assets/svgs/real-time.svg'),
+                          title: cardText(context, 'Real-time data'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  MainCard(
+                    content: InkWell(
+                      onTap: () => Navigator.of(context).pushNamed('/settings'),
+                      child: Center(
+                        child: ListTile(
+                          leading: Icon(
+                            Icons.settings,
+                            color: Theme.of(context).accentColor,
+                            size: 50,
+                          ),
+                          title: cardText(context, 'Settings'),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -83,7 +90,10 @@ class SensorScreen extends StatelessWidget {
   Text cardText(BuildContext context, String text) {
     return Text(
       text,
-      style: Theme.of(context).textTheme.headline3.copyWith(fontSize: 30),
+      style: Theme.of(context)
+          .textTheme
+          .headline3
+          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.07)),
     );
   }
 }
