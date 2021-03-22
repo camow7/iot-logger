@@ -59,13 +59,20 @@ class Layout extends StatelessWidget {
             padding: EdgeInsets.fromLTRB(10, 30, 0, 0),
             child: Align(
               alignment: Alignment.topLeft,
-              child: BackButton(
-                onPressed: () => {
-                  if (ModalRoute.of(context).settings.name == "/readings")
-                    {BlocProvider.of<SensorReadingCubit>(context).closeTimer()},
-                  Navigator.pop(context),
-                },
-                color: Colors.white,
+              child: Material(
+                type: MaterialType.button,
+                color: Colors.transparent,
+                child: BackButton(
+                  onPressed: () => {
+                    if (ModalRoute.of(context).settings.name == "/readings")
+                      {
+                        BlocProvider.of<SensorReadingCubit>(context)
+                            .closeTimer()
+                      },
+                    Navigator.pop(context),
+                  },
+                  color: Colors.white,
+                ),
               ),
             ),
           ),
