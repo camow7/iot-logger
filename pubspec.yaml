@@ -28,7 +28,7 @@ dependencies:
   rive: ^0.6.7
   flutter_bloc: ^6.1.1
   fl_chart: ^0.20.1
-
+  circular_check_box: ^1.0.4
   path_provider: ^1.6.27 # Locates document directory on both iOS and Android for saving log files
   connectivity: ^2.0.2   # Detects network changes (i.e from Cellular to Wifi)
   wifi_info_flutter: ^1.0.3 # Retrieves the local IP from the network

@@ -40,4 +40,8 @@ class FilesCubit extends Cubit<FilesState> {
       emit(Files(fileNames: files));
     });
   }
+
+  deleteFiles() {
+    emit(DeleteFiles(fileNames: fileNames));
+  }
 }

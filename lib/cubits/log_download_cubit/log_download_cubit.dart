@@ -100,11 +100,12 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       print(i.toString() + " " + file.list[i]);
     }
 
+    // Create temporary sublist without headings
     List<String> tempList = file.list.sublist(1);
-
+    // Sort sublist by UTC
     tempList.sort((a, b) => double.parse(a.substring(20, 30))
         .compareTo(double.parse(b.substring(20, 30))));
-
+    // Add sorted list and headings
     file.list = file.list.sublist(0, 1) + tempList;
 
     // Prints finale file

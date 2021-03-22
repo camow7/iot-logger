@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
+import 'package:iot_logger/widgets/delete_log_item.dart';
 
 import '../shared/layout.dart';
 import '../widgets/log_item.dart';
@@ -79,6 +80,26 @@ class LogsScreen extends StatelessWidget {
                       children: state.fileNames
                           .map(
                             (fileName) => new LogItem(fileName, arduinoRepo),
+                          )
+                          .toList(),
+                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
+                        childAspectRatio: 5.5,
+                        crossAxisSpacing: 10,
+                        mainAxisSpacing: 5,
+                        maxCrossAxisExtent: 500,
+                      ),
+                    ),
+                  );
+                }
+                if (state is DeleteFiles) {
+                  return Container(
+                    height: MediaQuery.of(context).size.height * 0.62,
+                    child: GridView(
+                      padding: EdgeInsets.only(top: 10),
+                      children: state.fileNames
+                          .map(
+                            (fileName) =>
+                                new DeleteLogItem(fileName, arduinoRepo),
                           )
                           .toList(),
                       gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(

@@ -87,7 +87,24 @@ class Layout extends StatelessWidget {
               ),
             ),
           ),
-
+        // Delete Button
+        if (ModalRoute.of(context).settings.name == "/logs")
+          Padding(
+            padding: EdgeInsets.fromLTRB(0, 42, 60, 0),
+            child: Align(
+              alignment: Alignment.topRight,
+              child: GestureDetector(
+                child: Icon(
+                  Icons.delete,
+                  color: Colors.white,
+                  size: 30,
+                ),
+                onTap: () {
+                  BlocProvider.of<FilesCubit>(context).deleteFiles();
+                },
+              ),
+            ),
+          ),
         Container(
           child: Column(
             children: [

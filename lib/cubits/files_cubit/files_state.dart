@@ -14,4 +14,9 @@ class Files extends FilesState {
   const Files({this.fileNames}) : super();
 }
 
+class DeleteFiles extends FilesState {
+  final List<String> fileNames;
+  const DeleteFiles({this.fileNames}) : super();
+}
+
 class LoadingFiles extends FilesState {}
