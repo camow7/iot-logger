@@ -1,9 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/graph_cubit/graph_cubit.dart';
-import 'package:iot_logger/services/arduino_repository.dart';
 
 class GraphCardFromFile extends StatelessWidget {
   final String fileName;
