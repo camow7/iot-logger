@@ -45,12 +45,6 @@ dev_dependencies:
     sdk: flutter
   flutter_launcher_icons: ^0.9.0
 
-flutter_icons:
-  image_path_ios: "assets/launcher_icon/Flutter.png"
-  image_path_android: "assets/launcher_icon/Flutter.png"
-  android: true
-  ios: true
-
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
