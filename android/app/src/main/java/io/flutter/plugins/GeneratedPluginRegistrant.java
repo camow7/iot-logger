@@ -13,5 +13,11 @@ import io.flutter.embedding.engine.FlutterEngine;
 @Keep
 public final class GeneratedPluginRegistrant {
   public static void registerWith(@NonNull FlutterEngine flutterEngine) {
+    flutterEngine.getPlugins().add(new io.flutter.plugins.connectivity.ConnectivityPlugin());
+    flutterEngine.getPlugins().add(new io.flutter.plugins.packageinfo.PackageInfoPlugin());
+    flutterEngine.getPlugins().add(new io.flutter.plugins.pathprovider.PathProviderPlugin());
+    flutterEngine.getPlugins().add(new com.baseflow.permissionhandler.PermissionHandlerPlugin());
+    flutterEngine.getPlugins().add(new io.flutter.plugins.wifi_info_flutter.WifiInfoFlutterPlugin());
+    flutterEngine.getPlugins().add(new com.alternadom.wifiiot.WifiIotPlugin());
   }
 }
