@@ -10,10 +10,13 @@ import '../shared/main_card.dart';
 class SensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double iconSize = MediaQuery.of(context).size.height * 0.1;
+
     return Scaffold(
       body: Layout(
         content: Column(
           mainAxisAlignment: MainAxisAlignment.start,
+          // Screen Title: Turbidity
           children: [
             BlocBuilder<SensorCubit, SensorState>(
               builder: (_, state) {
@@ -29,51 +32,90 @@ class SensorScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => {
-                        Navigator.of(context).pushNamed('/logs'),
-                      },
-                      child: Center(
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.folder,
-                            color: Theme.of(context).accentColor,
-                            size: 50,
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: MainCard(
+                      content: InkWell(
+                        onTap: () => {
+                          Navigator.of(context).pushNamed('/logs'),
+                        },
+                        child: Container(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Icon(
+                                Icons.folder,
+                                color: Theme.of(context).accentColor,
+                                size: iconSize,
+                              ),
+                              Container(
+                                child: cardText(context, 'Download Logs'),
+                                alignment: Alignment.center,
+                              ),
+                            ],
                           ),
-                          title: cardText(context, 'Download Logs'),
                         ),
                       ),
                     ),
                   ),
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => {
-                        context
-                            .read<SensorReadingCubit>()
-                            .getCurrentMeasurements(),
-                        Navigator.of(context).pushNamed('/readings'),
-                      },
-                      child: Center(
-                        child: ListTile(
-                          leading:
-                              SvgPicture.asset('assets/svgs/real-time.svg'),
-                          title: cardText(context, 'Real-time data'),
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: MainCard(
+                      content: InkWell(
+                        onTap: () => {
+                          context
+                              .read<SensorReadingCubit>()
+                              .getCurrentMeasurements(),
+                          Navigator.of(context).pushNamed('/readings'),
+                        },
+                        child: Center(
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Container(
+                                  height: iconSize,
+                                  width: iconSize,
+                                  child: SvgPicture.asset(
+                                      'assets/svgs/real-time.svg'),
+                                ),
+                                Container(
+                                  child: cardText(context, 'Real-time data'),
+                                  alignment: Alignment.center,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ),
                     ),
                   ),
-                  MainCard(
-                    content: InkWell(
-                      onTap: () => Navigator.of(context).pushNamed('/settings'),
-                      child: Center(
-                        child: ListTile(
-                          leading: Icon(
-                            Icons.settings,
-                            color: Theme.of(context).accentColor,
-                            size: 50,
+                  Container(
+                    height: MediaQuery.of(context).size.height * 0.2,
+                    width: MediaQuery.of(context).size.width * 0.95,
+                    child: MainCard(
+                      content: InkWell(
+                        onTap: () =>
+                            Navigator.of(context).pushNamed('/settings'),
+                        child: Center(
+                          child: Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Icon(
+                                  Icons.settings,
+                                  color: Theme.of(context).accentColor,
+                                  size: iconSize,
+                                ),
+                                Container(
+                                  child: cardText(context, 'Settings'),
+                                  alignment: Alignment.center,
+                                ),
+                              ],
+                            ),
                           ),
-                          title: cardText(context, 'Settings'),
                         ),
                       ),
                     ),
@@ -93,7 +135,7 @@ class SensorScreen extends StatelessWidget {
       style: Theme.of(context)
           .textTheme
           .headline3
-          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.07)),
+          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.05)),
     );
   }
 }

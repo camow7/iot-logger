@@ -412,6 +412,34 @@ class SettingsScreen extends StatelessWidget {
                                       ),
                                     ),
                                     ListTile(
+                                      title: Text(
+                                        "Build Version ",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      trailing: Text(
+                                        "${state.version}",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    ListTile(
+                                      title: Text(
+                                        "Build Number ",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                      trailing: Text(
+                                        "${state.buildNumber}",
+                                        style: TextStyle(
+                                            fontSize: 18.0,
+                                            fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                    ListTile(
                                       title: RaisedButton(
                                         shape: RoundedRectangleBorder(
                                           borderRadius:

@@ -18,6 +18,8 @@ class Loaded extends SettingsState {
   final String time;
   final String ssid;
   final String password;
+  final String version;
+  final String buildNumber;
   const Loaded({
     this.usedSpace,
     this.remainingSpace,
@@ -27,5 +29,7 @@ class Loaded extends SettingsState {
     this.time,
     this.ssid,
     this.password,
+    this.buildNumber,
+    this.version,
   }) : super();
 }

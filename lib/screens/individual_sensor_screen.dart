@@ -27,70 +27,77 @@ class IndividualSensorScreen extends StatelessWidget {
     return BlocBuilder<SensorReadingCubit, SensorReadingState>(
       builder: (_, state) {
         if (state is Loaded) {
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.7,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Text(
-                    state.readings[index][0].sensorName,
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.headline4,
+          return Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            // color: Colors.blue[50],
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Sensor Name
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.7,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: Text(
+                      state.readings[index][0].sensorName,
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.headline4,
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                width: MediaQuery.of(context).size.width * 0.5,
-                height: MediaQuery.of(context).size.height * 0.1,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10)),
-                  color: Colors.white,
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      Text(
-                        "Last Reading",
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4
-                            .copyWith(fontSize: 12),
-                      ),
-                      Text(
-                        state.readings[index][0].sensorReading,
-                        textAlign: TextAlign.center,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headline4
-                            .copyWith(fontSize: 24),
-                      ),
-                    ],
+                // Last Reading Text
+                Container(
+                  width: MediaQuery.of(context).size.width * 0.5,
+                  height: MediaQuery.of(context).size.height * 0.1,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                    color: Colors.white,
+                  ),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        Text(
+                          "Last Reading",
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(fontSize: 12),
+                        ),
+                        Text(
+                          state.readings[index][0].sensorReading,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(fontSize: 24),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: const BorderRadius.all(
-                    Radius.circular(18),
+                // Graph
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(18),
+                    ),
+                    color: Theme.of(context).accentColor,
                   ),
-                  color: Theme.of(context).accentColor,
+                  width: MediaQuery.of(context).size.width * 0.9,
+                  height: MediaQuery.of(context).size.height * 0.4,
+                  // margin: EdgeInsets.only(top: 20),
+                  alignment: Alignment.center,
+                  child: GraphItemFromList(state.readings[index]),
                 ),
-                width: MediaQuery.of(context).size.width * 0.9,
-                height: MediaQuery.of(context).size.height * 0.4,
-                // margin: EdgeInsets.only(top: 20),
-                alignment: Alignment.center,
-                child: GraphItemFromList(state.readings[index]),
-              ),
-            ],
+              ],
+            ),
           );
         } else {
           //Loading Spinner

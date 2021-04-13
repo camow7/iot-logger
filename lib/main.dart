@@ -18,7 +18,6 @@ ArduinoRepository arduinoRepo = ArduinoRepository();
 void main() => runApp(
       MultiBlocProvider(
         providers: [
-          //Create
           BlocProvider(
               create: (context) => SensorCubit(arduinoRepo)..connect()),
           BlocProvider(

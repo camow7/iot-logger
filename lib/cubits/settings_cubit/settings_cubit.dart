@@ -3,6 +3,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
+import 'package:package_info/package_info.dart';
 
 part 'settings_state.dart';
 
@@ -16,11 +17,16 @@ class SettingsCubit extends Cubit<SettingsState> {
   String batteryADC = "";
   String loggingPeriod = "";
   String time = "";
+  String version = "";
+  String buildNumber = "";
 
   SettingsCubit(this._arduinoRepository) : super(LoadingSettings());
 
   getAllSettings() async {
-    print("get All settings");
+    print("getting All settings");
+    PackageInfo packageInfo = await PackageInfo.fromPlatform();
+    version = packageInfo.version;
+    buildNumber = packageInfo.buildNumber;
     await getBatteryInfo();
     await getSDCardInfo();
     await getLoggingPeriod();
@@ -37,6 +43,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         time: this.time,
         ssid: this.ssid,
         password: this.password,
+        version: this.version,
+        buildNumber: this.buildNumber,
       ),
     );
   }
@@ -53,6 +61,8 @@ class SettingsCubit extends Cubit<SettingsState> {
         time: this.time,
         ssid: this.ssid,
         password: this.password,
+        version: this.version,
+        buildNumber: this.buildNumber,
       ),
     );
   }

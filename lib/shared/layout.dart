@@ -33,6 +33,7 @@ class Layout extends StatelessWidget {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Background
         Container(
           height: double.infinity,
           width: double.infinity,
@@ -41,6 +42,7 @@ class Layout extends StatelessWidget {
             fit: BoxFit.fill,
           ),
         ),
+        // ?
         Container(
           decoration: const BoxDecoration(
             gradient: const LinearGradient(
@@ -53,6 +55,7 @@ class Layout extends StatelessWidget {
             ),
           ),
         ),
+
         // Back Button
         if (ModalRoute.of(context).settings.name != "/")
           Padding(
@@ -95,12 +98,14 @@ class Layout extends StatelessWidget {
             ),
           ),
 
+        // Logo and Content
         Container(
           child: Column(
             children: [
               getSaphiLogo(context),
               Container(
                 height: MediaQuery.of(context).size.height * 0.85,
+                width: MediaQuery.of(context).size.width,
                 child: content,
               ),
             ],

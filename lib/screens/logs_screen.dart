@@ -19,6 +19,8 @@ class LogsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('Width ' + MediaQuery.of(context).size.width.toString());
+
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Layout(
@@ -83,7 +85,8 @@ class LogsScreen extends StatelessWidget {
                         childAspectRatio: 5.5,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 5,
-                        maxCrossAxisExtent: 500,
+                        maxCrossAxisExtent:
+                            MediaQuery.of(context).size.width * 1,
                       ),
                     ),
                   );

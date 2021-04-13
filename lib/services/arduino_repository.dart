@@ -68,9 +68,12 @@ class ArduinoRepository {
 
   initialiseWifiConnection() async {
     print("Initialising Wifi Connection...");
+
     if (Platform.isAndroid) {
       WiFiForIoTPlugin.forceWifiUsage(true);
-    } else {
+    }
+
+    if (Platform.isIOS) {
       // iOS needs an initial connection
       try {
         wifiName = await WifiInfo().getWifiName();
@@ -88,6 +91,10 @@ class ArduinoRepository {
         print("No Connections Found");
         print(e.toString());
       }
+    } else if (Platform.isWindows) {
+      // get wifi name and ip
+      //wifiName = await
+      //wifiIP = await WifiInfo().getWifiIP();
     }
 
     // Listen and adjust to changes in the network
