@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:async/async.dart';
 import 'package:iot_logger/models/HeartBeatMessage.dart';
 import 'package:iot_logger/models/Messages.dart';
+import 'package:iot_logger/services/windows_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 import 'package:wifi_iot/wifi_iot.dart';
@@ -69,10 +70,6 @@ class ArduinoRepository {
   initialiseWifiConnection() async {
     print("Initialising Wifi Connection...");
 
-    if (Platform.isAndroid) {
-      WiFiForIoTPlugin.forceWifiUsage(true);
-    }
-
     if (Platform.isIOS) {
       // iOS needs an initial connection
       try {
@@ -91,35 +88,53 @@ class ArduinoRepository {
         print("No Connections Found");
         print(e.toString());
       }
-    } else if (Platform.isWindows) {
-      // get wifi name and ip
-      //wifiName = await
-      //wifiIP = await WifiInfo().getWifiIP();
     }
 
-    // Listen and adjust to changes in the network
-    networkSubscription = new Connectivity().onConnectivityChanged.listen(
-      (status) async {
-        print("Connection Change Detected");
-        try {
-          wifiName = await WifiInfo().getWifiName();
-          wifiIP = await WifiInfo().getWifiIP();
+    if (Platform.isWindows) {
+      // Get Wifi Name
+      String wifiName = await getNetworkName();
 
-          // If Wifi is connected
-          if (wifiIP != null && wifiName != null) {
-            print('Wifi Connected: $wifiName @ $wifiIP');
-            initialiseArduinoConnection(wifiIP);
-          } else {
-            // No Wifi Found
-            print('No Wifi Detected');
+      // Get Wifi Ip
+      List<NetworkInterface> addresses = await NetworkInterface.list();
+      String wifiIP = addresses[0].addresses[0].address;
+
+      // If Wifi is connected
+      if (wifiIP != null && wifiName != null) {
+        print('Wifi Connected: $wifiName @ $wifiIP');
+        initialiseArduinoConnection(wifiIP);
+      } else {
+        // No Wifi Found
+        print('No Wifi Detected');
+      }
+    }
+
+    if (Platform.isAndroid) {
+      WiFiForIoTPlugin.forceWifiUsage(true);
+
+      // Listen and adjust to changes in the network
+      networkSubscription = new Connectivity().onConnectivityChanged.listen(
+        (status) async {
+          print("Connection Change Detected");
+          try {
+            wifiName = await WifiInfo().getWifiName();
+            wifiIP = await WifiInfo().getWifiIP();
+
+            // If Wifi is connected
+            if (wifiIP != null && wifiName != null) {
+              print('Wifi Connected: $wifiName @ $wifiIP');
+              initialiseArduinoConnection(wifiIP);
+            } else {
+              // No Wifi Found
+              print('No Wifi Detected');
+            }
+          } catch (e) {
+            //messageSubscription.cancel();
+            print("No Connections Found");
+            print(e.toString());
           }
-        } catch (e) {
-          //messageSubscription.cancel();
-          print("No Connections Found");
-          print(e.toString());
-        }
-      },
-    );
+        },
+      );
+    }
   }
 
   initialiseArduinoConnection(String wifiIP) {

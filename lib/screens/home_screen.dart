@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -34,7 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void checkPermissions() async {
-    await Permission.locationWhenInUse.request();
-    await Permission.storage.request();
+    if (!Platform.isWindows) {
+      await Permission.locationWhenInUse.request();
+      await Permission.storage.request();
+    }
   }
 }

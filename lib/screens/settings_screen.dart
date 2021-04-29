@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -411,34 +413,36 @@ class SettingsScreen extends StatelessWidget {
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ),
-                                    ListTile(
-                                      title: Text(
-                                        "Build Version ",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
+                                    if (!Platform.isWindows)
+                                      ListTile(
+                                        title: Text(
+                                          "Build Version ",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        trailing: Text(
+                                          "${state.version}",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                      trailing: Text(
-                                        "${state.version}",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
+                                    if (!Platform.isWindows)
+                                      ListTile(
+                                        title: Text(
+                                          "Build Number ",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
+                                        trailing: Text(
+                                          "${state.buildNumber}",
+                                          style: TextStyle(
+                                              fontSize: 18.0,
+                                              fontWeight: FontWeight.bold),
+                                        ),
                                       ),
-                                    ),
-                                    ListTile(
-                                      title: Text(
-                                        "Build Number ",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                      trailing: Text(
-                                        "${state.buildNumber}",
-                                        style: TextStyle(
-                                            fontSize: 18.0,
-                                            fontWeight: FontWeight.bold),
-                                      ),
-                                    ),
                                     ListTile(
                                       title: RaisedButton(
                                         shape: RoundedRectangleBorder(

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:bloc/bloc.dart';
 
 import 'package:flutter/material.dart';
@@ -24,9 +26,12 @@ class SettingsCubit extends Cubit<SettingsState> {
 
   getAllSettings() async {
     print("getting All settings");
-    PackageInfo packageInfo = await PackageInfo.fromPlatform();
-    version = packageInfo.version;
-    buildNumber = packageInfo.buildNumber;
+    if (!Platform.isWindows) {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      version = packageInfo.version;
+      buildNumber = packageInfo.buildNumber;
+    }
+
     await getBatteryInfo();
     await getSDCardInfo();
     await getLoggingPeriod();
