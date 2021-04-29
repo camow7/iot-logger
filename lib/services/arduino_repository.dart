@@ -168,8 +168,6 @@ class ArduinoRepository {
           if (d == null) return;
           readMessage(d.data);
         });
-
-        //getLogsList();
       });
     } catch (e) {
       print(e);

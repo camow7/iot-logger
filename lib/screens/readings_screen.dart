@@ -32,23 +32,38 @@ class ReadingsScreen extends StatelessWidget {
               builder: (_, state) {
                 if (state is Loaded) {
                   return Container(
+                    // color: Colors.blue[50],
                     height: MediaQuery.of(context).size.height * 0.70,
+                    width: MediaQuery.of(context).size.width * 0.40,
                     child: ListView.builder(
                       itemCount: state.readings.length,
                       itemBuilder: (context, index) {
-                        return MainCard(
-                          content: InkWell(
-                            onTap: () => {
-                              Navigator.of(context).pushNamed(
+                        return Container(
+                          // color: Colors.blue,
+                          height: MediaQuery.of(context).size.height * 0.18,
+                          child: Card(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(
+                                Radius.circular(5),
+                              ),
+                            ),
+                            margin: const EdgeInsets.symmetric(
+                                horizontal: 40, vertical: 20),
+                            elevation: 5,
+                            child: InkWell(
+                              onTap: () => {
+                                Navigator.of(context).pushNamed(
                                   '/individual-sensor-screen',
-                                  arguments: {'index': index}),
-                            },
-                            child: Center(
-                              child: ListTile(
-                                leading: Text(
-                                    "${state.readings[index][0].sensorName}"),
-                                trailing: Text(
-                                    "${state.readings[index][0].sensorReading}"),
+                                  arguments: {'index': index},
+                                ),
+                              },
+                              child: Center(
+                                child: ListTile(
+                                  leading: Text(
+                                      "${state.readings[index][0].sensorName}"),
+                                  trailing: Text(
+                                      "${state.readings[index][0].sensorReading}"),
+                                ),
                               ),
                             ),
                           ),
@@ -62,8 +77,8 @@ class ReadingsScreen extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
                     child: Container(
                       // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.40,
-                      height: MediaQuery.of(context).size.width * 0.40,
+                      width: MediaQuery.of(context).size.height * 0.30,
+                      height: MediaQuery.of(context).size.height * 0.30,
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.white,
                         valueColor: AlwaysStoppedAnimation<Color>(

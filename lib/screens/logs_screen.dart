@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -81,13 +83,21 @@ class LogsScreen extends StatelessWidget {
                             (fileName) => new LogItem(fileName, arduinoRepo),
                           )
                           .toList(),
-                      gridDelegate: SliverGridDelegateWithMaxCrossAxisExtent(
-                        childAspectRatio: 5.5,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 5,
-                        maxCrossAxisExtent:
-                            MediaQuery.of(context).size.width * 1,
-                      ),
+                      gridDelegate: Platform.isWindows
+                          ? SliverGridDelegateWithMaxCrossAxisExtent(
+                              childAspectRatio: 5,
+                              crossAxisSpacing: 5,
+                              mainAxisSpacing: 5,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 0.4,
+                            )
+                          : SliverGridDelegateWithMaxCrossAxisExtent(
+                              childAspectRatio: 5.5,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 5,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 1,
+                            ),
                     ),
                   );
                 } else {

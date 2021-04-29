@@ -10,13 +10,15 @@ import '../shared/main_card.dart';
 class SensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    double cardWidth = MediaQuery.of(context).size.width * 0.5;
+    double cardHeight = MediaQuery.of(context).size.height * 0.2;
     double iconSize = MediaQuery.of(context).size.height * 0.1;
 
     return Scaffold(
       body: Layout(
         content: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          // Screen Title: Turbidity
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // Screen Title (i.e Turbidity)
           children: [
             BlocBuilder<SensorCubit, SensorState>(
               builder: (_, state) {
@@ -26,15 +28,17 @@ class SensorScreen extends StatelessWidget {
                 );
               },
             ),
+            // Menu
             Container(
               // color: Colors.blue[50],
               height: MediaQuery.of(context).size.height * 0.7,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // Download Log Button
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: cardHeight,
+                    width: cardWidth,
                     child: MainCard(
                       content: InkWell(
                         onTap: () => {
@@ -60,8 +64,8 @@ class SensorScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: cardHeight,
+                    width: cardWidth,
                     child: MainCard(
                       content: InkWell(
                         onTap: () => {
@@ -93,8 +97,8 @@ class SensorScreen extends StatelessWidget {
                     ),
                   ),
                   Container(
-                    height: MediaQuery.of(context).size.height * 0.2,
-                    width: MediaQuery.of(context).size.width * 0.95,
+                    height: cardHeight,
+                    width: cardWidth,
                     child: MainCard(
                       content: InkWell(
                         onTap: () =>
@@ -135,7 +139,7 @@ class SensorScreen extends StatelessWidget {
       style: Theme.of(context)
           .textTheme
           .headline3
-          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.05)),
+          .copyWith(fontSize: (MediaQuery.of(context).size.width * 0.03)),
     );
   }
 }

@@ -39,6 +39,7 @@ class IotLoggerApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'IoT Logger',
       theme: ThemeData(
         primaryColor: green,
@@ -50,7 +51,7 @@ class IotLoggerApp extends StatelessWidget {
         textTheme: ThemeData.light().textTheme.copyWith(
               headline1: const TextStyle(
                 color: Colors.white,
-                fontSize: 50,
+                fontSize: 48,
                 fontWeight: FontWeight.bold,
               ),
               headline2: TextStyle(

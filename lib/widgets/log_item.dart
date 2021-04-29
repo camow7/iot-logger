@@ -51,42 +51,36 @@ class _LogItem extends StatelessWidget {
           context.read<LogDownloadCubit>().downloadFile(fileName);
         },
         child: Container(
-          child: Stack(
+          width: MediaQuery.of(context).size.width * 0.8,
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 0.8,
+                // color: Colors.blue[50],
+                // width: MediaQuery.of(context).size.width * 0.1,
                 alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.folder,
-                        color: Theme.of(context).accentColor,
-                        size: 40,
-                      ),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      alignment: Alignment.center,
-                      child: logDate(context, state, fileName),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        'assets/svgs/download.svg',
-                      ),
-                    ),
-                  ],
+                child: Icon(
+                  Icons.folder,
+                  color: Theme.of(context).accentColor,
+                  size: 40,
                 ),
-              )
+              ),
+              Container(
+                // color: Colors.blue[50],
+                // width: MediaQuery.of(context).size.width * 0.45,
+                // alignment: Alignment.center,
+                child: logDate(context, state, fileName),
+              ),
+              Container(
+                // color: Colors.blue[50],
+                // width: MediaQuery.of(context).size.width * 0.1,
+                // alignment: Alignment.right,
+                child: SvgPicture.asset(
+                  'assets/svgs/download.svg',
+                ),
+              ),
             ],
           ),
         ),
@@ -103,7 +97,7 @@ class _LogItem extends StatelessWidget {
                   AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
             Container(
-              width: MediaQuery.of(context).size.width * 0.8,
+              // width: MediaQuery.of(context).size.width * 0.8,
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -111,20 +105,20 @@ class _LogItem extends StatelessWidget {
                 children: [
                   Container(
                     // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.1,
+                    // width: MediaQuery.of(context).size.width * 0.1,
                     alignment: Alignment.center,
                     child: folderIcon(context, state),
                   ),
                   Container(
                     // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.45,
+                    // width: MediaQuery.of(context).size.width * 0.45,
                     alignment: Alignment.center,
                     child: logDate(context, state, fileName),
                   ),
                   Container(
                     // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.08,
-                    height: MediaQuery.of(context).size.width * 0.08,
+                    width: MediaQuery.of(context).size.width * 0.03,
+                    height: MediaQuery.of(context).size.width * 0.03,
                     alignment: Alignment.center,
                     child: RiveAnimation(),
                   ),
@@ -145,14 +139,14 @@ class _LogItem extends StatelessWidget {
           child: Stack(
             children: [
               Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                alignment: Alignment.center,
+                // width: MediaQuery.of(context).size.width * 0.8,
+                // alignment: Alignment.center,
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
+                      // width: MediaQuery.of(context).size.width * 0.1,
                       alignment: Alignment.center,
                       child: Icon(
                         Icons.folder,
@@ -161,12 +155,12 @@ class _LogItem extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.45,
+                      // width: MediaQuery.of(context).size.width * 0.45,
                       alignment: Alignment.center,
                       child: logDate(context, state, fileName),
                     ),
                     Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
+                      // width: MediaQuery.of(context).size.width * 0.1,
                       alignment: Alignment.center,
                       child: Icon(Icons.done_outline),
                     ),

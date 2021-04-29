@@ -10,10 +10,9 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // resizeToAvoidBottomPadding: false,
       body: Layout(
         content: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Padding(
               padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
@@ -28,7 +27,7 @@ class SettingsScreen extends StatelessWidget {
                   return Container(
                     // color: Colors.blue[50],
                     height: MediaQuery.of(context).size.height * 0.7,
-                    width: MediaQuery.of(context).size.width * 0.9,
+                    width: MediaQuery.of(context).size.width * 0.4,
                     child: ListView(
                       padding: EdgeInsets.all(0),
                       children: [
@@ -478,8 +477,8 @@ class SettingsScreen extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
                     child: Container(
                       // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.40,
-                      height: MediaQuery.of(context).size.width * 0.40,
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      height: MediaQuery.of(context).size.width * 0.20,
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.white,
                         valueColor: AlwaysStoppedAnimation<Color>(

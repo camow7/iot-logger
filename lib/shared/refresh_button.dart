@@ -9,28 +9,32 @@ class RefreshButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    return Column(
-      children: [
-        const SizedBox(
-          height: 20,
-        ),
-        RaisedButton(
-          onPressed: () => context.read<SensorCubit>().refresh(),
-          child: Text(
-            'Refresh',
-            style: TextStyle(
-                fontSize: 11,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Montserrat'),
+    return Container(
+      width: MediaQuery.of(context).size.width * 0.18,
+      height: MediaQuery.of(context).size.height * 0.1,
+      // color: Colors.blue,
+      child: ElevatedButton(
+        onPressed: () => context.read<SensorCubit>().refresh(),
+        style: ElevatedButton.styleFrom(
+          elevation: 3,
+          primary: Theme.of(context).primaryColor, // background color
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(
+              Radius.circular(10),
+            ),
           ),
-          shape: isLandscape ? Border() : CircleBorder(),
           padding: isLandscape
               ? const EdgeInsets.symmetric(horizontal: 55)
               : const EdgeInsets.all(35),
-          elevation: 3,
-          textColor: Theme.of(context).backgroundColor,
         ),
-      ],
+        child: Text(
+          'Refresh',
+          style: TextStyle(
+              fontSize: MediaQuery.of(context).size.width * 0.02,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Montserrat'),
+        ),
+      ),
     );
   }
 }
