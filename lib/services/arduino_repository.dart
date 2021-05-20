@@ -170,7 +170,6 @@ class ArduinoRepository {
       cancelOnError: false,
       onDone: () {
         print("Stream restarting");
-        initialiseWifiConnection();
       },
     );
 
@@ -197,6 +196,7 @@ class ArduinoRepository {
   void closeConnections() {
     try {
       socket.close(); // Closing the stream calls initialiseWifiConnection();
+      initialiseWifiConnection();
       heartBeatTimer.cancel();
       countdownTimer.cancel();
 
