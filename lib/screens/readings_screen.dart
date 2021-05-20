@@ -1,7 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
-import 'package:iot_logger/shared/main_card.dart';
 import '../shared/layout.dart';
 import '../widgets/sensor_item.dart';
 
@@ -33,44 +34,101 @@ class ReadingsScreen extends StatelessWidget {
                 if (state is Loaded) {
                   return Container(
                     // color: Colors.blue[50],
-                    height: MediaQuery.of(context).size.height * 0.70,
-                    width: MediaQuery.of(context).size.width * 0.40,
-                    child: ListView.builder(
-                      itemCount: state.readings.length,
-                      itemBuilder: (context, index) {
-                        return Container(
-                          // color: Colors.blue,
-                          height: MediaQuery.of(context).size.height * 0.18,
-                          child: Card(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(
-                                Radius.circular(5),
+                    height: MediaQuery.of(context).size.height * 0.60,
+                    width: MediaQuery.of(context).size.width * 0.80,
+                    child: GridView(
+                      padding: EdgeInsets.only(top: 10),
+                      children: state.readings
+                          .asMap()
+                          .entries
+                          .map(
+                            (reading) => new Container(
+                              // color: Colors.blue,
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.all(
+                                    Radius.circular(5),
+                                  ),
+                                ),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 40, vertical: 20),
+                                elevation: 5,
+                                child: InkWell(
+                                  onTap: () => {
+                                    Navigator.of(context).pushNamed(
+                                      '/individual-sensor-screen',
+                                      arguments: {'index': reading.key},
+                                    ),
+                                  },
+                                  child: Center(
+                                    child: ListTile(
+                                      leading: Text(
+                                          "${state.readings[reading.key][0].sensorName}"),
+                                      trailing: Text(
+                                          "${state.readings[reading.key][0].sensorReading}"),
+                                    ),
+                                  ),
+                                ),
                               ),
                             ),
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 40, vertical: 20),
-                            elevation: 5,
-                            child: InkWell(
-                              onTap: () => {
-                                Navigator.of(context).pushNamed(
-                                  '/individual-sensor-screen',
-                                  arguments: {'index': index},
-                                ),
-                              },
-                              child: Center(
-                                child: ListTile(
-                                  leading: Text(
-                                      "${state.readings[index][0].sensorName}"),
-                                  trailing: Text(
-                                      "${state.readings[index][0].sensorReading}"),
-                                ),
-                              ),
+                          )
+                          .toList(),
+                      gridDelegate: Platform.isWindows
+                          ? SliverGridDelegateWithMaxCrossAxisExtent(
+                              childAspectRatio: 4,
+                              crossAxisSpacing:
+                                  MediaQuery.of(context).size.width * 0.03,
+                              mainAxisSpacing:
+                                  MediaQuery.of(context).size.height * 0.07,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 0.4,
+                            )
+                          : SliverGridDelegateWithMaxCrossAxisExtent(
+                              childAspectRatio: 5.5,
+                              crossAxisSpacing: 10,
+                              mainAxisSpacing: 5,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 1,
                             ),
-                          ),
-                        );
-                      },
                     ),
                   );
+
+                  // ListView.builder(
+                  //   itemCount: state.readings.length,
+                  //   itemBuilder: (context, index) {
+                  //     return Container(
+                  //       // color: Colors.blue,
+                  //       height: MediaQuery.of(context).size.height * 0.18,
+                  //       child: Card(
+                  //         shape: RoundedRectangleBorder(
+                  //           borderRadius: BorderRadius.all(
+                  //             Radius.circular(5),
+                  //           ),
+                  //         ),
+                  //         margin: const EdgeInsets.symmetric(
+                  //             horizontal: 40, vertical: 20),
+                  //         elevation: 5,
+                  //         child: InkWell(
+                  //           onTap: () => {
+                  //             Navigator.of(context).pushNamed(
+                  //               '/individual-sensor-screen',
+                  //               arguments: {'index': index},
+                  //             ),
+                  //           },
+                  //           child: Center(
+                  //             child: ListTile(
+                  //               leading: Text(
+                  //                   "${state.readings[index][0].sensorName}"),
+                  //               trailing: Text(
+                  //                   "${state.readings[index][0].sensorReading}"),
+                  //             ),
+                  //           ),
+                  //         ),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
+                  // );
                 } else
                   //Loading Spinner
                   return Padding(

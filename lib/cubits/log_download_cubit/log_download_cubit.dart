@@ -61,7 +61,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
     bool fileIsComplete = false;
     print("Waiting for log file");
 
-    // Re-attempt to get file 5 more times
+    // Attempt to get file 5 times
     while (count < 5 && fileIsComplete != true) {
       print("Download Attempt: $count");
 
@@ -79,7 +79,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
             Uint8List.fromList(newList[i].codeUnits).lengthInBytes;
       }
 
-      //Update current file
+      // Update current file
       file = MessageFile(newListPercentage, newList);
 
       // Check for Success
@@ -95,22 +95,25 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       count++;
     }
 
-    // Prints finale file
-    for (int i = 0; i < file.list.length; i++) {
-      print(i.toString() + " " + file.list[i]);
-    }
+    // Print final file
+    // for (int i = 0; i < file.list.length; i++) {
+    //   print(i.toString() + " " + file.list[i]);
+    // }
 
+    // Remove headers (i.e Timestamp, UTC, Temp C...)
     List<String> tempList = file.list.sublist(1);
 
+    // Sort final file
     tempList.sort((a, b) => double.parse(a.substring(20, 30))
         .compareTo(double.parse(b.substring(20, 30))));
 
+    // Add header back
     file.list = file.list.sublist(0, 1) + tempList;
 
     // Prints finale file
-    for (int i = 0; i < file.list.length; i++) {
-      print(i.toString() + " " + file.list[i]);
-    }
+    // for (int i = 0; i < file.list.length; i++) {
+    //   print(i.toString() + " " + file.list[i]);
+    // }
 
     print("EMITTING RESULT @ $newListPercentage");
     emit(LogDownloaded());

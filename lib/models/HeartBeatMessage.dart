@@ -9,6 +9,7 @@ class HeartBeatMessage {
 }
 
 Map sensorMap = {
+  -1: "Sensor",
   0: "App",
   1: "TURBIDITY",
   2: "PH",

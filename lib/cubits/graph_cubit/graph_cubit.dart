@@ -23,90 +23,97 @@ class GraphCubit extends Cubit<GraphState> {
   double tuMin = 1000;
 
   loadGraph(String fileName) async {
-    var directory = await getApplicationDocumentsDirectory();
+    var directory = Platform.isWindows
+        ? await getDownloadsDirectory()
+        : await getApplicationDocumentsDirectory();
 
     await File('${directory.path}/$fileName').readAsLines().then(
       (List<String> lines) {
+        // Find Min and Max values for each type
         for (int i = 1; i < lines.length; i++) {
-          List<String> readingsList = lines[i].split(",");
-          if (readingsList.length == 6) {
-            // Check temp
-            if (double.parse(readingsList[2]) > tempMax) {
-              tempMax = double.parse(readingsList[2]);
-            }
-            if (double.parse(readingsList[2]) < tempMin) {
-              tempMin = double.parse(readingsList[2]);
-            }
+          if (!(lines[i].contains("Timestamp"))) {
+            List<String> readingsList = lines[i].split(",");
+            if (readingsList.length == 6) {
+              // Check temp
+              if (double.parse(readingsList[2]) > tempMax) {
+                tempMax = double.parse(readingsList[2]);
+              }
+              if (double.parse(readingsList[2]) < tempMin) {
+                tempMin = double.parse(readingsList[2]);
+              }
 
-            // Check nepheloNTU
-            if (double.parse(readingsList[3]) > nepheloNTUMax) {
-              nepheloNTUMax = double.parse(readingsList[3]);
-            }
-            if (double.parse(readingsList[3]) < nepheloNTUMin) {
-              nepheloNTUMin = double.parse(readingsList[3]);
-            }
+              // Check nepheloNTU
+              if (double.parse(readingsList[3]) > nepheloNTUMax) {
+                nepheloNTUMax = double.parse(readingsList[3]);
+              }
+              if (double.parse(readingsList[3]) < nepheloNTUMin) {
+                nepheloNTUMin = double.parse(readingsList[3]);
+              }
 
-            // Check nepheloFNU
-            if (double.parse(readingsList[4]) > nepheloFNUMax) {
-              nepheloFNUMax = double.parse(readingsList[4]);
-            }
-            if (double.parse(readingsList[4]) < nepheloFNUMin) {
-              nepheloFNUMin = double.parse(readingsList[4]);
-            }
+              // Check nepheloFNU
+              if (double.parse(readingsList[4]) > nepheloFNUMax) {
+                nepheloFNUMax = double.parse(readingsList[4]);
+              }
+              if (double.parse(readingsList[4]) < nepheloFNUMin) {
+                nepheloFNUMin = double.parse(readingsList[4]);
+              }
 
-            // Check tu
-            if (double.parse(readingsList[5]) > tuMax) {
-              tuMax = double.parse(readingsList[5]);
-            }
-            if (double.parse(readingsList[5]) < tuMin) {
-              tuMin = double.parse(readingsList[5]);
+              // Check tu
+              if (double.parse(readingsList[5]) > tuMax) {
+                tuMax = double.parse(readingsList[5]);
+              }
+              if (double.parse(readingsList[5]) < tuMin) {
+                tuMin = double.parse(readingsList[5]);
+              }
             }
           }
         }
 
         // Add each line to graph dataset as normalised value
         for (int i = 1; i < lines.length; i++) {
-          List<String> readingsList = lines[i].split(",");
+          if (!(lines[i].contains("Timestamp"))) {
+            List<String> readingsList = lines[i].split(",");
 
-          temp.add(
-            FlSpot(
-              double.parse(
-                readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16),
+            temp.add(
+              FlSpot(
+                double.parse(
+                  readingsList[0].substring(11, 13) +
+                      "." +
+                      readingsList[0].substring(14, 16),
+                ),
+                normaliseValue(double.parse(readingsList[2]), tempMin, tempMax),
               ),
-              normaliseValue(double.parse(readingsList[2]), tempMin, tempMax),
-            ),
-          );
+            );
 
-          nepheloNTU.add(
-            FlSpot(
-              double.parse(readingsList[0].substring(11, 13) +
-                  "." +
-                  readingsList[0].substring(14, 16)),
-              normaliseValue(
-                  double.parse(readingsList[3]), nepheloNTUMin, nepheloNTUMax),
-            ),
-          );
+            nepheloNTU.add(
+              FlSpot(
+                double.parse(readingsList[0].substring(11, 13) +
+                    "." +
+                    readingsList[0].substring(14, 16)),
+                normaliseValue(double.parse(readingsList[3]), nepheloNTUMin,
+                    nepheloNTUMax),
+              ),
+            );
 
-          nepheloFNU.add(
-            FlSpot(
-              double.parse(readingsList[0].substring(11, 13) +
-                  "." +
-                  readingsList[0].substring(14, 16)),
-              normaliseValue(
-                  double.parse(readingsList[4]), nepheloFNUMin, nepheloFNUMax),
-            ),
-          );
+            nepheloFNU.add(
+              FlSpot(
+                double.parse(readingsList[0].substring(11, 13) +
+                    "." +
+                    readingsList[0].substring(14, 16)),
+                normaliseValue(double.parse(readingsList[4]), nepheloFNUMin,
+                    nepheloFNUMax),
+              ),
+            );
 
-          tu.add(
-            FlSpot(
-              double.parse(readingsList[0].substring(11, 13) +
-                  "." +
-                  readingsList[0].substring(14, 16)),
-              normaliseValue(double.parse(readingsList[5]), tuMin, tuMax),
-            ),
-          );
+            tu.add(
+              FlSpot(
+                double.parse(readingsList[0].substring(11, 13) +
+                    "." +
+                    readingsList[0].substring(14, 16)),
+                normaliseValue(double.parse(readingsList[5]), tuMin, tuMax),
+              ),
+            );
+          }
         }
       },
     );

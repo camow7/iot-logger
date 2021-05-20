@@ -26,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
                 if (state is Loaded) {
                   return Container(
                     // color: Colors.blue[50],
-                    height: MediaQuery.of(context).size.height * 0.7,
+                    height: MediaQuery.of(context).size.height * 0.75,
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: ListView(
                       padding: EdgeInsets.all(0),
@@ -507,7 +507,7 @@ Widget SetLoggingPeriodDialog(BuildContext context, state) {
       borderRadius: BorderRadius.circular(28.0),
     ),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.20,
+      height: MediaQuery.of(context).size.height * 0.30,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [

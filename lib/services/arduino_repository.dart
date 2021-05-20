@@ -24,12 +24,12 @@ class ArduinoRepository {
   int payloadSize = 0;
   int fileSizeCount = 0;
   int sequenceNumber = 0;
-  int receivedSensorType = 0;
+  int receivedSensorType = -1;
   int currentPayloadByte = 0;
   int missedBytes = 0;
   RestartableTimer countdownTimer;
   bool arduinoisConnected = true;
-  RawDatagramSocket _socket;
+  RawDatagramSocket socket;
   Timer heartBeatTimer;
   int messageCounter = 0;
   BytesBuilder messageFile;
@@ -84,23 +84,20 @@ class ArduinoRepository {
           print('No Wifi Detected');
         }
       } catch (e) {
-        //messageSubscription.cancel();
         print("No Connections Found");
         print(e.toString());
       }
     }
 
     if (Platform.isWindows) {
-      // Get Wifi Name
-      String wifiName = await getNetworkName();
-
       // Get Wifi Ip
       List<NetworkInterface> addresses = await NetworkInterface.list();
+
       String wifiIP = addresses[0].addresses[0].address;
 
-      // If Wifi is connected
-      if (wifiIP != null && wifiName != null) {
-        print('Wifi Connected: $wifiName @ $wifiIP');
+      if (wifiIP != null) {
+        // If Wifi is connected
+        print('Wifi Connected: $wifiIP');
         initialiseArduinoConnection(wifiIP);
       } else {
         // No Wifi Found
@@ -110,7 +107,6 @@ class ArduinoRepository {
 
     if (Platform.isAndroid) {
       WiFiForIoTPlugin.forceWifiUsage(true);
-
       // Listen and adjust to changes in the network
       networkSubscription = new Connectivity().onConnectivityChanged.listen(
         (status) async {
@@ -137,60 +133,72 @@ class ArduinoRepository {
     }
   }
 
-  initialiseArduinoConnection(String wifiIP) {
+  initialiseArduinoConnection(String wifiIP) async {
     print("Initialising Arduino Connection...");
+
     // Create UDP Socket to Arduino
-    try {
-      RawDatagramSocket.bind(InternetAddress(wifiIP), 4444)
-          .then((RawDatagramSocket socket) {
-        _socket = socket;
-        print('Creating UDP Server @ ${socket.address.address}:${socket.port}');
+    socket = await RawDatagramSocket.bind(InternetAddress(wifiIP), 2305,
+        reuseAddress: true);
 
-        // Send Heart Beat
-        heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
-          // print("heart beat sent");
-          messageBuffer = Uint8List.fromList(
-              [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
-          sendMessageBuffer(messageBuffer);
-        });
+    print('Creating UDP Server @ ${socket.address.address}:${socket.port}');
 
-        // Start connection timer
-        countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
-          arduinoisConnected = false;
-          isConnectedController
-              .add(HeartBeatMessage(false, receivedSensorType));
-          print("Arduino TimedOut");
-        });
+    // Start Heart Beat timer
+    print("sending heart beat's");
+    heartBeatTimer = new Timer.periodic(Duration(seconds: 1), (Timer t) {
+      messageBuffer = Uint8List.fromList(
+          [0xFE, 1, messageCounter, 0, 0, 1]); // Heart Beat Message
+      sendMessageBuffer(messageBuffer);
+    });
 
-        //Listen for messages
-        _socket.listen((event) {
-          Datagram d = _socket.receive();
-          if (d == null) return;
-          readMessage(d.data);
-        });
-      });
-    } catch (e) {
-      print(e);
-    }
+    //Listen for messages
+    socket.listen(
+      (data) {
+        Datagram d = socket.receive();
+        if (d == null) return;
+        readMessage(d.data);
+      },
+      onError: (err) {
+        print('$err');
+      },
+      cancelOnError: false,
+      onDone: () {
+        print("Stream restarting");
+        initialiseWifiConnection();
+      },
+    );
+
+    // Start connection timer
+    print("starting connection timer");
+    countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
+      arduinoisConnected = false;
+      isConnectedController.add(HeartBeatMessage(false, receivedSensorType));
+      print("Arduino timed out");
+    });
   }
 
-  stopHeartBeat() {
+  void stopHeartBeat() {
     print("arduino disconnected");
     arduinoisConnected = false;
-    // heartBeatTimer.cancel();
   }
 
-  readMessage(Uint8List data) {
+  void readMessage(Uint8List data) {
     for (int i = 0; i < data.length; i++) {
       msgParseByte(data[i]);
     }
   }
 
   void closeConnections() {
-    _socket.close();
-    networkSubscription.cancel();
-    heartBeatTimer.cancel();
-    countdownTimer.cancel();
+    try {
+      socket.close(); // Closing the stream calls initialiseWifiConnection();
+      heartBeatTimer.cancel();
+      countdownTimer.cancel();
+
+      if (!Platform.isWindows) {
+        networkSubscription.cancel();
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   void msgParseByte(int messageByte) {
@@ -352,8 +360,13 @@ class ArduinoRepository {
             "${batteryInfo.getFloat32(0, Endian.little).toStringAsFixed(2)},${batteryInfo.getInt32(4, Endian.little).toString()}");
         break;
       case MessageType.SEND_WIFI_DETAILS:
-        settingStreamController.add(String.fromCharCodes(
-            messageData.sublist(0, payloadSize))); //messageData
+        String value =
+            String.fromCharCodes(messageData.sublist(0, payloadSize));
+
+        List<String> result = value.split(",");
+        wifiName = result[0];
+
+        settingStreamController.add(value); //messageData
 
         break;
       case MessageType.ERROR_MSG:
@@ -394,12 +407,23 @@ class ArduinoRepository {
     }
   }
 
-  void writeListToFile(List<String> list) {
+  Future<void> writeListToFile(List<String> list) async {
+    if (wifiName == null) {
+      getWifiDetails();
+      await settingStreamController.stream.first;
+    }
+
+    var downloadPath = directory.path + "\\" + wifiName + "_" + currentFile;
+
+    // Delete the file if it exists
+    if (await File(downloadPath).exists()) {
+      await File(downloadPath).delete();
+    }
+
     // Write log file chunk to file, if there is no file this will create one
-    print('Writing download string to file at: ${directory.path}/$currentFile');
+    print('Writing download string to file at: $downloadPath');
     for (int i = 0; i < list.length; i++) {
-      File('${directory.path}/${wifiName}_$currentFile')
-          .writeAsStringSync(list[i], mode: FileMode.append);
+      File(downloadPath).writeAsStringSync(list[i], mode: FileMode.append);
     }
   }
 
@@ -638,15 +662,18 @@ class ArduinoRepository {
 
   sendMessageBuffer(Uint8List messageBuffer) {
     try {
-      _socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
+      socket.send(messageBuffer, InternetAddress("10.0.0.1"), 2506);
       messageCounter++;
     } catch (e) {
       print(e);
+      initialiseArduinoConnection(wifiIP);
     }
   }
 
   Future<void> setLocalDirectory() async {
-    directory = await getApplicationDocumentsDirectory();
+    directory = Platform.isWindows
+        ? await getDownloadsDirectory()
+        : await getApplicationDocumentsDirectory();
     print(directory);
   }
 }

@@ -10,7 +10,7 @@ class MainCard extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Container(
       width: isLandscape
-          ? MediaQuery.of(context).size.width * 0.38
+          ? MediaQuery.of(context).size.width * 0.45
           : double.infinity,
       height: isLandscape
           ? MediaQuery.of(context).size.height * 0.25

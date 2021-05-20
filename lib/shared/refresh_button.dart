@@ -10,7 +10,7 @@ class RefreshButton extends StatelessWidget {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Container(
-      width: MediaQuery.of(context).size.width * 0.18,
+      width: MediaQuery.of(context).size.width * 0.25,
       height: MediaQuery.of(context).size.height * 0.1,
       // color: Colors.blue,
       child: ElevatedButton(
@@ -30,9 +30,10 @@ class RefreshButton extends StatelessWidget {
         child: Text(
           'Refresh',
           style: TextStyle(
-              fontSize: MediaQuery.of(context).size.width * 0.02,
-              fontWeight: FontWeight.w700,
-              fontFamily: 'Montserrat'),
+            fontSize: MediaQuery.of(context).size.width * 0.02,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Montserrat',
+          ),
         ),
       ),
     );

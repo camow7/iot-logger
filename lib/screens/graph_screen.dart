@@ -149,7 +149,7 @@ class GraphScreen extends StatelessWidget {
         borderRadius: BorderRadius.circular(28.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.20,
+        height: MediaQuery.of(context).size.height * 0.30,
         width: MediaQuery.of(context).size.height * 0.90,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,

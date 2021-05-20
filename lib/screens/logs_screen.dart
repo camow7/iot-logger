@@ -59,11 +59,11 @@ class LogsScreen extends StatelessWidget {
                 if (state is LoadingFiles) {
                   //Loading Spinner
                   return Padding(
-                    padding: EdgeInsets.fromLTRB(0, 60, 0, 0),
+                    padding: EdgeInsets.fromLTRB(0, 30, 0, 0),
                     child: Container(
                       // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.40,
-                      height: MediaQuery.of(context).size.width * 0.40,
+                      width: MediaQuery.of(context).size.width * 0.20,
+                      height: MediaQuery.of(context).size.width * 0.20,
                       child: CircularProgressIndicator(
                         backgroundColor: Colors.white,
                         valueColor: AlwaysStoppedAnimation<Color>(
@@ -75,7 +75,9 @@ class LogsScreen extends StatelessWidget {
                 }
                 if (state is Files) {
                   return Container(
-                    height: MediaQuery.of(context).size.height * 0.62,
+                    // color: Colors.red[50],
+                    height: MediaQuery.of(context).size.height * 0.53,
+                    width: MediaQuery.of(context).size.width * 0.95,
                     child: GridView(
                       padding: EdgeInsets.only(top: 10),
                       children: state.fileNames

@@ -104,8 +104,9 @@ class Layout extends StatelessWidget {
             children: [
               getSaphiLogo(context),
               Container(
-                height: MediaQuery.of(context).size.height * 0.85,
-                width: MediaQuery.of(context).size.width,
+                // color: Colors.blue,
+                // height: MediaQuery.of(context).size.height,
+                // width: MediaQuery.of(context).size.width,
                 child: content,
               ),
             ],
