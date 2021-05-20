@@ -90,10 +90,17 @@ class ArduinoRepository {
     }
 
     if (Platform.isWindows) {
+      wifiIP = null;
       // Get Wifi Ip
       List<NetworkInterface> addresses = await NetworkInterface.list();
 
-      String wifiIP = addresses[0].addresses[0].address;
+      //print("Network Interfaces:");
+      for (int i = 0; i < addresses.length; i++) {
+        print('${addresses[i].name}');
+        if (addresses[i].name.contains("Wi")) {
+          wifiIP = addresses[i].addresses[0].address;
+        }
+      }
 
       if (wifiIP != null) {
         // If Wifi is connected
