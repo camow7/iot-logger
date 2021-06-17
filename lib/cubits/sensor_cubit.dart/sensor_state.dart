@@ -12,6 +12,13 @@ class Connected extends SensorState {
 }
 
 class Disconnected extends SensorState {
+  final List<NetworkInterface> networks;
   final String sensorID;
-  const Disconnected(this.sensorID) : super();
+  const Disconnected(this.sensorID, this.networks) : super();
+}
+
+// Inital State
+class Loading extends SensorState {
+  final String sensorID;
+  const Loading(this.sensorID) : super();
 }

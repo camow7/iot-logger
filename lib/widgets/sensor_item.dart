@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -6,6 +8,51 @@ import '../shared/main_card.dart';
 
 class SensorItem extends StatelessWidget {
   const SensorItem();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<SensorCubit, SensorState>(
+      listener: (context, state) {
+        if (state is Disconnected) {
+          showDialog(
+            context: context,
+            builder: (_) => showInterfaces(context, state.networks),
+            barrierDismissible: true,
+          );
+        }
+      },
+      builder: (context, state) {
+        if (state is Connected) {
+          return MainCard(
+            content: InkWell(
+              splashColor: ModalRoute.of(context).settings.name == "/"
+                  ? Colors.grey
+                  : Colors.white,
+              onTap: () => {
+                if (ModalRoute.of(context).settings.name == "/")
+                  {
+                    Navigator.of(context).pushNamed('/sensor'),
+                  }
+              },
+              borderRadius: BorderRadius.circular(4),
+              child: sensorContent(
+                  context, getStatusImage(context, true), true, state.sensorID),
+            ),
+          );
+        } else {
+          return MainCard(
+            content: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(4),
+              ),
+              child: sensorContent(context, getStatusImage(context, false),
+                  false, state.sensorID),
+            ),
+          );
+        }
+      },
+    );
+  }
 
   SvgPicture getStatusImage(BuildContext context, bool connectionStatus) {
     switch (connectionStatus) {
@@ -22,39 +69,6 @@ class SensorItem extends StatelessWidget {
             color: Theme.of(context).accentColor);
         break;
     }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocBuilder<SensorCubit, SensorState>(builder: (_, state) {
-      if (state is Connected) {
-        return MainCard(
-          content: InkWell(
-            splashColor: ModalRoute.of(context).settings.name == "/"
-                ? Colors.grey
-                : Colors.white,
-            onTap: () => {
-              if (ModalRoute.of(context).settings.name == "/")
-                {
-                  Navigator.of(context).pushNamed('/sensor'),
-                }
-            },
-            borderRadius: BorderRadius.circular(4),
-            child: sensorContent(
-                context, getStatusImage(context, true), true, state.sensorID),
-          ),
-        );
-      } else {
-        return MainCard(
-            content: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(4),
-          ),
-          child: sensorContent(
-              context, getStatusImage(context, false), false, state.sensorID),
-        ));
-      }
-    });
   }
 
   Widget sensorContent(BuildContext context, SvgPicture svgImage,
@@ -86,6 +100,66 @@ class SensorItem extends StatelessWidget {
               ),
         ),
         trailing: svgImage,
+      ),
+    );
+  }
+
+  showInterfaces(BuildContext context, List<NetworkInterface> networks) {
+    print(networks.length);
+    return Dialog(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(28.0),
+      ),
+      child: Container(
+        height: MediaQuery.of(context).size.height * 0.35,
+        width: MediaQuery.of(context).size.width * 0.50,
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              child: Text(
+                "Please select your Wi-Fi interface below:",
+                style: TextStyle(fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            Container(
+              color: Colors.white,
+              height: MediaQuery.of(context).size.height * 0.25,
+              width: MediaQuery.of(context).size.width * 0.4,
+              child: ListView(
+                children: networks
+                    .map((network) => ElevatedButton(
+                          style: ButtonStyle(
+                            backgroundColor: MaterialStateProperty.all(
+                                Theme.of(context)
+                                    .primaryColor), // background color
+                            foregroundColor:
+                                MaterialStateProperty.all(Colors.white),
+                            textStyle: MaterialStateProperty.all(
+                              TextStyle(
+                                fontSize:
+                                    MediaQuery.of(context).size.width * 0.02,
+                                // fontFamily: 'Montserrat',
+                              ),
+                            ),
+                          ),
+                          onPressed: () {
+                            context
+                                .read<SensorCubit>()
+                                .connectUsingInterface(network);
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                              "${network.name} - ${network.addresses[0].address}"),
+                        ))
+                    .toList(),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

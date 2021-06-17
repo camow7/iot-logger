@@ -46,6 +46,7 @@ class ArduinoRepository {
   StreamController<String> currentMeasurementsStreamController;
   Stream<String> currentMeasurementsStream;
   String wifiIP, wifiName;
+  List<NetworkInterface> addresses;
 
   List<String> fileNames = [];
   BytesBuilder fileLine = new BytesBuilder();
@@ -91,13 +92,18 @@ class ArduinoRepository {
 
     if (Platform.isWindows) {
       wifiIP = null;
-      // Get Wifi Ip
-      List<NetworkInterface> addresses = await NetworkInterface.list();
 
-      //print("Network Interfaces:");
+      // Get all network interfaces
+      addresses = await NetworkInterface.list();
+
+      // Find Wifi Interface and IP
+      print("Network Interfaces:");
       for (int i = 0; i < addresses.length; i++) {
-        print('${addresses[i].name}');
+        print('${addresses[i].name} - ${addresses[i].addresses[0]}');
+
         if (addresses[i].name.contains("Wi")) {
+          print(
+              'Wifi Adapter Found: ${addresses[i].name} - ${addresses[i].addresses[0]} ');
           wifiIP = addresses[i].addresses[0].address;
         }
       }
@@ -109,6 +115,7 @@ class ArduinoRepository {
       } else {
         // No Wifi Found
         print('No Wifi Detected');
+        isConnectedController.add(HeartBeatMessage(false, receivedSensorType));
       }
     }
 
@@ -170,6 +177,7 @@ class ArduinoRepository {
       cancelOnError: false,
       onDone: () {
         print("Stream restarting");
+        initialiseWifiConnection();
       },
     );
 
@@ -196,7 +204,7 @@ class ArduinoRepository {
   void closeConnections() {
     try {
       socket.close(); // Closing the stream calls initialiseWifiConnection();
-      initialiseWifiConnection();
+
       heartBeatTimer.cancel();
       countdownTimer.cancel();
 

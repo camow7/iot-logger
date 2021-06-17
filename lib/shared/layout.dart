@@ -58,10 +58,10 @@ class Layout extends StatelessWidget {
 
         // Back Button
         if (ModalRoute.of(context).settings.name != "/")
-          Padding(
-            padding: EdgeInsets.fromLTRB(10, 30, 0, 0),
-            child: Align(
-              alignment: Alignment.topLeft,
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(10, 30, 0, 0),
               child: Material(
                 type: MaterialType.button,
                 color: Colors.transparent,
@@ -79,6 +79,7 @@ class Layout extends StatelessWidget {
               ),
             ),
           ),
+
         // Refresh Button
         if (ModalRoute.of(context).settings.name == "/logs")
           Padding(
