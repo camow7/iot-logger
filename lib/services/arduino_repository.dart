@@ -172,11 +172,12 @@ class ArduinoRepository {
         readMessage(d.data);
       },
       onError: (err) {
-        print('$err');
+        print('Socket Error: $err');
+        initialiseWifiConnection();
       },
       cancelOnError: false,
       onDone: () {
-        print("Stream restarting");
+        print("Socket Closed: Restarting");
         initialiseWifiConnection();
       },
     );

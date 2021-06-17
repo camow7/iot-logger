@@ -111,14 +111,14 @@ class SensorItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(28.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.35,
+        height: MediaQuery.of(context).size.height * 0.30,
         width: MediaQuery.of(context).size.width * 0.50,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 20, 0, 20),
+              padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
               child: Text(
                 "Please select your Wi-Fi interface below:",
                 style: TextStyle(fontSize: 20),
@@ -126,12 +126,15 @@ class SensorItem extends StatelessWidget {
               ),
             ),
             Container(
-              color: Colors.white,
-              height: MediaQuery.of(context).size.height * 0.25,
+              // color: Colors.blue[50],
+              // height: MediaQuery.of(context).size.height * 0.25,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListView(
+                shrinkWrap: true,
                 children: networks
-                    .map((network) => ElevatedButton(
+                    .map((network) => Padding(
+                        padding: EdgeInsets.all(10),
+                        child: ElevatedButton(
                           style: ButtonStyle(
                             backgroundColor: MaterialStateProperty.all(
                                 Theme.of(context)
@@ -154,7 +157,7 @@ class SensorItem extends StatelessWidget {
                           },
                           child: Text(
                               "${network.name} - ${network.addresses[0].address}"),
-                        ))
+                        )))
                     .toList(),
               ),
             ),
