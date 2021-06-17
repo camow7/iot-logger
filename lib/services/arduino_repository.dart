@@ -151,8 +151,11 @@ class ArduinoRepository {
     print("Initialising Arduino Connection...");
 
     // Create UDP Socket to Arduino
-    socket = await RawDatagramSocket.bind(InternetAddress(wifiIP), 2305,
-        reuseAddress: true);
+    socket = await RawDatagramSocket.bind(
+      InternetAddress(wifiIP),
+      2305,
+      reuseAddress: true,
+    );
 
     print('Creating UDP Server @ ${socket.address.address}:${socket.port}');
 
@@ -173,12 +176,12 @@ class ArduinoRepository {
       },
       onError: (err) {
         print('Socket Error: $err');
-        initialiseWifiConnection();
+        // initialiseWifiConnection();
       },
       cancelOnError: false,
       onDone: () {
-        print("Socket Closed: Restarting");
-        initialiseWifiConnection();
+        print("Socket Closed");
+        // initialiseWifiConnection();
       },
     );
 
@@ -204,14 +207,13 @@ class ArduinoRepository {
 
   void closeConnections() {
     try {
-      socket.close(); // Closing the stream calls initialiseWifiConnection();
-
+      socket.close();
       heartBeatTimer.cancel();
       countdownTimer.cancel();
-
       if (!Platform.isWindows) {
         networkSubscription.cancel();
       }
+      initialiseWifiConnection();
     } catch (e) {
       print(e);
     }

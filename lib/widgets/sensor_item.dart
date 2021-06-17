@@ -14,6 +14,7 @@ class SensorItem extends StatelessWidget {
     return BlocConsumer<SensorCubit, SensorState>(
       listener: (context, state) {
         if (state is Disconnected) {
+          print("Showing interfaces");
           showDialog(
             context: context,
             builder: (_) => showInterfaces(context, state.networks),
@@ -105,13 +106,12 @@ class SensorItem extends StatelessWidget {
   }
 
   showInterfaces(BuildContext context, List<NetworkInterface> networks) {
-    print(networks.length);
     return Dialog(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(28.0),
       ),
       child: Container(
-        height: MediaQuery.of(context).size.height * 0.30,
+        height: MediaQuery.of(context).size.height * 0.40,
         width: MediaQuery.of(context).size.width * 0.50,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -126,8 +126,6 @@ class SensorItem extends StatelessWidget {
               ),
             ),
             Container(
-              // color: Colors.blue[50],
-              // height: MediaQuery.of(context).size.height * 0.25,
               width: MediaQuery.of(context).size.width * 0.4,
               child: ListView(
                 shrinkWrap: true,
