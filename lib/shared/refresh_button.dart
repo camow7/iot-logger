@@ -17,8 +17,7 @@ class RefreshButton extends StatelessWidget {
         onPressed: () => context.read<SensorCubit>().refresh(),
         style: ElevatedButton.styleFrom(
           elevation: 3,
-          primary:
-              Colors.blue, //Theme.of(context).primaryColor, // background color
+          primary: Theme.of(context).primaryColor, // background color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
