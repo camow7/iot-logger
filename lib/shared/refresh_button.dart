@@ -18,7 +18,7 @@ class RefreshButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           elevation: 3,
           primary:
-              Colors.red, //Theme.of(context).primaryColor, // background color
+              Colors.blue, //Theme.of(context).primaryColor, // background color
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.all(
               Radius.circular(10),
