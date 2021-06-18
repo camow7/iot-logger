@@ -19,8 +19,8 @@ class SensorCubit extends Cubit<SensorState> {
         emit(Connected(sensorMap[message.sensorID]));
       } else {
         emit(
-          Disconnected(
-              sensorMap[message.sensorID], _arduinoRepository.addresses),
+          Disconnected(sensorMap[message.sensorID],
+              _arduinoRepository.addresses, message.networkFound),
         );
       }
     });

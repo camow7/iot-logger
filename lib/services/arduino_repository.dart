@@ -4,7 +4,6 @@ import 'dart:typed_data';
 import 'package:async/async.dart';
 import 'package:iot_logger/models/HeartBeatMessage.dart';
 import 'package:iot_logger/models/Messages.dart';
-import 'package:iot_logger/services/windows_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 import 'package:wifi_iot/wifi_iot.dart';
@@ -17,6 +16,7 @@ class ArduinoRepository {
   final int messageDataIndex =
       5; //Number of bytes before the data part of a message
   final int sensorType = 0; //App is sensor 0
+  bool networkFound = false;
   Uint8List messageData = Uint8List(256);
   Uint8List messageBuffer = Uint8List(0);
   MessageState currentState = MessageState.START;
@@ -100,11 +100,10 @@ class ArduinoRepository {
       print("Network Interfaces:");
       for (int i = 0; i < addresses.length; i++) {
         print('${addresses[i].name} - ${addresses[i].addresses[0]}');
-
         if (addresses[i].name.contains("Wi")) {
-          print(
-              'Wifi Adapter Found: ${addresses[i].name} - ${addresses[i].addresses[0]} ');
+          networkFound = true;
           wifiIP = addresses[i].addresses[0].address;
+          print('Wifi Adapter Found: $wifiIP ');
         }
       }
 
@@ -115,7 +114,8 @@ class ArduinoRepository {
       } else {
         // No Wifi Found
         print('No Wifi Detected');
-        isConnectedController.add(HeartBeatMessage(false, receivedSensorType));
+        isConnectedController
+            .add(HeartBeatMessage(false, receivedSensorType, networkFound));
       }
     }
 
@@ -189,7 +189,8 @@ class ArduinoRepository {
     print("starting connection timer");
     countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
       arduinoisConnected = false;
-      isConnectedController.add(HeartBeatMessage(false, receivedSensorType));
+      isConnectedController
+          .add(HeartBeatMessage(false, receivedSensorType, networkFound));
       print("Arduino timed out");
     });
   }
@@ -207,12 +208,10 @@ class ArduinoRepository {
 
   void closeConnections() {
     try {
-      socket.close();
-      heartBeatTimer.cancel();
-      countdownTimer.cancel();
-      if (!Platform.isWindows) {
-        networkSubscription.cancel();
-      }
+      socket?.close(); // == if socket is not null call close()
+      heartBeatTimer?.cancel();
+      countdownTimer?.cancel();
+      networkSubscription?.cancel();
       initialiseWifiConnection();
     } catch (e) {
       print(e);
@@ -287,7 +286,8 @@ class ArduinoRepository {
       case MessageType.HEART_BEAT:
         // print("heart beat received");
         arduinoisConnected = true;
-        isConnectedController.add(HeartBeatMessage(true, receivedSensorType));
+        isConnectedController
+            .add(HeartBeatMessage(true, receivedSensorType, networkFound));
         countdownTimer.reset();
         break;
       case MessageType.CONNECT:
