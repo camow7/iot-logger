@@ -4,6 +4,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/log_download_cubit/log_download_cubit.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 import 'package:iot_logger/shared/rive_animation.dart';
+import 'dart:io';
 
 class LogItem extends StatelessWidget {
   final String fileName;
@@ -34,59 +35,53 @@ class _LogItem extends StatelessWidget {
         child: InkWell(
           onTap: () => null,
           borderRadius: BorderRadius.circular(4),
-          child: Center(
-            child: logTile(context, state, fileName),
-          ),
+          child: //Center(
+            //child:
+            logTile(context, state, fileName),
+          //),
         ),
       );
     });
   }
 
-  Widget logTile(
-      BuildContext context, LogDownloadState state, String fileName) {
+  Widget logTile(BuildContext context, LogDownloadState state, String fileName) {
+
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
+    var theWidth = MediaQuery.of(context).size.width * (isLandscape ? 0.4 : 0.8);
     if (state is LogLoaded) {
-      // When file is loaded (Initial State)
+      // When file is loaded but not downloaded (Initial State)
       return GestureDetector(
         onTapDown: (TapDownDetails details) {
           context.read<LogDownloadCubit>().downloadFile(fileName);
         },
         child: Container(
-          child: Stack(
+          width: theWidth,
+          alignment: Alignment.center,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Folder Icon
               Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.folder,
-                        color: Theme.of(context).accentColor,
-                        size: 40,
-                      ),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      alignment: Alignment.center,
-                      child: logDate(context, state, fileName),
-                    ),
-                    Container(
-                      // color: Colors.blue[50],
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: SvgPicture.asset(
-                        'assets/svgs/download.svg',
-                      ),
-                    ),
-                  ],
+                //alignment: Alignment.center,
+                child: Icon(
+                  Icons.folder,
+                  color: Theme.of(context).accentColor,
+                  size: MediaQuery.of(context).size.width * 0.03,
                 ),
-              )
+              ),
+              // File Date
+              Container(
+                child: logDate(context, state, fileName),
+              ),
+              // Download Icon
+              Container(
+                width: MediaQuery.of(context).size.width * 0.018,
+                child: SvgPicture.asset(
+                  'assets/svgs/download.svg',
+                ),
+              ),
             ],
           ),
         ),
@@ -103,28 +98,25 @@ class _LogItem extends StatelessWidget {
                   AlwaysStoppedAnimation<Color>(Theme.of(context).primaryColor),
             ),
             Container(
-              width: MediaQuery.of(context).size.width * 0.8,
               alignment: Alignment.center,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  // Download Percentage
                   Container(
-                    // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.1,
                     alignment: Alignment.center,
                     child: folderIcon(context, state),
                   ),
+                  // File Date
                   Container(
-                    // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.45,
                     alignment: Alignment.center,
                     child: logDate(context, state, fileName),
                   ),
+                  // Loading Animation
                   Container(
-                    // color: Colors.blue[50],
-                    width: MediaQuery.of(context).size.width * 0.08,
-                    height: MediaQuery.of(context).size.width * 0.08,
+                    width: MediaQuery.of(context).size.width * 0.03,
+                    height: MediaQuery.of(context).size.height * 0.03,
                     alignment: Alignment.center,
                     child: RiveAnimation(),
                   ),
@@ -138,42 +130,41 @@ class _LogItem extends StatelessWidget {
       //When file is downloaded
       return GestureDetector(
         onTapDown: (TapDownDetails details) {
-          Navigator.of(context)
-              .pushNamed('/graph-reading', arguments: {'fileName': fileName});
+          Navigator.of(context).pushNamed('/graph-reading', arguments: {'fileName': fileName});
         },
         child: Container(
-          child: Stack(
-            children: [
-              Container(
-                width: MediaQuery.of(context).size.width * 0.8,
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: Icon(
-                        Icons.folder,
-                        color: Theme.of(context).accentColor,
-                        size: 40,
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.45,
-                      alignment: Alignment.center,
-                      child: logDate(context, state, fileName),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      alignment: Alignment.center,
-                      child: Icon(Icons.done_outline),
-                    ),
-                  ],
+          // color: Colors.blue,
+          child: Container(
+            width: theWidth,
+            alignment: Alignment.center,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // Folder Icon
+                Container(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.folder,
+                    color: Theme.of(context).accentColor,
+                    size: MediaQuery.of(context).size.width * 0.03,
+                  ),
                 ),
-              ),
-            ],
+                // File Date
+                Container(
+                  alignment: Alignment.center,
+                  child: logDate(context, state, fileName),
+                ),
+                // Tick Icon
+                Container(
+                  alignment: Alignment.center,
+                  child: Icon(
+                    Icons.done_outline,
+                    size: MediaQuery.of(context).size.width * 0.024,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -187,7 +178,7 @@ class _LogItem extends StatelessWidget {
         Text(
           '${(state.progress * 100).toStringAsFixed(0)}%',
           style: Theme.of(context).textTheme.subtitle2,
-        )
+        ),
       ],
     );
   }
@@ -198,7 +189,7 @@ class _LogItem extends StatelessWidget {
       fileName,
       style: TextStyle(
           color: Theme.of(context).focusColor,
-          fontSize: 18,
+          fontSize: MediaQuery.of(context).size.width * 0.02,
           fontStyle: FontStyle.italic,
           fontFamily: 'Montserrat'),
     );

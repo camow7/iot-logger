@@ -24,25 +24,28 @@ class SensorItem extends StatelessWidget {
     }
   }
 
+
+
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SensorCubit, SensorState>(builder: (_, state) {
       if (state is Connected) {
         return MainCard(
-            content: InkWell(
-          splashColor: ModalRoute.of(context).settings.name == "/"
-              ? Colors.grey
-              : Colors.white,
-          onTap: () => {
-            if (ModalRoute.of(context).settings.name == "/")
-              {
-                Navigator.of(context).pushNamed('/sensor'),
-              }
-          },
-          borderRadius: BorderRadius.circular(4),
-          child: sensorContent(
-              context, getStatusImage(context, true), true, state.sensorID),
-        ));
+          content: InkWell(
+            splashColor: ModalRoute.of(context).settings.name == "/"
+                ? Colors.grey
+                : Colors.white,
+            onTap: () => {
+              if (ModalRoute.of(context).settings.name == "/")
+                {
+                  Navigator.of(context).pushNamed('/sensor'),
+                }
+            },
+            borderRadius: BorderRadius.circular(4),
+            child: sensorContent(
+                context, getStatusImage(context, true), true, state.sensorID),
+          ),
+        );
       } else {
         return MainCard(
             content: Container(
@@ -58,6 +61,8 @@ class SensorItem extends StatelessWidget {
 
   Widget sensorContent(BuildContext context, SvgPicture svgImage,
       bool isConnected, String sensorID) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Center(
       child: ListTile(
         leading: isConnected
@@ -77,9 +82,13 @@ class SensorItem extends StatelessWidget {
                   )
                 ],
               ),
-        title: Text("$sensorID",
-            textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headline3),
+        title: Text(
+          "$sensorID",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline3.copyWith(
+                fontSize: MediaQuery.of(context).size.width * (isLandscape ? 0.03 : 0.06),
+              ),
+        ),
         trailing: svgImage,
       ),
     );

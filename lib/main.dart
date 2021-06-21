@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
@@ -12,24 +13,29 @@ import './screens/graph_screen.dart';
 import 'cubits/files_cubit/files_cubit.dart';
 import 'screens/individual_sensor_screen.dart';
 import 'services/arduino_repository.dart';
+import 'package:window_size/window_size.dart';
 
 ArduinoRepository arduinoRepo = ArduinoRepository();
 
-void main() => runApp(
-      MultiBlocProvider(
-        providers: [
-          BlocProvider(
-              create: (context) => SensorCubit(arduinoRepo)..connect()),
-          BlocProvider(
-              create: (context) => FilesCubit(arduinoRepo)..getFiles()),
-          BlocProvider(
-              create: (context) =>
-                  SettingsCubit(arduinoRepo)..getAllSettings()),
-          BlocProvider(create: (context) => SensorReadingCubit(arduinoRepo)),
-        ],
-        child: IotLoggerApp(),
-      ),
-    );
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
+    setWindowMinSize(const Size(1200, 700));
+    setWindowTitle('IoT Desktop Logger');
+  }
+
+  runApp(
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (context) => SensorCubit(arduinoRepo)..connect()),
+        BlocProvider(create: (context) => FilesCubit(arduinoRepo)..getFiles()),
+        BlocProvider(create: (context) => SettingsCubit(arduinoRepo)..getAllSettings()),
+        BlocProvider(create: (context) => SensorReadingCubit(arduinoRepo)),
+      ],
+      child: IotLoggerApp(),
+    ),
+  );
+}
 
 class IotLoggerApp extends StatelessWidget {
   final green = const Color.fromRGBO(108, 194, 130, 1);
@@ -38,7 +44,8 @@ class IotLoggerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return new MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'IoT Logger',
       theme: ThemeData(
         primaryColor: green,
@@ -50,7 +57,7 @@ class IotLoggerApp extends StatelessWidget {
         textTheme: ThemeData.light().textTheme.copyWith(
               headline1: const TextStyle(
                 color: Colors.white,
-                fontSize: 50,
+                fontSize: 48,
                 fontWeight: FontWeight.bold,
               ),
               headline2: TextStyle(
@@ -105,8 +112,7 @@ class IotLoggerApp extends StatelessWidget {
         '/sensor': (ctx) => SensorScreen(),
         '/logs': (ctx) => LogsScreen(arduinoRepo),
         '/readings': (ctx) => ReadingsScreen(),
-        '/graph-reading': (ctx) => GraphScreen(arduinoRepo
-            .wifiName), // passing wifiName to find the correct graph file
+        '/graph-reading': (ctx) => GraphScreen(arduinoRepo.wifiName), // passing wifiName to find the correct graph file
         '/settings': (ctx) => SettingsScreen(),
         '/individual-sensor-screen': (ctx) => IndividualSensorScreen(),
       },

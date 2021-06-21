@@ -32,8 +32,8 @@ class ReadingItem extends StatelessWidget {
                       Icons.arrow_drop_down,
                       color: Theme.of(context).accentColor,
                     ),
-                  )
-                ]),
+                  ),
+                ],),
               ),
             ),
           ),

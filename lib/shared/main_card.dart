@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 class MainCard extends StatelessWidget {
   final Widget content;
@@ -9,16 +10,19 @@ class MainCard extends StatelessWidget {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Container(
-      width: isLandscape
-          ? MediaQuery.of(context).size.width * 0.4
-          : double.infinity,
-      height: isLandscape
-          ? MediaQuery.of(context).size.height * 0.3
-          : MediaQuery.of(context).size.height * 0.15,
+
+      width: (Platform.isIOS ? MediaQuery.of(context).size.width * (isLandscape ? 0.02 : 1) : MediaQuery.of(context).size.width * (isLandscape ? 1 : 1)),
+      height: (MediaQuery.of(context).size.height * (isLandscape ? 0.22 : 0.15)),
       child: Card(
-          margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
-          elevation: 5,
-          child: Center(child: content)),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(
+            Radius.circular(20),
+          ),
+        ),
+        margin: isLandscape ? EdgeInsets.symmetric(horizontal: 80.0, vertical: 10.0): EdgeInsets.symmetric(horizontal: 38.0, vertical: 20.0),
+        elevation: 1,
+        child: Center(child: content),
+      ),
     );
   }
 }
