@@ -1,9 +1,9 @@
 #!/bin/sh
 # This is a generated file; do not edit or check into version control.
 export "FLUTTER_ROOT=/Users/noelkhan/src/flutter"
-export "FLUTTER_APPLICATION_PATH=/Users/noelkhan/StudioProjects/iot-logger-desktop-build"
+export "FLUTTER_APPLICATION_PATH=/Users/noelkhan/Documents/GitHub/iot-logger"
 export "COCOAPODS_PARALLEL_CODE_SIGN=true"
-export "FLUTTER_TARGET=/Users/noelkhan/StudioProjects/iot-logger-desktop-build/lib/main.dart"
+export "FLUTTER_TARGET=/Users/noelkhan/Documents/GitHub/iot-logger/lib/main.dart"
 export "FLUTTER_BUILD_DIR=build"
 export "SYMROOT=${SOURCE_ROOT}/../build/ios"
 export "FLUTTER_BUILD_NAME=1.0.0"
@@ -12,4 +12,4 @@ export "DART_DEFINES=RkxVVFRFUl9XRUJfQVVUT19ERVRFQ1Q9dHJ1ZQ=="
 export "DART_OBFUSCATION=false"
 export "TRACK_WIDGET_CREATION=true"
 export "TREE_SHAKE_ICONS=false"
-export "PACKAGE_CONFIG=/Users/noelkhan/StudioProjects/iot-logger-desktop-build/.dart_tool/package_config.json"
+export "PACKAGE_CONFIG=/Users/noelkhan/Documents/GitHub/iot-logger/.dart_tool/package_config.json"

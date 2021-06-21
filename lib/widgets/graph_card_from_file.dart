@@ -10,9 +10,8 @@ class GraphCardFromFile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<GraphCubit, GraphState>(
-      // bloc:
-      builder: (_, state) {
-        GraphCubit()..loadGraph(fileName);
+      cubit: GraphCubit()..loadGraph(fileName),
+      builder: (_, state) {  
         if (state is Loaded) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
