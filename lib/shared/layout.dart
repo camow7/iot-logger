@@ -68,10 +68,10 @@ class Layout extends StatelessWidget {
                 color: Colors.transparent,
                 child: BackButton(
                   onPressed: ()  => {
-                    if (ModalRoute.of(context).settings.name == "/readings")
-                      {
-                         BlocProvider.of<SensorReadingCubit>(context).closeTimer(),
-                      },
+                    // if (ModalRoute.of(context).settings.name == "/readings")
+                    //   {
+                    //      BlocProvider.of<SensorReadingCubit>(context).closeTimer(),
+                    //   },
                     Navigator.pop(context),
                   },
                   color: Colors.white,
