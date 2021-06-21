@@ -52,10 +52,10 @@ class IndividualSensorScreen extends StatelessWidget {
                     child: Text(
                       state.readings[index][0].sensorName,
                       textAlign: TextAlign.center,
-                      //style: Theme.of(context).textTheme.headline4,
-                      style: TextStyle(
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context)
+                          .textTheme
+                          .headline4
+                          .copyWith(fontSize: 26, color: Colors.white),
                     ),
                   ),
                 ),
