@@ -37,18 +37,19 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
     List<String> readingsList = tempString.split(",");
 
     this.temp.insert(0, SensorReading(readingsList[0], "Temp C"));
-    this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
-    this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
-    this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
+    // this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
+    // this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
+    // this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
 
     while (this.temp.length > 60) {
       this.temp.removeLast();
-      this.nepheloNTU.removeLast();
-      this.nepheloFNU.removeLast();
-      this.tu.removeLast();
+      // this.nepheloNTU.removeLast();
+      // this.nepheloFNU.removeLast();
+      // this.tu.removeLast();
     }
 
-    this.readings = [temp, nepheloNTU, nepheloFNU, tu];
+    this.readings = [temp];
+    // this.readings = [temp, nepheloNTU, nepheloFNU, tu];
     refresh();
   }
 

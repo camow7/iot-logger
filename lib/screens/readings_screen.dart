@@ -15,16 +15,20 @@ class ReadingsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     PortraitLock(context);
 
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Layout(
-      content: isLandscape ? SingleChildScrollView(child: pageContent(context, isLandscape)) : pageContent(context, isLandscape),
+      content: isLandscape
+          ? SingleChildScrollView(child: pageContent(context, isLandscape))
+          : pageContent(context, isLandscape),
     );
   }
 
   Widget pageContent(BuildContext context, bool isLandscape) {
     PortraitLock(context);
 
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -33,7 +37,8 @@ class ReadingsScreen extends StatelessWidget {
           children: [
             Container(
               //alignment: Alignment.center,
-              height: MediaQuery.of(context).size.height * (isLandscape ? 0.25 : 0.15),
+              height: MediaQuery.of(context).size.height *
+                  (isLandscape ? 0.25 : 0.15),
               width: MediaQuery.of(context).size.width * (isLandscape ? 10 : 4),
               child: SensorItem(),
               //margin: isLandscape ? EdgeInsets.symmetric(horizontal: 80.0, vertical: 10.0): EdgeInsets.symmetric(horizontal: 38.0, vertical: 20.0),
@@ -59,7 +64,8 @@ class ReadingsScreen extends StatelessWidget {
                                     Radius.circular(5),
                                   ),
                                 ),
-                                margin: const EdgeInsets.symmetric(horizontal: 40, vertical: 20),
+                                margin: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 5),
                                 elevation: 5,
                                 child: InkWell(
                                   onTap: () => {
@@ -70,8 +76,10 @@ class ReadingsScreen extends StatelessWidget {
                                   },
                                   child: Center(
                                     child: ListTile(
-                                      leading: Text("${state.readings[reading.key][0].sensorName}"),
-                                      trailing: Text("${state.readings[reading.key][0].sensorReading}"),
+                                      leading: Text(
+                                          "${state.readings[reading.key][0].sensorName}"),
+                                      trailing: Text(
+                                          "${state.readings[reading.key][0].sensorReading}"),
                                     ),
                                   ),
                                 ),
@@ -82,15 +90,19 @@ class ReadingsScreen extends StatelessWidget {
                       gridDelegate: Platform.isWindows
                           ? SliverGridDelegateWithMaxCrossAxisExtent(
                               childAspectRatio: 4,
-                              crossAxisSpacing: MediaQuery.of(context).size.width * 0.03,
-                              mainAxisSpacing: MediaQuery.of(context).size.height * 0.07,
-                              maxCrossAxisExtent: MediaQuery.of(context).size.width * 0.4,
+                              crossAxisSpacing:
+                                  MediaQuery.of(context).size.width * 0.03,
+                              mainAxisSpacing:
+                                  MediaQuery.of(context).size.height * 0.07,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 0.4,
                             )
                           : SliverGridDelegateWithMaxCrossAxisExtent(
                               childAspectRatio: 5.5,
                               crossAxisSpacing: 10,
                               mainAxisSpacing: 5,
-                              maxCrossAxisExtent: MediaQuery.of(context).size.width * 1,
+                              maxCrossAxisExtent:
+                                  MediaQuery.of(context).size.width * 1,
                             ),
                     ),
                   );
@@ -157,7 +169,8 @@ class ReadingsScreen extends StatelessWidget {
 }
 
 void PortraitLock(BuildContext context) {
-  if ((MediaQuery.of(context).size.height < 600) || (MediaQuery.of(context).size.width < 600)) {
+  if ((MediaQuery.of(context).size.height < 600) ||
+      (MediaQuery.of(context).size.width < 600)) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

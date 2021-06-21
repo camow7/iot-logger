@@ -11,35 +11,38 @@ class Layout extends StatelessWidget {
   Widget getSaphiLogo(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    return
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            // color: Colors.red[40],s
-            alignment: Alignment.center,
-            height:
-                MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
-            child: SvgPicture.asset('assets/svgs/saphi-logo-white-text.svg',
-                                    width: MediaQuery.of(context).size.height * (isLandscape ? 0.25 : 0.15),
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Container(
+          // color: Colors.red[40],s
+          alignment: Alignment.center,
+          height:
+              MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
+          child: SvgPicture.asset(
+            'assets/svgs/saphi-logo-white-text.svg',
+            width: MediaQuery.of(context).size.height *
+                (isLandscape ? 0.25 : 0.15),
           ),
-        ],
-      );
+        ),
+      ],
+    );
   }
 
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     //final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return Stack(
       children: [
         // Background
         Container(
-          height: double.infinity,//MediaQuery.of(context).size.height,// * (isLandscape ? 1 : 1),
-          width: double.infinity,//MediaQuery.of(context).size.width, //* (isLandscape ? 2 : 1),
+          height: double
+              .infinity, //MediaQuery.of(context).size.height,// * (isLandscape ? 1 : 1),
+          width: double
+              .infinity, //MediaQuery.of(context).size.width, //* (isLandscape ? 2 : 1),
           child: Image.asset(
             'assets/images/land.jpg',
-            fit:BoxFit.fill,
+            fit: BoxFit.fill,
           ),
         ),
         // ?
@@ -67,11 +70,12 @@ class Layout extends StatelessWidget {
                 type: MaterialType.button,
                 color: Colors.transparent,
                 child: BackButton(
-                  onPressed: ()  => {
-                    // if (ModalRoute.of(context).settings.name == "/readings")
-                    //   {
-                    //      BlocProvider.of<SensorReadingCubit>(context).closeTimer(),
-                    //   },
+                  onPressed: () => {
+                    if (ModalRoute.of(context).settings.name == "/readings")
+                      {
+                        BlocProvider.of<SensorReadingCubit>(context)
+                            .closeTimer(),
+                      },
                     Navigator.pop(context),
                   },
                   color: Colors.white,
