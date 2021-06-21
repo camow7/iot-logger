@@ -28,7 +28,8 @@ class ArduinoRepository {
   int missedBytes = 0;
   int messageCounter = 0;
   int fileIndexCount = 0;
-  final int messageDataIndex = 5; //Number of bytes before the data part of a message
+  final int messageDataIndex =
+      5; //Number of bytes before the data part of a message
   final int sensorType = 0; //App is sensor 0
 
   Uint8List messageData = Uint8List(256);
@@ -96,8 +97,6 @@ class ArduinoRepository {
       }
     }
 
-
-
     if (Platform.isWindows) {
       wifiIP = null;
       // Get Wifi Ip
@@ -121,7 +120,7 @@ class ArduinoRepository {
       }
     }
 
-    if (Platform.isAndroid ) {
+    if (Platform.isAndroid) {
       WiFiForIoTPlugin.forceWifiUsage(true);
       // Listen and adjust to changes in the network
       networkSubscription = new Connectivity().onConnectivityChanged.listen(
@@ -414,6 +413,13 @@ class ArduinoRepository {
         } else {
           //Checks if the line is apart of a DEV-LOG.CSV file
           if (splitLine.length == 1) {
+            indexedFile.add(line);
+          } else {
+            print("BAD LINE FOUND: $line ${splitLine.length}");
+          }
+
+          //Checks if the line is neither turbid or dev-log
+          if (splitLine.length < 6) {
             indexedFile.add(line);
           } else {
             print("BAD LINE FOUND: $line ${splitLine.length}");

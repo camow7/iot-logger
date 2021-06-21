@@ -11,7 +11,8 @@ class IndividualSensorScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     PortraitLock(context);
 
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: Layout(
@@ -41,42 +42,53 @@ class IndividualSensorScreen extends StatelessWidget {
               children: [
                 // Sensor Name
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
+                  width: MediaQuery.of(context).size.width * 0.8, //0.2
                   height: MediaQuery.of(context).size.height * 0.1,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Colors.white,
+                    color: Colors.transparent,
                   ),
                   child: Center(
                     child: Text(
                       state.readings[index][0].sensorName,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline4,
+                      //style: Theme.of(context).textTheme.headline4,
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
                     ),
                   ),
                 ),
                 // Last Reading Text
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  width: MediaQuery.of(context).size.width * 0.8, //0.2
                   height: MediaQuery.of(context).size.height * 0.1,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
-                    color: Colors.white,
+                    color: Colors.transparent,
                   ),
                   child: Center(
                     child: Column(
-                      //mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
                           "Last Reading",
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 12),
+                          style: Theme.of(context).textTheme.headline.copyWith(
+                                color: Colors.white,
+                                fontSize: 12,
+                              ),
                         ),
                         Text(
                           state.readings[index][0].sensorReading,
                           textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.headline4.copyWith(fontSize: 24),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headline4
+                              .copyWith(color: Colors.white, fontSize: 24),
                         ),
+                        // color: Colors.white,
+                        //),
                       ],
                     ),
                   ),
@@ -121,7 +133,8 @@ class IndividualSensorScreen extends StatelessWidget {
 }
 
 void PortraitLock(BuildContext context) {
-  if ((MediaQuery.of(context).size.height < 600) || (MediaQuery.of(context).size.width < 600)) {
+  if ((MediaQuery.of(context).size.height < 600) ||
+      (MediaQuery.of(context).size.width < 600)) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,

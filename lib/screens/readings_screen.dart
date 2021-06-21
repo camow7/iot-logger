@@ -61,11 +61,11 @@ class ReadingsScreen extends StatelessWidget {
                               child: Card(
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(
-                                    Radius.circular(5),
+                                    Radius.circular(20),
                                   ),
                                 ),
                                 margin: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 5),
+                                    horizontal: 0, vertical: 0),
                                 elevation: 5,
                                 child: InkWell(
                                   onTap: () => {
