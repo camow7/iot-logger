@@ -24,7 +24,7 @@ class GraphCubit extends Cubit<GraphState> {
         for (int i = 1; i < lines.length; i++) {
           if (!(lines[i].contains("Timestamp"))) {
             List<String> readingsList = lines[i].split(",");
-            if (readingsList.length == 6) {
+            if (readingsList.length <= 3) {
               // Check pH
               if (double.parse(readingsList[2]) > pHMax) {
                 pHMax = double.parse(readingsList[2]);

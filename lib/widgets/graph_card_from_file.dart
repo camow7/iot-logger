@@ -11,7 +11,7 @@ class GraphCardFromFile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GraphCubit, GraphState>(
       cubit: GraphCubit()..loadGraph(fileName),
-      builder: (context, state) {
+      builder: (_, state) {
         if (state is Loaded) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -61,15 +61,17 @@ class GraphCardFromFile extends StatelessWidget {
                   ),
                   columns: [
                     DataColumn(
-                        label: Text(
-                      "",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                      label: Text(
+                        "",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     DataColumn(
-                        label: Text(
-                      "",
-                      style: TextStyle(color: Colors.white),
-                    )),
+                      label: Text(
+                        "",
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
                     DataColumn(
                         label: Text("Min",
                             textAlign: TextAlign.center,
@@ -267,7 +269,7 @@ class GraphCardFromFile extends StatelessWidget {
       minX: 0,
       maxX: 24.00,
       minY: 0,
-      maxY: 1,
+      maxY: 15,
       lineBarsData: linesBarData(readings),
     );
   }
