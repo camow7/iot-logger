@@ -11,17 +11,18 @@ class GraphCardFromFile extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<GraphCubit, GraphState>(
       cubit: GraphCubit()..loadGraph(fileName),
-      builder: (_, state) {  
+      builder: (context, state) {
         if (state is Loaded) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              // Outter Box
+              //Outter Box
               Container(
-                width: MediaQuery.of(context).size.width * 0.9,
+                width: MediaQuery.of(context).size.width * 0.8,
                 height: MediaQuery.of(context).size.height * 0.35,
                 alignment: Alignment.center,
-                padding: EdgeInsets.fromLTRB(0, MediaQuery.of(context).size.height * 0.02, 0, 0),
+                padding: EdgeInsets.fromLTRB(
+                    0, MediaQuery.of(context).size.height * 0.02, 0, 0),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(
                     Radius.circular(18),
@@ -29,7 +30,7 @@ class GraphCardFromFile extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                   // color: Colors.blue,
                 ),
-                // Inner Box
+                //Inner Box
                 child: Container(
                   width: MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height * 0.3,
@@ -48,9 +49,12 @@ class GraphCardFromFile extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                 ),
                 child: DataTable(
-                  columnSpacing: MediaQuery.of(context).size.width * 0.092,
-                  headingRowHeight: MediaQuery.of(context).size.height * 0.04,
-                  dataRowHeight: MediaQuery.of(context).size.height * 0.05,
+                  columnSpacing:
+                      MediaQuery.of(context).size.width * 0.023, //0.092,
+                  headingRowHeight:
+                      MediaQuery.of(context).size.height * 0.01, // 0.04,
+                  dataRowHeight:
+                      MediaQuery.of(context).size.height * 0.0125, // 0.05,
                   headingTextStyle: TextStyle(
                     color: Colors.white,
                     fontStyle: FontStyle.normal,
@@ -66,8 +70,14 @@ class GraphCardFromFile extends StatelessWidget {
                       "",
                       style: TextStyle(color: Colors.white),
                     )),
-                    DataColumn(label: Text("Min", textAlign: TextAlign.center, style: TextStyle(color: Colors.white))),
-                    DataColumn(label: Text("Max", textAlign: TextAlign.center, style: TextStyle(color: Colors.white)))
+                    DataColumn(
+                        label: Text("Min",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white))),
+                    DataColumn(
+                        label: Text("Max",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white)))
                   ],
                   rows: [
                     DataRow(
@@ -79,87 +89,109 @@ class GraphCardFromFile extends StatelessWidget {
                           ),
                         ), // Green Circle
                         DataCell(Text(
-                          "Temp (C)",
+                          "pH Level",
                           style: Theme.of(context).textTheme.headline2,
                         )),
                         DataCell(Text(
-                          "${state.tempMin}",
+                          "${state.pHMin}",
                           style: Theme.of(context).textTheme.headline2,
                         )),
                         DataCell(Text(
-                          "${state.tempMax}",
+                          "${state.pHMax}",
                           style: Theme.of(context).textTheme.headline2,
                         )),
                       ],
                     ),
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Icon(
-                            Icons.circle,
-                            color: Colors.yellow, // Yellow Color
-                          ),
-                        ), // Green Circle,
-                        DataCell(Text(
-                          "Nephelo NTU",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(Text(
-                          "${state.nepheloNTUMin}",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(Text(
-                          "${state.nepheloNTUMax}",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                      ],
-                    ),
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Icon(
-                            Icons.circle,
-                            color: const Color(0xffaa4cfc), // Purple line
-                          ),
-                        ),
-                        DataCell(Text(
-                          "Nephelo FNU",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(Text(
-                          "${state.nepheloFNUMin}",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(
-                          Text(
-                            "${state.nepheloFNUMax}",
-                            style: Theme.of(context).textTheme.headline2,
-                          ),
-                        ),
-                      ],
-                    ),
-                    DataRow(
-                      cells: [
-                        DataCell(
-                          Icon(
-                            Icons.circle,
-                            color: const Color(0xff27b6fc), // Color blue
-                          ),
-                        ), // Green Circle,
-                        DataCell(Text(
-                          "TU mg/L",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(Text(
-                          "${state.tuMin}",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                        DataCell(Text(
-                          "${state.tuMax}",
-                          style: Theme.of(context).textTheme.headline2,
-                        )),
-                      ],
-                    ),
+                    // DataRow(
+                    //   cells: [
+                    //     DataCell(
+                    //       Icon(
+                    //         Icons.circle,
+                    //         color: const Color(0xff4af699),
+                    //       ),
+                    //     ), // Green Circle
+                    //     DataCell(Text(
+                    //       "Temp (C)",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.tempMin}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.tempMax}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //   ],
+                    // ),
+                    // DataRow(
+                    //   cells: [
+                    //     DataCell(
+                    //       Icon(
+                    //         Icons.circle,
+                    //         color: Colors.yellow, // Yellow Color
+                    //       ),
+                    //     ), // Green Circle,
+                    //     DataCell(Text(
+                    //       "Nephelo NTU",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.nepheloNTUMin}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.nepheloNTUMax}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //   ],
+                    // ),
+                    // DataRow(
+                    //   cells: [
+                    //     DataCell(
+                    //       Icon(
+                    //         Icons.circle,
+                    //         color: const Color(0xffaa4cfc), // Purple line
+                    //       ),
+                    //     ),
+                    //     DataCell(Text(
+                    //       "Nephelo FNU",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.nepheloFNUMin}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(
+                    //       Text(
+                    //         "${state.nepheloFNUMax}",
+                    //         style: Theme.of(context).textTheme.headline2,
+                    //       ),
+                    //     ),
+                    //   ],
+                    // ),
+                    // DataRow(
+                    //   cells: [
+                    //     DataCell(
+                    //       Icon(
+                    //         Icons.circle,
+                    //         color: const Color(0xff27b6fc), // Color blue
+                    //       ),
+                    //     ), // Green Circle,
+                    //     DataCell(Text(
+                    //       "TU mg/L",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.tuMin}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //     DataCell(Text(
+                    //       "${state.tuMax}",
+                    //       style: Theme.of(context).textTheme.headline2,
+                    //     )),
+                    //   ],
+                    // ),
                   ],
                 ),
               ),
@@ -213,7 +245,8 @@ class GraphCardFromFile extends StatelessWidget {
         bottomTitles: SideTitles(
           showTitles: true,
           reservedSize: 22,
-          getTextStyles: (value) => const TextStyle(color: Color(0xffffffff), fontSize: 10),
+          getTextStyles: (value) =>
+              const TextStyle(color: Color(0xffffffff), fontSize: 10),
           getTitles: (value) {
             if (((value % 3 == 0)) || value == 0) {
               return value.toInt().toString();
@@ -240,7 +273,7 @@ class GraphCardFromFile extends StatelessWidget {
   }
 
   List<LineChartBarData> linesBarData(List<List<FlSpot>> readings) {
-    final LineChartBarData tempLine = LineChartBarData(
+    final LineChartBarData pHLine = LineChartBarData(
       spots: readings[0],
       isCurved: false,
       colors: [
@@ -255,55 +288,74 @@ class GraphCardFromFile extends StatelessWidget {
         show: false,
       ),
     );
-
-    final LineChartBarData nepheloNTULine = LineChartBarData(
-      spots: readings[1],
-      isCurved: false,
-      colors: [
-        Colors.yellow, // Yellow Color
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
-
-    final LineChartBarData nepheloFNULine = LineChartBarData(
-      spots: readings[2],
-      isCurved: false,
-      colors: [
-        const Color(0xffaa4cfc), // Purple line
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
-
-    final LineChartBarData tuLine = LineChartBarData(
-      spots: readings[3],
-      isCurved: false,
-      colors: [
-        const Color(0xff27b6fc), // Color blue
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
-
-    return [tempLine, nepheloNTULine, nepheloFNULine, tuLine];
+    return [pHLine];
   }
+
+  // List<LineChartBarData> linesBarData(List<List<FlSpot>> readings) {
+  //   final LineChartBarData tempLine = LineChartBarData(
+  //     spots: readings[0],
+  //     isCurved: false,
+  //     colors: [
+  //       const Color(0xff4af699), // Green Color
+  //     ],
+  //     barWidth: 3,
+  //     isStrokeCapRound: true,
+  //     dotData: FlDotData(
+  //       show: false,
+  //     ),
+  //     belowBarData: BarAreaData(
+  //       show: false,
+  //     ),
+  //   );
+
+  //   final LineChartBarData nepheloNTULine = LineChartBarData(
+  //     spots: readings[1],
+  //     isCurved: false,
+  //     colors: [
+  //       Colors.yellow, // Yellow Color
+  //     ],
+  //     barWidth: 3,
+  //     isStrokeCapRound: true,
+  //     dotData: FlDotData(
+  //       show: false,
+  //     ),
+  //     belowBarData: BarAreaData(
+  //       show: false,
+  //     ),
+  //   );
+
+  //   final LineChartBarData nepheloFNULine = LineChartBarData(
+  //     spots: readings[2],
+  //     isCurved: false,
+  //     colors: [
+  //       const Color(0xffaa4cfc), // Purple line
+  //     ],
+  //     barWidth: 3,
+  //     isStrokeCapRound: true,
+  //     dotData: FlDotData(
+  //       show: false,
+  //     ),
+  //     belowBarData: BarAreaData(
+  //       show: false,
+  //     ),
+  //   );
+
+  //   final LineChartBarData tuLine = LineChartBarData(
+  //     spots: readings[3],
+  //     isCurved: false,
+  //     colors: [
+  //       const Color(0xff27b6fc), // Color blue
+  //     ],
+  //     barWidth: 3,
+  //     isStrokeCapRound: true,
+  //     dotData: FlDotData(
+  //       show: false,
+  //     ),
+  //     belowBarData: BarAreaData(
+  //       show: false,
+  //     ),
+  //   );
+
+  //   return [tempLine, nepheloNTULine, nepheloFNULine, tuLine];
+  // }
 }

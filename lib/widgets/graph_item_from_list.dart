@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:iot_logger/models/SensorReading.dart';
+import 'dart:ui';
 
 class GraphItemFromList extends StatelessWidget {
   final List<SensorReading> data;
@@ -76,7 +77,7 @@ class GraphItemFromList extends StatelessWidget {
       minX: 0,
       maxX: 60,
       minY: 0,
-      maxY: 100,
+      maxY: 15,
       lineBarsData: linesBarData(listOfReadings),
     );
   }
