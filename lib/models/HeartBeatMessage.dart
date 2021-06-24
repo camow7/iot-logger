@@ -8,6 +8,13 @@ class HeartBeatMessage {
     this.sensorID = sensorID;
     this.networkFound = networkFound;
   }
+
+  // HeartBeatMessage(bool isConnected, int sensorID) {
+  //   this.isConnected = isConnected;
+  //   this.sensorID = sensorID;
+  
+  // }
+
 }
 
 Map sensorMap = {

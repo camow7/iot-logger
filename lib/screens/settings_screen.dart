@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,13 +9,16 @@ import '../shared/layout.dart';
 class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    PortraitLock(context);
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Layout(
         content: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             Padding(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 30),
+              padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(0, 0, 0, 30) : EdgeInsets.fromLTRB(0, 0, 0, 0),
               child: Text(
                 'Settings',
                 style: Theme.of(context).textTheme.headline1,
@@ -26,8 +29,11 @@ class SettingsScreen extends StatelessWidget {
                 if (state is Loaded) {
                   return Container(
                     // color: Colors.blue[50],
-                    height: MediaQuery.of(context).size.height * 0.75,
-                    width: MediaQuery.of(context).size.width * 0.4,
+                    padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(0, 0, 0, 0) : EdgeInsets.fromLTRB(0, 10, 0, 0),
+                    
+                    height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.75 : MediaQuery.of(context).size.height * 0.65,
+                    
+                    width: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.4 : MediaQuery.of(context).size.width * 0.91,
                     child: ListView(
                       padding: EdgeInsets.all(0),
                       children: [
@@ -499,26 +505,28 @@ class SettingsScreen extends StatelessWidget {
 
 // ignore: non_constant_identifier_names
 Widget SetLoggingPeriodDialog(BuildContext context, state) {
+  PortraitLock(context);
   int loggingPeriod;
   bool loggingPeriodisInt = false;
+  final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
   return Dialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(28.0),
     ),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.30,
+      height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.30: MediaQuery.of(context).size.height * (isLandscape ? 0.50 : 0.30),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(0, 20, 0, 0) : EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: Text(
               "Set Logging Period",
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(20, 0, 20, 0): EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: TextField(
               style: TextStyle(
                 fontSize: 20.0,
@@ -545,7 +553,7 @@ Widget SetLoggingPeriodDialog(BuildContext context, state) {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.05,
+            height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.05 : MediaQuery.of(context).size.height * (isLandscape ? 0.06 : 0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -581,25 +589,27 @@ Widget SetLoggingPeriodDialog(BuildContext context, state) {
 
 // ignore: non_constant_identifier_names
 Widget SetWifiSSID(BuildContext context, state) {
+  PortraitLock(context);
   String ssid;
+  final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
   return Dialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(28.0),
     ),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.20,
+      height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.20 : MediaQuery.of(context).size.height * (isLandscape ? 0.40 : 0.20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(0, 20, 0, 0) : EdgeInsets.fromLTRB(0,0,0,0),
             child: Text(
               "Set Wifi SSID",
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(20, 0, 20, 0): EdgeInsets.fromLTRB(0, 0, 0, 0),
             child: TextField(
               style: TextStyle(
                 fontSize: 20.0,
@@ -616,7 +626,7 @@ Widget SetWifiSSID(BuildContext context, state) {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.05,
+            height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.05 : MediaQuery.of(context).size.height * (isLandscape ? 0.06 : 0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -647,25 +657,27 @@ Widget SetWifiSSID(BuildContext context, state) {
 
 // ignore: non_constant_identifier_names
 Widget SetWifiPassword(BuildContext context, state) {
+  PortraitLock(context);
   String password;
+  final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
 
   return Dialog(
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(28.0),
     ),
     child: Container(
-      height: MediaQuery.of(context).size.height * 0.20,
+      height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.20 : MediaQuery.of(context).size.height * (isLandscape ? 0.40 : 0.20),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           Padding(
-            padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(0, 20, 0, 0) : EdgeInsets.fromLTRB(0, 0, 0, 0) ,
             child: Text(
               "Set Wifi Password",
             ),
           ),
           Padding(
-            padding: EdgeInsets.fromLTRB(20, 0, 20, 0),
+            padding: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? EdgeInsets.fromLTRB(20, 0, 20, 0) : EdgeInsets.fromLTRB(0, 0, 0, 0) ,
             child: TextField(
               style: TextStyle(
                 fontSize: 20.0,
@@ -682,7 +694,7 @@ Widget SetWifiPassword(BuildContext context, state) {
             ),
           ),
           Container(
-            height: MediaQuery.of(context).size.height * 0.05,
+            height: (Platform.isWindows || Platform.isMacOS  || Platform.isLinux ) ? MediaQuery.of(context).size.height * 0.05 : MediaQuery.of(context).size.height * (isLandscape ? 0.06 : 0.05),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
@@ -714,4 +726,13 @@ Widget SetWifiPassword(BuildContext context, state) {
 refreshOtherSetting(BuildContext context) async {
   await context.read<SettingsCubit>().getSDCardInfo();
   await context.read<SettingsCubit>().getBatteryInfo();
+}
+
+void PortraitLock(BuildContext context) {
+  if ((MediaQuery.of(context).size.height < 600) || (MediaQuery.of(context).size.width < 600)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
+  }
 }

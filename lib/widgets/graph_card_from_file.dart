@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/graph_cubit/graph_cubit.dart';
+import 'dart:io';
 
 class GraphCardFromFile extends StatelessWidget {
   final String fileName;
@@ -18,7 +19,7 @@ class GraphCardFromFile extends StatelessWidget {
             children: <Widget>[
               // Outer Box
               Container(
-                width: MediaQuery.of(context).size.width * 0.9,
+                width:   (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.9 : MediaQuery.of(context).size.width * 0.8,
                 height: MediaQuery.of(context).size.height * 0.35,
                 alignment: Alignment.center,
                 padding: EdgeInsets.fromLTRB(
@@ -49,9 +50,9 @@ class GraphCardFromFile extends StatelessWidget {
                   color: Theme.of(context).accentColor,
                 ),
                 child: DataTable(
-                  columnSpacing: MediaQuery.of(context).size.width * 0.092,
-                  headingRowHeight: MediaQuery.of(context).size.height * 0.04,
-                  dataRowHeight: MediaQuery.of(context).size.height * 0.05,
+                  columnSpacing: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.092 : MediaQuery.of(context).size.width * 0.023,
+                  headingRowHeight: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.height * 0.04 : MediaQuery.of(context).size.height * 0.01,
+                  dataRowHeight: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.height * 0.05 : MediaQuery.of(context).size.height * 0.0125,
                   headingTextStyle: TextStyle(
                     color: Colors.white,
                     fontStyle: FontStyle.normal,

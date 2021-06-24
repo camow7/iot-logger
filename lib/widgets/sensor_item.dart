@@ -1,17 +1,29 @@
 import 'dart:io';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/sensor_cubit.dart/sensor_cubit.dart';
 import '../shared/main_card.dart';
+import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
+import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
+import 'package:flutter/cupertino.dart';
+import '../widgets/graph_card_from_file.dart';
+
 
 class SensorItem extends StatelessWidget {
   const SensorItem();
 
+  
+
   @override
   Widget build(BuildContext context) {
-    return BlocConsumer<SensorCubit, SensorState>(
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    //return (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? 
+    
+   return BlocConsumer<SensorCubit, SensorState>(
       listener: (context, state) {
         if (state is Disconnected &&
             !state.networkFound &&
@@ -54,7 +66,40 @@ class SensorItem extends StatelessWidget {
           );
         }
       },
-    );
+    ) ;
+    // :  
+    // BlocConsumer<SensorCubit, SensorState>(    
+    //     builder: (context, state) {
+    //     if (state is Connected) {
+    //       return MainCard(
+    //         content: InkWell(
+    //           splashColor: ModalRoute.of(context).settings.name == "/"
+    //               ? Colors.grey
+    //               : Colors.white,
+    //           onTap: () => {
+    //             if (ModalRoute.of(context).settings.name == "/")
+    //               {
+    //                 Navigator.of(context).pushNamed('/sensor'),
+    //               }
+    //           },
+    //           borderRadius: BorderRadius.circular(4),
+    //           child: sensorContent(
+    //               context, getStatusImage(context, true), true, state.sensorID),
+    //         ),
+    //       );
+    //     } else {
+    //       return MainCard(
+    //         content: Container(
+    //           decoration: BoxDecoration(
+    //             borderRadius: BorderRadius.circular(4),
+    //           ),
+    //           child: sensorContent(context, getStatusImage(context, false),
+    //               false, state.sensorID),
+    //         ),
+    //       );
+    //     }
+    //   },
+    // );
   }
 
   SvgPicture getStatusImage(BuildContext context, bool connectionStatus) {
@@ -76,6 +121,8 @@ class SensorItem extends StatelessWidget {
 
   Widget sensorContent(BuildContext context, SvgPicture svgImage,
       bool isConnected, String sensorID) {
+        final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Center(
       child: ListTile(
         leading: isConnected
@@ -99,7 +146,7 @@ class SensorItem extends StatelessWidget {
           "$sensorID",
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3.copyWith(
-                fontSize: MediaQuery.of(context).size.width * 0.03,
+                fontSize:   (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.03 : MediaQuery.of(context).size.width * (isLandscape ? 0.03 : 0.06),
               ),
         ),
         trailing: svgImage,

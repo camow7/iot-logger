@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:iot_logger/cubits/files_cubit/files_cubit.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
+import 'dart:io';
 
 class Layout extends StatelessWidget {
   final Widget content;
@@ -17,12 +18,13 @@ class Layout extends StatelessWidget {
         Container(
           // color: Colors.red[40],s
           alignment: Alignment.center,
-          height:
-              MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
+          height: 
+              (MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15))  ,
           child: SvgPicture.asset(
             'assets/svgs/saphi-logo-white-text.svg',
             width:
-                MediaQuery.of(context).size.height * (isLandscape ? 0.3 : 0.15),
+               (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? (MediaQuery.of(context).size.height * (isLandscape ? 0.3 : 0.15)) : (MediaQuery.of(context).size.height *
+                (isLandscape ? 0.25 : 0.15)),
           ),
         ),
       ],

@@ -4,13 +4,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
 import '../shared/layout.dart';
 import '../widgets/graph_item_from_list.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
 
 class IndividualSensorScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    PortraitLock(context);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Layout(
         content: isLandscape
             ? SingleChildScrollView(
@@ -22,6 +26,7 @@ class IndividualSensorScreen extends StatelessWidget {
   }
 
   Widget pageContent(BuildContext context) {
+    PortraitLock(context);
     Map arguments = ModalRoute.of(context).settings.arguments;
     int index = arguments['index'];
     return BlocBuilder<SensorReadingCubit, SensorReadingState>(
@@ -31,12 +36,12 @@ class IndividualSensorScreen extends StatelessWidget {
             height: MediaQuery.of(context).size.height * 0.8,
             // color: Colors.blue[50],
             child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            mainAxisAlignment :(Platform.isWindows || Platform.isMacOS || Platform.isLinux) ?  MainAxisAlignment.spaceEvenly : MainAxisAlignment.start ,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Sensor Name
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.3,
+                  width: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.3 : MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height * 0.1,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -46,13 +51,13 @@ class IndividualSensorScreen extends StatelessWidget {
                     child: Text(
                       state.readings[index][0].sensorName,
                       textAlign: TextAlign.center,
-                      style: Theme.of(context).textTheme.headline4,
+                      style: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? Theme.of(context).textTheme.headline4 :Theme.of(context).textTheme.headline4.copyWith(fontSize: 26,),
                     ),
                   ),
                 ),
                 // Last Reading Text
                 Container(
-                  width: MediaQuery.of(context).size.width * 0.2,
+                  width: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.2 : MediaQuery.of(context).size.width * 0.8,
                   height: MediaQuery.of(context).size.height * 0.1,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -118,5 +123,15 @@ class IndividualSensorScreen extends StatelessWidget {
         }
       },
     );
+  }
+}
+
+void PortraitLock(BuildContext context) {
+  if ((MediaQuery.of(context).size.height < 600) ||
+      (MediaQuery.of(context).size.width < 600)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 }

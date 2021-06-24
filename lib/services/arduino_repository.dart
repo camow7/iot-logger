@@ -8,6 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wifi_info_flutter/wifi_info_flutter.dart';
 import 'package:wifi_iot/wifi_iot.dart';
 import 'package:connectivity/connectivity.dart';
+import 'package:location_permissions/location_permissions.dart';
 
 class ArduinoRepository {
   var directory;
@@ -74,10 +75,11 @@ class ArduinoRepository {
     if (Platform.isIOS) {
       // iOS needs an initial connection
       try {
+        var test1 = await WifiInfo().getLocationServiceAuthorization();
         wifiName = await WifiInfo().getWifiName();
         wifiIP = await WifiInfo().getWifiIP();
         // Wifi Connected
-        if (wifiIP != null && wifiName != null) {
+        if (wifiIP != null && wifiName != null || test1 != null) {
           print('Wifi Connected: $wifiName $wifiIP');
           initialiseArduinoConnection(wifiIP);
         } else {
@@ -114,8 +116,9 @@ class ArduinoRepository {
       } else {
         // No Wifi Found
         print('No Wifi Detected');
-        isConnectedController
-            .add(HeartBeatMessage(false, receivedSensorType, networkFound));
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? isConnectedController
+            .add(HeartBeatMessage(false, receivedSensorType, networkFound)) : isConnectedController
+            .add(HeartBeatMessage(false, receivedSensorType, true)) ;
       }
     }
 
@@ -189,8 +192,9 @@ class ArduinoRepository {
     print("starting connection timer");
     countdownTimer = new RestartableTimer(Duration(seconds: 3), () {
       arduinoisConnected = false;
-      isConnectedController
-          .add(HeartBeatMessage(false, receivedSensorType, networkFound));
+      (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? isConnectedController
+          .add(HeartBeatMessage(false, receivedSensorType, networkFound)) : isConnectedController
+          .add(HeartBeatMessage(false, receivedSensorType,true));
       print("Arduino timed out");
     });
   }
@@ -286,8 +290,8 @@ class ArduinoRepository {
       case MessageType.HEART_BEAT:
         // print("heart beat received");
         arduinoisConnected = true;
-        isConnectedController
-            .add(HeartBeatMessage(true, receivedSensorType, networkFound));
+        (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? isConnectedController
+            .add(HeartBeatMessage(true, receivedSensorType, networkFound)) : isConnectedController.add(HeartBeatMessage(true, receivedSensorType,true));
         countdownTimer.reset();
         break;
       case MessageType.CONNECT:

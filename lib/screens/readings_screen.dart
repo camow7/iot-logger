@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:iot_logger/cubits/sensor_reading_cubit/sensor_reading_cubit.dart';
@@ -13,6 +13,7 @@ class ReadingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    PortraitLock(context);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Layout(
@@ -23,12 +24,25 @@ class ReadingsScreen extends StatelessWidget {
   }
 
   Widget pageContent(BuildContext context, bool isLandscape) {
+    PortraitLock(context);
+
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      mainAxisAlignment: (Platform.isWindows || Platform.isMacOS ||Platform.isLinux ) ? MainAxisAlignment.spaceBetween: MainAxisAlignment.spaceEvenly,
       children: [
         Column(
           children: [
-            SensorItem(),
+            (Platform.isWindows || Platform.isMacOS ||Platform.isLinux) ?
+            SensorItem() : Container(
+              //alignment: Alignment.center,
+              height: MediaQuery.of(context).size.height *
+                  (isLandscape ? 0.25 : 0.15),
+              width: MediaQuery.of(context).size.width * (isLandscape ? 10 : 4),
+              child: SensorItem(),
+              //margin: isLandscape ? EdgeInsets.symmetric(horizontal: 80.0, vertical: 10.0): EdgeInsets.symmetric(horizontal: 38.0, vertical: 20.0),
+            ),
             // Sensor Readings
             BlocBuilder<SensorReadingCubit, SensorReadingState>(
               builder: (_, state) {
@@ -53,8 +67,9 @@ class ReadingsScreen extends StatelessWidget {
                                     Radius.circular(5),
                                   ),
                                 ),
-                                margin: const EdgeInsets.symmetric(
-                                    horizontal: 40, vertical: 20),
+                                margin:   (Platform.isWindows || Platform.isMacOS ||Platform.isLinux) ? const EdgeInsets.symmetric(
+                                    horizontal: 40, vertical: 20): const EdgeInsets.symmetric(
+                                    horizontal: 0, vertical: 0),
                                 elevation: 5,
                                 child: InkWell(
                                   onTap: () => {
@@ -117,5 +132,15 @@ class ReadingsScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+void PortraitLock(BuildContext context) {
+  if ((MediaQuery.of(context).size.height < 600) ||
+      (MediaQuery.of(context).size.width < 600)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 }

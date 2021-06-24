@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
@@ -33,6 +33,11 @@ class LogsScreen extends StatelessWidget {
   }
 
   Widget pageContent(BuildContext context) {
+
+    PortraitLock(context);
+
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -77,7 +82,7 @@ class LogsScreen extends StatelessWidget {
                   return Container(
                     // color: Colors.red[50],
                     height: MediaQuery.of(context).size.height * 0.53,
-                    width: MediaQuery.of(context).size.width * 0.95,
+                    width: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? MediaQuery.of(context).size.width * 0.95 : MediaQuery.of(context).size.width * (isLandscape ? .902 : 1.05),
                     child: GridView(
                       padding: EdgeInsets.only(top: 10),
                       children: state.fileNames
@@ -116,5 +121,14 @@ class LogsScreen extends StatelessWidget {
         ),
       ],
     );
+  }
+}
+
+void PortraitLock(BuildContext context) {
+  if ((MediaQuery.of(context).size.height < 600) || (MediaQuery.of(context).size.width < 600)) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
   }
 }
