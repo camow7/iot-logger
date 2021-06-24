@@ -121,7 +121,7 @@ class _LogItem extends StatelessWidget {
           ],
         ),
       );
-    } else {
+    } else if (state is LogDownloaded) {
       //When file is downloaded
       return GestureDetector(
         onTapDown: (TapDownDetails details) {
@@ -172,7 +172,7 @@ class _LogItem extends StatelessWidget {
       alignment: AlignmentDirectional.center,
       children: [
         Text(
-          '${(state.progress * 100).toStringAsFixed(0)}%',
+          '${(state.progress * 100).toStringAsFixed(1)}%',
           style: Theme.of(context).textTheme.subtitle2,
         )
       ],

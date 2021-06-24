@@ -13,7 +13,9 @@ class SensorItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<SensorCubit, SensorState>(
       listener: (context, state) {
-        if (state is Disconnected && !state.networkFound) {
+        if (state is Disconnected &&
+            !state.networkFound &&
+            ModalRoute.of(context).settings.name == "/") {
           print("Showing interfaces");
           showDialog(
             context: context,

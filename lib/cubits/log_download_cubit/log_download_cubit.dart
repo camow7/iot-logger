@@ -33,8 +33,11 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
 
   Future<MessageFile> getIndexedFile(String fileName) async {
     MessageFile file = MessageFile(0.0, []);
+
+    //Send Request
     arduinoRepository.getLogFile(fileName);
 
+    // Await for response with timeout of 2 seconds
     await for (MessageFile tempFile in arduinoRepository.fileStream
         .timeout(Duration(seconds: 2), onTimeout: (stream) {
       print("Message timed out");
@@ -45,6 +48,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       if (file.percentage == 1.0) {
         break;
       } else {
+        print("Emitting percentage");
         emit(LogDownloading(progress: percentage(file.percentage)));
       }
     }
@@ -87,42 +91,33 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       print(
           "Merged List Size: ${newList.length} = ${newListPercentage.toString()}%");
 
-      if (newListSizeInBytes >= arduinoRepository.fileSize) {
+      if ((newListSizeInBytes / arduinoRepository.fileSize >= 0.999)) {
         print("temp file merged successfully");
         fileIsComplete = true;
       }
-
       count++;
     }
 
-    // Print final file
-    // for (int i = 0; i < file.list.length; i++) {
-    //   print(i.toString() + " " + file.list[i]);
-    // }
-
-    // Remove headers (i.e Timestamp, UTC, Temp C...)
+    // Remove header line (i.e Timestamp, UTC, Temp C...)
     List<String> tempList = file.list.sublist(1);
 
     // Sort final file
     tempList.sort((a, b) => double.parse(a.substring(20, 30))
         .compareTo(double.parse(b.substring(20, 30))));
 
-    // Add header back
+    // Add header line back
     file.list = file.list.sublist(0, 1) + tempList;
 
-    // Prints finale file
-    // for (int i = 0; i < file.list.length; i++) {
-    //   print(i.toString() + " " + file.list[i]);
-    // }
+    // Write to file
+    await arduinoRepository.writeListToFile(file.list);
+
+    emit(LogDownloaded());
 
     print("EMITTING RESULT @ $newListPercentage");
-    emit(LogDownloaded());
-    arduinoRepository.writeListToFile(file.list);
   }
 
   void stopDownload() {
     emit(LogDownloaded());
-    // arduinoRepository.writeMessageToFile();
   }
 
   double percentage(double newPercentage) {

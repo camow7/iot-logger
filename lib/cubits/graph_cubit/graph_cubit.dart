@@ -12,6 +12,7 @@ class GraphCubit extends Cubit<GraphState> {
   List<FlSpot> nepheloNTU = [];
   List<FlSpot> nepheloFNU = [];
   List<FlSpot> tu = [];
+  List<FlSpot> pH = [];
 
   double tempMax = -1000;
   double tempMin = 1000;
@@ -21,6 +22,9 @@ class GraphCubit extends Cubit<GraphState> {
   double nepheloFNUMin = 1000;
   double tuMax = -1000;
   double tuMin = 1000;
+  double phMax = -1000;
+  double phMin = 1000;
+  List<String> readingsList;
 
   loadGraph(String fileName) async {
     var directory = Platform.isWindows
@@ -32,7 +36,7 @@ class GraphCubit extends Cubit<GraphState> {
         // Find Min and Max values for each type
         for (int i = 1; i < lines.length; i++) {
           if (!(lines[i].contains("Timestamp"))) {
-            List<String> readingsList = lines[i].split(",");
+            readingsList = lines[i].split(",");
             if (readingsList.length == 6) {
               // Check temp
               if (double.parse(readingsList[2]) > tempMax) {
@@ -65,6 +69,14 @@ class GraphCubit extends Cubit<GraphState> {
               if (double.parse(readingsList[5]) < tuMin) {
                 tuMin = double.parse(readingsList[5]);
               }
+            } else if (readingsList.length == 3) {
+              // Check pH
+              if (double.parse(readingsList[2]) > phMax) {
+                phMax = double.parse(readingsList[2]);
+              }
+              if (double.parse(readingsList[2]) < phMin) {
+                phMin = double.parse(readingsList[2]);
+              }
             }
           }
         }
@@ -72,63 +84,87 @@ class GraphCubit extends Cubit<GraphState> {
         // Add each line to graph dataset as normalised value
         for (int i = 1; i < lines.length; i++) {
           if (!(lines[i].contains("Timestamp"))) {
-            List<String> readingsList = lines[i].split(",");
+            readingsList = lines[i].split(",");
 
-            temp.add(
-              FlSpot(
-                double.parse(
-                  readingsList[0].substring(11, 13) +
-                      "." +
-                      readingsList[0].substring(14, 16),
+            if (readingsList.length == 6) {
+              temp.add(
+                FlSpot(
+                  double.parse(
+                    readingsList[0].substring(11, 13) +
+                        "." +
+                        readingsList[0].substring(14, 16),
+                  ),
+                  normaliseValue(
+                      double.parse(readingsList[2]), tempMin, tempMax),
                 ),
-                normaliseValue(double.parse(readingsList[2]), tempMin, tempMax),
-              ),
-            );
+              );
 
-            nepheloNTU.add(
-              FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                normaliseValue(double.parse(readingsList[3]), nepheloNTUMin,
-                    nepheloNTUMax),
-              ),
-            );
+              nepheloNTU.add(
+                FlSpot(
+                  double.parse(readingsList[0].substring(11, 13) +
+                      "." +
+                      readingsList[0].substring(14, 16)),
+                  normaliseValue(double.parse(readingsList[3]), nepheloNTUMin,
+                      nepheloNTUMax),
+                ),
+              );
 
-            nepheloFNU.add(
-              FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                normaliseValue(double.parse(readingsList[4]), nepheloFNUMin,
-                    nepheloFNUMax),
-              ),
-            );
+              nepheloFNU.add(
+                FlSpot(
+                  double.parse(readingsList[0].substring(11, 13) +
+                      "." +
+                      readingsList[0].substring(14, 16)),
+                  normaliseValue(double.parse(readingsList[4]), nepheloFNUMin,
+                      nepheloFNUMax),
+                ),
+              );
 
-            tu.add(
-              FlSpot(
-                double.parse(readingsList[0].substring(11, 13) +
-                    "." +
-                    readingsList[0].substring(14, 16)),
-                normaliseValue(double.parse(readingsList[5]), tuMin, tuMax),
-              ),
-            );
+              tu.add(
+                FlSpot(
+                  double.parse(readingsList[0].substring(11, 13) +
+                      "." +
+                      readingsList[0].substring(14, 16)),
+                  normaliseValue(double.parse(readingsList[5]), tuMin, tuMax),
+                ),
+              );
+            } else if (readingsList.length == 3) {
+              pH.add(
+                FlSpot(
+                  double.parse(readingsList[0].substring(11, 13) +
+                      "." +
+                      readingsList[0].substring(14, 16)),
+                  normaliseValue(double.parse(readingsList[2]), phMin, phMax),
+                ),
+              );
+            }
           }
         }
       },
     );
 
-    emit(Loaded(
-      readings: [temp, nepheloNTU, nepheloFNU, tu],
-      tempMax: tempMax,
-      tempMin: tempMin,
-      nepheloNTUMax: nepheloNTUMax,
-      nepheloNTUMin: nepheloNTUMin,
-      nepheloFNUMax: nepheloFNUMax,
-      nepheloFNUMin: nepheloFNUMin,
-      tuMax: tuMax,
-      tuMin: tuMin,
-    ));
+    readingsList.length == 6
+        ? emit(
+            LoadedTurbidity(
+              readings: [temp, nepheloNTU, nepheloFNU, tu],
+              tempMax: tempMax,
+              tempMin: tempMin,
+              nepheloNTUMax: nepheloNTUMax,
+              nepheloNTUMin: nepheloNTUMin,
+              nepheloFNUMax: nepheloFNUMax,
+              nepheloFNUMin: nepheloFNUMin,
+              tuMax: tuMax,
+              tuMin: tuMin,
+            ),
+          )
+        : emit(
+            LoadedPH(
+              readings: [
+                pH,
+              ],
+              phMin: phMin,
+              phMax: phMax,
+            ),
+          );
   }
 
   double normaliseValue(double value, double min, double max) {

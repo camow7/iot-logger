@@ -12,11 +12,11 @@ class GraphCardFromFile extends StatelessWidget {
     return BlocBuilder<GraphCubit, GraphState>(
       cubit: GraphCubit()..loadGraph(fileName),
       builder: (_, state) {
-        if (state is Loaded) {
+        if (state is LoadedTurbidity) {
           return Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              // Outter Box
+              // Outer Box
               Container(
                 width: MediaQuery.of(context).size.width * 0.9,
                 height: MediaQuery.of(context).size.height * 0.35,
@@ -172,6 +172,99 @@ class GraphCardFromFile extends StatelessWidget {
               ),
             ],
           );
+        } else if (state is LoadedPH) {
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: <Widget>[
+              // Outter Box
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.5,
+                alignment: Alignment.center,
+                padding: EdgeInsets.fromLTRB(
+                    0, MediaQuery.of(context).size.height * 0.02, 0, 0),
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(18),
+                  ),
+                  color: Theme.of(context).accentColor,
+                  // color: Colors.blue,
+                ),
+                // Inner Box
+                child: Container(
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  height: MediaQuery.of(context).size.height * 0.45,
+                  child: LineChart(
+                    mainData(context, state.readings),
+                  ),
+                ),
+              ),
+              // Legend
+              Container(
+                width: MediaQuery.of(context).size.width * 0.9,
+                height: MediaQuery.of(context).size.height * 0.10,
+                decoration: BoxDecoration(
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(18),
+                  ),
+                  color: Theme.of(context).accentColor,
+                ),
+                child: DataTable(
+                  columnSpacing: MediaQuery.of(context).size.width * 0.092,
+                  headingRowHeight: MediaQuery.of(context).size.height * 0.04,
+                  dataRowHeight: MediaQuery.of(context).size.height * 0.05,
+                  headingTextStyle: TextStyle(
+                    color: Colors.white,
+                    fontStyle: FontStyle.normal,
+                  ),
+                  columns: [
+                    DataColumn(
+                        label: Text(
+                      "",
+                      style: TextStyle(color: Colors.white),
+                    )),
+                    DataColumn(
+                        label: Text(
+                      "",
+                      style: TextStyle(color: Colors.white),
+                    )),
+                    DataColumn(
+                        label: Text("Min",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white))),
+                    DataColumn(
+                        label: Text("Max",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white)))
+                  ],
+                  rows: [
+                    DataRow(
+                      cells: [
+                        DataCell(
+                          Icon(
+                            Icons.circle,
+                            color: const Color(0xff4af699),
+                          ),
+                        ), // Green Circle
+                        DataCell(Text(
+                          "pH",
+                          style: Theme.of(context).textTheme.headline2,
+                        )),
+                        DataCell(Text(
+                          "${state.phMin}",
+                          style: Theme.of(context).textTheme.headline2,
+                        )),
+                        DataCell(Text(
+                          "${state.phMax}",
+                          style: Theme.of(context).textTheme.headline2,
+                        )),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          );
         } else {
           return Stack(
             children: <Widget>[
@@ -248,70 +341,89 @@ class GraphCardFromFile extends StatelessWidget {
   }
 
   List<LineChartBarData> linesBarData(List<List<FlSpot>> readings) {
-    final LineChartBarData tempLine = LineChartBarData(
-      spots: readings[0],
-      isCurved: false,
-      colors: [
-        const Color(0xff4af699), // Green Color
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
+    if (readings.length == 1) {
+      final LineChartBarData pHLine = LineChartBarData(
+        spots: readings[0],
+        isCurved: false,
+        colors: [
+          const Color(0xff4af699), // Green Color
+        ],
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+      );
+      return [pHLine];
+    } else {
+      final LineChartBarData tempLine = LineChartBarData(
+        spots: readings[0],
+        isCurved: false,
+        colors: [
+          const Color(0xff4af699), // Green Color
+        ],
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+      );
 
-    final LineChartBarData nepheloNTULine = LineChartBarData(
-      spots: readings[1],
-      isCurved: false,
-      colors: [
-        Colors.yellow, // Yellow Color
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
+      final LineChartBarData nepheloNTULine = LineChartBarData(
+        spots: readings[1],
+        isCurved: false,
+        colors: [
+          Colors.yellow, // Yellow Color
+        ],
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+      );
 
-    final LineChartBarData nepheloFNULine = LineChartBarData(
-      spots: readings[2],
-      isCurved: false,
-      colors: [
-        const Color(0xffaa4cfc), // Purple line
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
+      final LineChartBarData nepheloFNULine = LineChartBarData(
+        spots: readings[2],
+        isCurved: false,
+        colors: [
+          const Color(0xffaa4cfc), // Purple line
+        ],
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+      );
 
-    final LineChartBarData tuLine = LineChartBarData(
-      spots: readings[3],
-      isCurved: false,
-      colors: [
-        const Color(0xff27b6fc), // Color blue
-      ],
-      barWidth: 3,
-      isStrokeCapRound: true,
-      dotData: FlDotData(
-        show: false,
-      ),
-      belowBarData: BarAreaData(
-        show: false,
-      ),
-    );
+      final LineChartBarData tuLine = LineChartBarData(
+        spots: readings[3],
+        isCurved: false,
+        colors: [
+          const Color(0xff27b6fc), // Color blue
+        ],
+        barWidth: 3,
+        isStrokeCapRound: true,
+        dotData: FlDotData(
+          show: false,
+        ),
+        belowBarData: BarAreaData(
+          show: false,
+        ),
+      );
 
-    return [tempLine, nepheloNTULine, nepheloFNULine, tuLine];
+      return [tempLine, nepheloNTULine, nepheloFNULine, tuLine];
+    }
   }
 }

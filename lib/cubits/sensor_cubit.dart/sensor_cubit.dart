@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:iot_logger/main.dart';
 import 'package:iot_logger/models/HeartBeatMessage.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
 
@@ -20,7 +21,7 @@ class SensorCubit extends Cubit<SensorState> {
       } else {
         emit(
           Disconnected(sensorMap[message.sensorID],
-              _arduinoRepository.addresses, message.networkFound),
+              _arduinoRepository.addresses, arduinoRepo.networkFound),
         );
       }
     });

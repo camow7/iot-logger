@@ -9,7 +9,7 @@ class Loading extends GraphState {
   const Loading() : super();
 }
 
-class Loaded extends GraphState {
+class LoadedTurbidity extends GraphState {
   final List<List<FlSpot>> readings;
   final double tempMax;
   final double tempMin;
@@ -19,7 +19,7 @@ class Loaded extends GraphState {
   final double nepheloFNUMin;
   final double tuMax;
   final double tuMin;
-  const Loaded({
+  const LoadedTurbidity({
     this.readings,
     this.tempMax,
     this.tempMin,
@@ -29,6 +29,17 @@ class Loaded extends GraphState {
     this.nepheloFNUMin,
     this.tuMax,
     this.tuMin,
+  }) : super();
+}
+
+class LoadedPH extends GraphState {
+  final List<List<FlSpot>> readings;
+  final double phMax;
+  final double phMin;
+  const LoadedPH({
+    this.readings,
+    this.phMax,
+    this.phMin,
   }) : super();
 }
 

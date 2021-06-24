@@ -35,10 +35,7 @@ class _RiveAnimationState extends State<RiveAnimation> {
   @override
   Widget build(BuildContext context) {
     return _artboard != null
-        ? Rive(
-            artboard: _artboard,
-            fit: BoxFit.cover
-          )
+        ? Rive(artboard: _artboard, fit: BoxFit.cover)
         : Container();
   }
 }

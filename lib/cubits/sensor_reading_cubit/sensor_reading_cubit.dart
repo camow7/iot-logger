@@ -13,6 +13,7 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
   Timer measurementRequestTimer;
   List<List<SensorReading>> readings = [];
   List<SensorReading> temp = [];
+  List<SensorReading> pH = [];
   List<SensorReading> nepheloNTU = [];
   List<SensorReading> nepheloFNU = [];
   List<SensorReading> tu = [];
@@ -35,34 +36,50 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
         .currentMeasurementsStreamController.stream.first;
 
     List<String> readingsList = tempString.split(",");
+    int numberOfReadings = readingsList.length;
 
-    this.temp.insert(0, SensorReading(readingsList[0], "Temp C"));
-    this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
-    this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
-    this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
+    // if Turbidity Sensor
+    if (numberOfReadings == 4) {
+      // add readings to array
+      this.temp.insert(0, SensorReading(readingsList[0], "Temp C"));
+      this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
+      this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
+      this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
 
-    while (this.temp.length > 60) {
-      this.temp.removeLast();
-      this.nepheloNTU.removeLast();
-      this.nepheloFNU.removeLast();
-      this.tu.removeLast();
+      // keep only 60 readings (only a minutes worth of readings)
+      if (this.temp.length > 60) {
+        this.temp.removeLast();
+        this.nepheloNTU.removeLast();
+        this.nepheloFNU.removeLast();
+        this.tu.removeLast();
+      }
+      this.readings = [temp, nepheloNTU, nepheloFNU, tu];
+    } else if (numberOfReadings == 1) {
+      // if pH Sensor
+      this.pH.insert(0, SensorReading(readingsList[0], "pH"));
+
+      while (this.pH.length > 60) {
+        this.pH.removeLast();
+      }
+
+      this.readings = [pH];
     }
 
-    this.readings = [temp, nepheloNTU, nepheloFNU, tu];
     refresh();
   }
 
   getCurrentMeasurements() async {
-    print("get real-time readings");
+    // Send initial reading request
     await getReadings();
 
+    // Send repeating reading request every 1 second
     measurementRequestTimer =
         new Timer.periodic(Duration(seconds: 1), (Timer t) async {
-      // print("Request sent");
       await getReadings();
     });
   }
 
+  // Stop timer
   closeTimer() {
     counter = 0;
     measurementRequestTimer.cancel();
