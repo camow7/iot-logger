@@ -148,7 +148,6 @@ class ArduinoRepository {
   }
 
   initialiseArduinoConnection(String wifiIP) async {
-    networkFound = true;
     print("Initialising Arduino Connection...");
 
     // Create UDP Socket to Arduino
