@@ -8,7 +8,7 @@ class Layout extends StatelessWidget {
   final Widget content;
   const Layout({this.content});
 
-  Widget getSaphiLogo(BuildContext context) {
+  Widget getLogo(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Row(
@@ -20,7 +20,7 @@ class Layout extends StatelessWidget {
           height:
               MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
           child: SvgPicture.asset(
-            'assets/svgs/saphi-logo-white-text.svg',
+            'assets/svgs/turbid-logo.svg',
             width:
                 MediaQuery.of(context).size.height * (isLandscape ? 0.3 : 0.15),
           ),
@@ -38,11 +38,11 @@ class Layout extends StatelessWidget {
           height: double.infinity,
           width: double.infinity,
           child: Image.asset(
-            'assets/images/land.jpg',
+            'assets/images/water.png',
             fit: BoxFit.fill,
           ),
         ),
-        // ?
+        // Filter / Grayscale thing
         Container(
           decoration: const BoxDecoration(
             gradient: const LinearGradient(
@@ -100,10 +100,14 @@ class Layout extends StatelessWidget {
           ),
 
         // Logo and Content
+
         Container(
           child: Column(
             children: [
-              getSaphiLogo(context),
+              Padding(
+                padding: EdgeInsets.all(10.00),
+                child: getLogo(context),
+              ),
               Container(
                 // color: Colors.blue,
                 // height: MediaQuery.of(context).size.height,
@@ -112,7 +116,7 @@ class Layout extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ],
     );
   }

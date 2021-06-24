@@ -67,16 +67,19 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
+    # SVGs
     - assets/svgs/connected-plug.svg
     - assets/svgs/download.svg
     - assets/svgs/plug.svg
     - assets/svgs/real-time.svg
     - assets/svgs/saphi-logo-white-text.svg
     - assets/svgs/toggle-arrow.svg
+    - assets/svgs/turbid-logo.svg
     - assets/svgs/wifi.svg
-
+    # Images
     - assets/images/land.jpg
-
+    - assets/images/water.png
+    # Animations
     - assets/animations/rotating-arrows.riv
 
 

@@ -26,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
                 if (state is Loaded) {
                   return Container(
                     // color: Colors.blue[50],
-                    height: MediaQuery.of(context).size.height * 0.75,
+                    height: MediaQuery.of(context).size.height * 0.72,
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: ListView(
                       padding: EdgeInsets.all(0),
@@ -45,11 +45,12 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               child: Theme(
                                 data: Theme.of(context).copyWith(
-                                  accentColor: Colors.green,
-                                  unselectedWidgetColor: Colors.green,
+                                  accentColor: Theme.of(context).primaryColor,
+                                  unselectedWidgetColor:
+                                      Theme.of(context).primaryColor,
                                   iconTheme: IconThemeData(
                                     size: 35,
-                                    color: Colors.green,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
                                 child: ExpansionTile(
@@ -127,11 +128,12 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               child: Theme(
                                 data: Theme.of(context).copyWith(
-                                  accentColor: Colors.green,
-                                  unselectedWidgetColor: Colors.green,
+                                  accentColor: Theme.of(context).primaryColor,
+                                  unselectedWidgetColor:
+                                      Theme.of(context).primaryColor,
                                   iconTheme: IconThemeData(
                                     size: 35,
-                                    color: Colors.green,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
                                 child: ExpansionTile(
@@ -253,11 +255,12 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               child: Theme(
                                 data: Theme.of(context).copyWith(
-                                  accentColor: Colors.green,
-                                  unselectedWidgetColor: Colors.green,
+                                  accentColor: Theme.of(context).primaryColor,
+                                  unselectedWidgetColor:
+                                      Theme.of(context).primaryColor,
                                   iconTheme: IconThemeData(
                                     size: 35,
-                                    color: Colors.green,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
                                 child: ExpansionTile(
@@ -334,11 +337,12 @@ class SettingsScreen extends StatelessWidget {
                               ),
                               child: Theme(
                                 data: Theme.of(context).copyWith(
-                                  accentColor: Colors.green,
-                                  unselectedWidgetColor: Colors.green,
+                                  accentColor: Theme.of(context).primaryColor,
+                                  unselectedWidgetColor:
+                                      Theme.of(context).primaryColor,
                                   iconTheme: IconThemeData(
                                     size: 35,
-                                    color: Colors.green,
+                                    color: Theme.of(context).primaryColor,
                                   ),
                                 ),
                                 child: ExpansionTile(

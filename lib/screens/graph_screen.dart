@@ -21,7 +21,7 @@ class GraphScreen extends StatelessWidget {
           height: double.infinity,
           width: double.infinity,
           child: Image.asset(
-            'assets/images/land.jpg',
+            'assets/images/water.png',
             fit: BoxFit.fill,
           ),
         ),
@@ -79,7 +79,7 @@ class GraphScreen extends StatelessWidget {
         Container(
           child: Column(
             children: [
-              getSaphiLogo(context),
+              getLogo(context),
               Container(
                 height: MediaQuery.of(context).size.height * 0.85,
                 child: pageContent(context, fileName),
@@ -122,7 +122,7 @@ class GraphScreen extends StatelessWidget {
     );
   }
 
-  Widget getSaphiLogo(BuildContext context) {
+  Widget getLogo(BuildContext context) {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     return Row(
@@ -134,7 +134,7 @@ class GraphScreen extends StatelessWidget {
           height:
               MediaQuery.of(context).size.height * (isLandscape ? 0.1 : 0.15),
           child: SvgPicture.asset(
-            'assets/svgs/saphi-logo-white-text.svg',
+            'assets/svgs/turbid-logo.svg',
             width:
                 MediaQuery.of(context).size.height * (isLandscape ? 0.3 : 0.15),
           ),

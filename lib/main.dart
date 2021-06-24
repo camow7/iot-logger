@@ -43,6 +43,7 @@ class IotLoggerApp extends StatelessWidget {
   final green = const Color.fromRGBO(108, 194, 130, 1);
   final darkGreen = const Color.fromRGBO(36, 136, 104, 1);
   final darkBlue = const Color.fromRGBO(57, 68, 76, 1);
+  final blue = const Color.fromRGBO(1, 171, 178, 1.00);
 
   @override
   Widget build(BuildContext context) {
@@ -50,11 +51,11 @@ class IotLoggerApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'IoT Logger',
       theme: ThemeData(
-        primaryColor: green,
-        focusColor: darkGreen,
+        primaryColor: blue,
+        focusColor: blue,
         accentColor: darkBlue,
         backgroundColor: Colors.white,
-        buttonColor: green,
+        buttonColor: blue,
         fontFamily: 'Montserrat',
         textTheme: ThemeData.light().textTheme.copyWith(
               headline1: const TextStyle(

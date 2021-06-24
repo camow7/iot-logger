@@ -82,7 +82,7 @@ class SensorItem extends StatelessWidget {
             ? Icon(
                 Icons.circle,
                 size: 30,
-                color: Colors.green,
+                color: Theme.of(context).primaryColor, // background color
               )
             : Stack(
                 alignment: AlignmentDirectional.center,
