@@ -22,22 +22,47 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     PortraitLock(context);
-    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     return Scaffold(
-      resizeToAvoidBottomInset: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? null : false ,
+      resizeToAvoidBottomInset:
+          (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
+              ? null
+              : false,
       body: Layout(
         content: Container(
-          margin: (Platform.isWindows || Platform.isMacOS || Platform.isLinux) ? null : (Platform.isIOS ? EdgeInsets.only(bottom: 5.0) : null),
-          height: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? MediaQuery.of(context).size.height * 0.8 : (Platform.isIOS
-              ? MediaQuery.of(context).size.height * (isLandscape ? 0.6 : 0.5) + (isLandscape ? 112 : 290) : MediaQuery.of(context).size.height * (isLandscape ? 0.6 : 0.5) + (isLandscape ? 95 : 256)),
+          margin: (Platform.isWindows || Platform.isMacOS || Platform.isLinux)
+              ? null
+              : (Platform.isIOS ? EdgeInsets.only(bottom: 5.0) : null),
+          height: (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+              ? MediaQuery.of(context).size.height * 0.8
+              : (Platform.isIOS
+                  ? MediaQuery.of(context).size.height *
+                          (isLandscape ? 0.6 : 0.5) +
+                      (isLandscape ? 112 : 290)
+                  : MediaQuery.of(context).size.height *
+                          (isLandscape ? 0.6 : 0.5) +
+                      (isLandscape ? 95 : 210)),
           child: Column(
-            mainAxisAlignment: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? MainAxisAlignment.spaceEvenly : MainAxisAlignment.center, 
-            crossAxisAlignment: (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? CrossAxisAlignment.center : CrossAxisAlignment.stretch,
+            mainAxisAlignment:
+                (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                    ? MainAxisAlignment.spaceEvenly
+                    : MainAxisAlignment.center,
+            crossAxisAlignment:
+                (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                    ? CrossAxisAlignment.center
+                    : CrossAxisAlignment.stretch,
             children: [
               SensorItem(),
-              (Platform.isWindows || Platform.isLinux || Platform.isMacOS) ? null : SizedBox(
-                height: (Platform.isIOS ? MediaQuery.of(context).size.height * (isLandscape ? 0.2 : 0.20) : MediaQuery.of(context).size.height * (isLandscape ? 0.2 : 0.30)),
-              ),
+              (Platform.isWindows || Platform.isLinux || Platform.isMacOS)
+                  ? Container()
+                  : SizedBox(
+                      height: (Platform.isIOS
+                          ? (MediaQuery.of(context).size.height *
+                              (isLandscape ? 0.2 : 0.20))
+                          : (MediaQuery.of(context).size.height *
+                              (isLandscape ? 0.2 : 0.30))),
+                    ),
               RefreshButton(),
             ],
           ),
@@ -55,7 +80,8 @@ class _HomeScreenState extends State<HomeScreen> {
 }
 
 void PortraitLock(BuildContext context) {
-  if ((MediaQuery.of(context).size.height < 600) || (MediaQuery.of(context).size.width < 600)) {
+  if ((MediaQuery.of(context).size.height < 600) ||
+      (MediaQuery.of(context).size.width < 600)) {
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
       DeviceOrientation.portraitDown,
