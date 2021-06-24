@@ -441,9 +441,11 @@ class ArduinoRepository {
 
     // Write log file chunk to file, if there is no file this will create one
     print('Writing download string to file at: $downloadPath');
+    print(list.length);
     for (int i = 0; i < list.length; i++) {
       File(downloadPath).writeAsStringSync(list[i], mode: FileMode.append);
     }
+    print("done writing");
   }
 
   // Outgoing Messages

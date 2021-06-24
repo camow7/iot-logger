@@ -38,12 +38,14 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
     arduinoRepository.getLogFile(fileName);
 
     // Await for response with timeout of 2 seconds
-    await for (MessageFile tempFile in arduinoRepository.fileStream
-        .timeout(Duration(seconds: 2), onTimeout: (stream) {
-      print("Message timed out");
-      stream.close();
-      return file;
-    })) {
+    await for (MessageFile tempFile in arduinoRepository.fileStream.timeout(
+      Duration(seconds: 2),
+      onTimeout: (stream) {
+        print("Message timed out");
+        stream.close();
+        return file;
+      },
+    )) {
       file = tempFile;
       if (file.percentage == 1.0) {
         break;
@@ -91,12 +93,14 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       print(
           "Merged List Size: ${newList.length} = ${newListPercentage.toString()}%");
 
-      if ((newListSizeInBytes / arduinoRepository.fileSize >= 0.999)) {
+      if (newListPercentage >= 0.999) {
         print("temp file merged successfully");
         fileIsComplete = true;
       }
       count++;
     }
+
+    emit(LogDownloading(progress: 1.0));
 
     // Remove header line (i.e Timestamp, UTC, Temp C...)
     List<String> tempList = file.list.sublist(1);
@@ -107,6 +111,8 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
 
     // Add header line back
     file.list = file.list.sublist(0, 1) + tempList;
+
+    // To Do: add writing to file state....
 
     // Write to file
     await arduinoRepository.writeListToFile(file.list);
