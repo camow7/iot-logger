@@ -15,7 +15,8 @@ class SensorItem extends StatelessWidget {
       listener: (context, state) {
         if (state is Disconnected &&
             !state.networkFound &&
-            ModalRoute.of(context).settings.name == "/") {
+            ModalRoute.of(context).settings.name == "/" &&
+            Platform.isWindows) {
           print("Showing interfaces");
           showDialog(
             context: context,

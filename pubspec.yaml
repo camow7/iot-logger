@@ -76,6 +76,7 @@ flutter:
     - assets/svgs/toggle-arrow.svg
     - assets/svgs/turbid-logo.svg
     - assets/svgs/wifi.svg
+    - assets/svgs/write.svg
     # Images
     - assets/images/land.jpg
     - assets/images/water.png

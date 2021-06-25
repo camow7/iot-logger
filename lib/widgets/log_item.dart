@@ -164,6 +164,45 @@ class _LogItem extends StatelessWidget {
           ),
         ),
       );
+    } else if (state is LogWriting) {
+      // When file is downloading
+      return Container(
+        alignment: Alignment.center,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Download Percentage
+            // Container(
+            //   alignment: Alignment.center,
+            //   child: folderIcon(context, state),
+            // ),
+            // Folder Icon
+            Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.folder,
+                color: Theme.of(context).accentColor,
+                size: MediaQuery.of(context).size.width * 0.03,
+              ),
+            ),
+            // File Date
+            Container(
+              alignment: Alignment.center,
+              child: logDate(context, state, fileName),
+            ),
+            // Writing Symbol
+            Container(
+              alignment: Alignment.center,
+              child: Icon(
+                Icons.edit,
+                color: Theme.of(context).accentColor,
+                size: MediaQuery.of(context).size.width * 0.03,
+              ),
+            ),
+          ],
+        ),
+      );
     }
   }
 

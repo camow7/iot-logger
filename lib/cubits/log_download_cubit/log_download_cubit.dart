@@ -50,7 +50,7 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       if (file.percentage == 1.0) {
         break;
       } else {
-        print("Emitting percentage");
+        // print("Emitting percentage");
         emit(LogDownloading(progress: percentage(file.percentage)));
       }
     }
@@ -96,11 +96,10 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
       if (newListPercentage >= 0.999) {
         print("temp file merged successfully");
         fileIsComplete = true;
+        emit(LogWriting());
       }
       count++;
     }
-
-    emit(LogDownloading(progress: 1.0));
 
     // Remove header line (i.e Timestamp, UTC, Temp C...)
     List<String> tempList = file.list.sublist(1);
@@ -112,12 +111,10 @@ class LogDownloadCubit extends Cubit<LogDownloadState> {
     // Add header line back
     file.list = file.list.sublist(0, 1) + tempList;
 
-    // To Do: add writing to file state....
-
     // Write to file
-    await arduinoRepository.writeListToFile(file.list);
-
-    emit(LogDownloaded());
+    await arduinoRepository
+        .writeListToFile(file.list)
+        .then((value) => emit(LogDownloaded()));
 
     print("EMITTING RESULT @ $newListPercentage");
   }

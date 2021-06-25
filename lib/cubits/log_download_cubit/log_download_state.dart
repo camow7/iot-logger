@@ -19,6 +19,10 @@ class LogDownloading extends LogDownloadState {
   const LogDownloading({double progress}) : super(progress: progress);
 }
 
+class LogWriting extends LogDownloadState {
+  const LogWriting() : super();
+}
+
 class LogDownloaded extends LogDownloadState {
   const LogDownloaded() : super();
 }
