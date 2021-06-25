@@ -12,10 +12,10 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
   ArduinoRepository _arduinoRepository;
   Timer measurementRequestTimer;
   List<List<SensorReading>> readings = [];
-  // List<SensorReading> temp = [];
-  // List<SensorReading> nepheloNTU = [];
-  // List<SensorReading> nepheloFNU = [];
-  // List<SensorReading> tu = [];
+  List<SensorReading> temp = [];
+  List<SensorReading> nepheloNTU = [];
+  List<SensorReading> nepheloFNU = [];
+  List<SensorReading> tu = [];
   List<SensorReading> pH = [];
   int counter = 0;
 
@@ -29,52 +29,48 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
     );
   }
 
-  // getReadings() async {
-  //   _arduinoRepository.getCurrentMeasurements(2);
-
-  //   String tempString = await _arduinoRepository
-  //       .currentMeasurementsStreamController.stream.first;
-
-  //   List<String> readingsList = tempString.split(",");
-
-  //   this.temp.insert(0, SensorReading(readingsList[0], "Temp C"));
-  //   this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
-  //   this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
-  //   this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
-
-  //   while (this.temp.length > 60) {
-  //     this.temp.removeLast();
-  //     this.nepheloNTU.removeLast();
-  //     this.nepheloFNU.removeLast();
-  //     this.tu.removeLast();
-  //   }
-
-  //   //this.readings = [temp];
-  //   this.readings = [temp, nepheloNTU, nepheloFNU, tu];
-  //   refresh();
-  // }
-
   getReadings() async {
     _arduinoRepository.getCurrentMeasurements(2);
 
-    String phString = await _arduinoRepository
+    String tempString = await _arduinoRepository
         .currentMeasurementsStreamController.stream.first;
 
-    List<String> readingsList = phString.split(",");
+    List<String> readingsList = tempString.split(",");
+    int numberOfReadings = readingsList.length;
 
-    this.pH.insert(0, SensorReading(readingsList[0], "pH Value"));
+    // if Turbidity Sensor
+    if (numberOfReadings == 4) {
+      // add readings to array
+      this.temp.insert(0, SensorReading(readingsList[0], "Temp C"));
+      this.nepheloNTU.insert(0, SensorReading(readingsList[1], "Nephelo NTU"));
+      this.nepheloFNU.insert(0, SensorReading(readingsList[2], "Nephelo FNU"));
+      this.tu.insert(0, SensorReading(readingsList[3], "TU mg/l"));
 
-    while (this.pH.length > 60) {
-      this.pH.removeLast();
+      if (this.temp.length > 60) {
+        this.temp.removeLast();
+        this.nepheloNTU.removeLast();
+        this.nepheloFNU.removeLast();
+        this.tu.removeLast();
+      }
+
+      //this.readings = [temp];
+      this.readings = [temp, nepheloNTU, nepheloFNU, tu];
+    } else if (numberOfReadings == 1) {
+      // if pH Sensor
+      this.pH.insert(0, SensorReading(readingsList[0], "pH"));
+
+      while (this.pH.length > 60) {
+        this.pH.removeLast();
+      }
+
+      this.readings = [pH];
     }
-
-    //this.readings = [temp];
-    this.readings = [pH];
     refresh();
   }
 
   getCurrentMeasurements() async {
-    print("get real-time readings");
+    //print("get real-time readings");
+    // Send initial reading request
     await getReadings();
 
     measurementRequestTimer =
@@ -84,6 +80,7 @@ class SensorReadingCubit extends Cubit<SensorReadingState> {
     });
   }
 
+  // Stop timer
   closeTimer() {
     counter = 0;
     measurementRequestTimer.cancel();

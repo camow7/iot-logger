@@ -406,7 +406,7 @@ class ArduinoRepository {
         splitLine = line.split(",");
 
         //At end of line, check for six strings and the starting if there arent six strings remove
-        if (splitLine.length == 6 &&
+        if ((splitLine.length == 6 || splitLine.length == 3) &&
             line.length < 62 &&
             (splitLine[0].length == 19 || splitLine[0].length == 9)) {
           indexedFile.add(line);
@@ -422,7 +422,8 @@ class ArduinoRepository {
           if (splitLine.length < 6) {
             indexedFile.add(line);
           } else {
-            print("BAD LINE FOUND: $line ${splitLine.length}");
+            //print("BAD LINE FOUND: $line ${splitLine.length}");
+            print("BAD LINE FOUND: \"$line\" ${splitLine.length}");
           }
         }
       }

@@ -24,8 +24,6 @@ class SensorItem extends StatelessWidget {
     }
   }
 
-
-
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<SensorCubit, SensorState>(builder: (_, state) {
@@ -86,7 +84,8 @@ class SensorItem extends StatelessWidget {
           "$sensorID",
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline3.copyWith(
-                fontSize: MediaQuery.of(context).size.width * (isLandscape ? 0.03 : 0.06),
+                fontSize: MediaQuery.of(context).size.width *
+                    (isLandscape ? 0.03 : 0.06),
               ),
         ),
         trailing: svgImage,

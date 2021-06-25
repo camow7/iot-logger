@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:iot_logger/models/HeartBeatMessage.dart';
 import 'package:iot_logger/services/arduino_repository.dart';
-
+import 'package:iot_logger/main.dart';
 part 'sensor_state.dart';
 
 class SensorCubit extends Cubit<SensorState> {
