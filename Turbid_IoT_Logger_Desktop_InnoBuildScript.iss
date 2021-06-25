@@ -19,13 +19,13 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName={pf}\TurbidDesktopApp
 DefaultGroupName={#MyAppName}
 OutputDir=C:\Users\mrand\Downloads
 OutputBaseFilename=Turbid Desktop App Installer
 Compression=lzma
 SolidCompression=yes
-
+UsePreviousAppDir=False
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"

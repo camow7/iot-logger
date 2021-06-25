@@ -49,7 +49,7 @@ class IotLoggerApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'IoT Logger',
+      title: 'Turbid Desktop App',
       theme: ThemeData(
         primaryColor: blue,
         focusColor: blue,
