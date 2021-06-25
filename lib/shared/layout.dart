@@ -100,7 +100,6 @@ class Layout extends StatelessWidget {
           ),
 
         // Logo and Content
-
         Container(
           child: Column(
             children: [
@@ -109,9 +108,6 @@ class Layout extends StatelessWidget {
                 child: getLogo(context),
               ),
               Container(
-                // color: Colors.blue,
-                // height: MediaQuery.of(context).size.height,
-                // width: MediaQuery.of(context).size.width,
                 child: content,
               ),
             ],

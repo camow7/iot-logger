@@ -65,10 +65,23 @@ class ReadingsScreen extends StatelessWidget {
                                   },
                                   child: Center(
                                     child: ListTile(
+                                      dense: true,
                                       leading: Text(
-                                          "${state.readings[reading.key][0].sensorName}"),
+                                        "${state.readings[reading.key][0].sensorName}",
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02),
+                                      ),
                                       trailing: Text(
-                                          "${state.readings[reading.key][0].sensorReading}"),
+                                        "${state.readings[reading.key][0].sensorReading}",
+                                        style: TextStyle(
+                                            fontSize: MediaQuery.of(context)
+                                                    .size
+                                                    .width *
+                                                0.02),
+                                      ),
                                     ),
                                   ),
                                 ),

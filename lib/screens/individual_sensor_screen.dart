@@ -53,7 +53,7 @@ class IndividualSensorScreen extends StatelessWidget {
                 // Last Reading Text
                 Container(
                   width: MediaQuery.of(context).size.width * 0.2,
-                  height: MediaQuery.of(context).size.height * 0.1,
+                  height: MediaQuery.of(context).size.height * 0.11,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                     color: Colors.white,

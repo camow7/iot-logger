@@ -22,7 +22,7 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   if (Platform.isWindows || Platform.isLinux || Platform.isMacOS) {
     setWindowMinSize(const Size(1200, 700));
-    setWindowTitle('IoT Desktop Logger');
+    setWindowTitle('Turbid Desktop App');
   }
 
   runApp(

@@ -21,7 +21,7 @@ class LogsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('Width ' + MediaQuery.of(context).size.width.toString());
+    // print('Width ' + MediaQuery.of(context).size.width.toString());
 
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
@@ -76,7 +76,7 @@ class LogsScreen extends StatelessWidget {
                 if (state is Files) {
                   return Container(
                     // color: Colors.red[50],
-                    height: MediaQuery.of(context).size.height * 0.53,
+                    height: MediaQuery.of(context).size.height * 0.45,
                     width: MediaQuery.of(context).size.width * 0.95,
                     child: GridView(
                       padding: EdgeInsets.only(top: 10),

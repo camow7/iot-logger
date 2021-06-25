@@ -223,7 +223,7 @@ class _LogItem extends StatelessWidget {
     return Text(
       fileName,
       style: TextStyle(
-          color: Theme.of(context).focusColor,
+          color: Theme.of(context).accentColor,
           fontSize: MediaQuery.of(context).size.width * 0.02,
           fontStyle: FontStyle.italic,
           fontFamily: 'Montserrat'),

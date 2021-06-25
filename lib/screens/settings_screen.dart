@@ -26,7 +26,7 @@ class SettingsScreen extends StatelessWidget {
                 if (state is Loaded) {
                   return Container(
                     // color: Colors.blue[50],
-                    height: MediaQuery.of(context).size.height * 0.72,
+                    height: MediaQuery.of(context).size.height * 0.64,
                     width: MediaQuery.of(context).size.width * 0.4,
                     child: ListView(
                       padding: EdgeInsets.all(0),
