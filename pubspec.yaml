@@ -1,5 +1,6 @@
 name: iot_logger
 description: 'Turbid Desktop App'
+# Build 1.0.0
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
